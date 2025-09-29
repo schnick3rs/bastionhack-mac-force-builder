@@ -22,7 +22,8 @@ const create = (
 };
 
 factions.push(
-    create('Elder Circle', 'Formaly HumantyFleet Mission Command', 'Shock Dispersion', 'Rmapart', 'ruthless,brutalist,mountainous,relentless'),
+    create('Elder Circle', 'Formerly HumanityFleet Mission Command', 'Shock Dispersion', 'Rmapart', 'ruthless,brutalist,mountainous,relentless'),
+    create('Grand Forge', 'Formerly HumanityFleet HeavyWare Development', 'Hammer Forged', 'Extinguisher', 'industrial,smoke,loud,reinforced'),
 );
 
 export default factions;

@@ -1,4 +1,8 @@
 <script setup lang="ts">
+import {useForcesStore} from "~/stores/forces";
+
+const forcesStore = useForcesStore();
+const forces = forcesStore.allForces;
 
 </script>
 
@@ -16,6 +20,22 @@
         </UButton>
       </template>
     </UCard>
+
+    <UPageCard title="My Forces">
+
+      <UPageList divide>
+        <UPageCard
+            v-for="force in forces"
+            variant="ghost"
+            :to="`/builder/${force.id}`"
+        >
+          <UUser :name="force.name"></UUser>
+        </UPageCard>
+      </UPageList>
+    </UPageCard>
+
+
+
   </UPageGrid>
 
 </template>
