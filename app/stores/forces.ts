@@ -20,6 +20,12 @@ export const useForcesStore = defineStore('forcesStore', {
           return (id: string = ''): Force | undefined => state.forces.find((force) => force.id === id);
         },
 
+        getEntry(state) {
+            return (forceId: string, entryId: string): Entry | undefined => state.forces.find((force) => force.id === forceId)?.entries.find(
+                (entry) => entry.id === entryId
+            )
+        }
+
     },
 
     actions: {

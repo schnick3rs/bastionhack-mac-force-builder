@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { FormSubmitEvent } from '@nuxt/ui'
 import {useForcesStore} from "~/stores/forces";
+import type {Faction} from "~~/types/unit";
 
 const state =  reactive({
   name: '',
@@ -11,7 +12,7 @@ const state =  reactive({
 
 const { data: factions, status } = await useFetch('/api/factions', {
   key: 'typicode-users',
-  transform: (data: { id: number, name: string }[]) => {
+  transform: (data: Faction[]) => {
     return data?.map(faction => ({
       label: faction.name,
       value: faction.key,
@@ -32,7 +33,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   const createdForce = await forces.createNewForceList(force)
 
   console.log('force', createdForce)
-  navigateTo(`/builder/${createdForce.id}`)
+  navigateTo(`/builder/${createdForce.id}/entries`)
 }
 
 </script>
