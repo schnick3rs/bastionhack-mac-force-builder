@@ -29,12 +29,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   let force = event.data;
 
-  force['id'] = crypto.randomUUID();
+  const createdForce = await forces.createNewForceList(force)
 
-  await forces.createNewForceList(force)
-
-  console.log('force', force)
-  navigateTo(`/builder/${force.id}`)
+  console.log('force', createdForce)
+  navigateTo(`/builder/${createdForce.id}`)
 }
 
 </script>

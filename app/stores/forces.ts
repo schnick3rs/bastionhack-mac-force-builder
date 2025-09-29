@@ -1,10 +1,10 @@
 import {defineStore} from "pinia";
+import type {Auxiliary, Entry, Force, Formation, MAC} from "~~/types/unit";
 
 export const useForcesStore = defineStore('forcesStore', {
     state: () => ({
 
-        /** @type { id: string, name: string, pointLimit: number, units: any[]} */
-        forces: [],
+        forces: [] as Force[],
 
     }),
 
@@ -17,26 +17,73 @@ export const useForcesStore = defineStore('forcesStore', {
         },
 
         forceById(state) {
-          return (id: string) => state.forces.find((force) => force.id === id);
+          return (id: string = ''): Force | undefined => state.forces.find((force) => force.id === id);
         },
 
     },
 
     actions: {
-        async createNewForceList(options) {
+        async createNewForceList(options: any) {
             const force = {
-                id: options.id,
+                id: `force-${crypto.randomUUID()}`,
                 name: options.name,
                 pointLimit: options.pointLimit,
-                units: [],
+                entries: [],
             }
             this.forces.push(force);
+            return force;
         },
 
-        addNewUnit(forceId, options) {
+        addNewEntry(forceId: string, variant: string) {
             let force = this.forces.find((force) => force.id === forceId);
             if (!force) return; // ✅ safety
-            force.units.push({id: crypto.randomUUID(), ...options});
+
+            switch (variant) {
+
+                case 'MAC':
+                    const mac: MAC = {
+                        id: crypto.randomUUID(),
+                        name: 'some random MAC name',
+                        classification: 'MAC',
+                        class: 1,
+                        modules: []
+                    }
+                    force.entries.push(mac);
+                    break;
+
+                case 'Vehicle':
+                    const vehicle: Auxiliary = {
+                        classification: "Auxiliary unit",
+                        name: "Battle Tank",
+                        type: 'Vehicle',
+                        modules: []
+                    }
+                    const vehicleFormation: Formation = {
+                        classification: "Formation",
+                        id: crypto.randomUUID(),
+                        size: 1,
+                        unit: vehicle
+                    }
+                    force.entries.push(vehicleFormation);
+                    break;
+
+                case 'Infantry':
+                    const infantry: Auxiliary = {
+                        classification: "Auxiliary unit",
+                        name: "Rouge Squad",
+                        type: 'Infantry',
+                        modules: []
+                    }
+                    const infantryFormation: Formation = {
+                        classification: "Formation",
+                        id: crypto.randomUUID(),
+                        size: 1,
+                        unit: infantry
+                    }
+                    force.entries.push(infantryFormation);
+                    break;
+            }
+
         }
     }
 });

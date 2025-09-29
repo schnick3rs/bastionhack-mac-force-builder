@@ -1,27 +1,25 @@
 <script setup lang="ts">
 import {useForcesStore} from "~/stores/forces";
+import type {Force, HardwareModule} from "~~/types/unit";
 
 const forcesStore = useForcesStore();
 const route = useRoute();
-const force = forcesStore.forceById(route.params.forceId)
+const forceId: string = route.params.forceId as string;
+const force: Force = forcesStore.forceById(forceId)
 
 function addMac() {
-  const options = { name: 'Random MAC', type: 'MAC', class: 1, modules: [] };
-  forcesStore.addNewUnit(route.params.forceId, options);
+  forcesStore.addNewEntry(forceId, 'MAC');
 }
-function addInfantry() {
-  const options = { name: 'Shooter Squad', type: 'Infantry', size: 3, modules: [] };
-  forcesStore.addNewUnit(route.params.forceId, options);
+function addVehicleFormation() {
+  forcesStore.addNewEntry(forceId, 'Vehicle');
 }
-function addVehicle() {
-  const options = { name: 'Armoured Truck', type: 'Vehicle', size: 2, modules: [] };
-  forcesStore.addNewUnit(route.params.forceId, options);
+function addInfantryFormation() {
+  forcesStore.addNewEntry(forceId, 'Infantry');
 }
-
 
 const { data: hardware, status } = await useFetch('/api/hardware', {
   key: 'typicode-users',
-  transform: (data: { id: number, name: string }[]) => {
+  transform: (data: HardwareModule[]) => {
     return data?.map(hardware => ({
       label: hardware.name,
       value: hardware.key,
@@ -62,7 +60,7 @@ const weaponSubtypes = [
 const weapon = reactive({
   range: 'S',
   type: 'B',
-  power: 2,
+  power: "2",
   subtype: '',
   expendable: true,
   name: 'RandomLaser',
@@ -103,15 +101,20 @@ const typeToIcon = {
     <div>
 
       <UPageList divide>
-        <UPageCard v-for="unit in force.units" variant="ghost">
-          <UUser :name="unit.name" :avatar="{ icon: typeToIcon[unit.type] }" size="xl"></UUser>
+        <UPageCard v-for="entry in force?.entries" variant="ghost">
+          <UUser v-if="entry.classification === 'MAC'" :name="entry.name" size="xl"></UUser>
+          <UUser v-else-if="entry.classification === 'Formation'" :name="entry.unit.name" size="xl"></UUser>
         </UPageCard>
 
       </UPageList>
 
       <UButton @click="addMac">Add MAC</UButton>
-      <UButton @click="addVehicle">Add Vehicle</UButton>
-      <UButton @click="addInfantry">Add Infantry</UButton>
+      <UButton @click="addVehicleFormation">Add Vehicle Formation</UButton>
+      <UButton @click="addInfantryFormation">Add Infantry Formation</UButton>
+
+      <pre>
+        {{ force.entries }}
+      </pre>
     </div>
 
     <div>

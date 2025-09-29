@@ -1,4 +1,6 @@
-const factions = [];
+import type {Faction} from "~~/types/unit";
+
+const factions: Faction[] = [];
 
 const create = (
   name: string,
