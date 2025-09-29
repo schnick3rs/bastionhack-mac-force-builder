@@ -6,6 +6,11 @@ const create = (
   restrictions: string[] = ['M', 'V', 'I']
 ) => {
   return {
+      key: name.toLowerCase()                // make lowercase
+          .trim()                       // remove leading/trailing spaces
+          .replace(/[^a-z0-9\s-]/g, '') // remove special characters
+          .replace(/\s+/g, '-')         // replace spaces with -
+          .replace(/-+/g, '-'),
     type: 'hardware',
     name,
     effect,
@@ -119,3 +124,5 @@ commonHardware.push(
   create('Vent', 'Lose 2 Heat when you hold in the move phase.', ['M']),
   
 );
+
+export default commonHardware;
