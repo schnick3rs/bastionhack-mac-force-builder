@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import type {Formation, HardwareModule} from "~~/types/unit";
+import type {Auxiliary, Formation, HardwareModule} from "~~/types/unit";
 
 const { entry } = defineProps<{ entry: Formation }>()
+const unit: Auxiliary = entry.unit;
 
 const weaponRangeItems = [
   { label: 'Brawl', value: '-', hint: 'Within melee'},
@@ -79,42 +80,20 @@ const typeToIcon = {
 
 <template>
 
-  <h3>{{ entry.unit.type }} Formation</h3>
+  <UInput v-model="entry.size" size="xl" type="number" placeholder="Size" />
+
+  <h3>{{ unit.type }} Formation</h3>
 
   <h3>Modules</h3>
 
   <UPageList>
-    <UPageCard v-for="module in modules" class="mb-4">
-      <UUser :name="module.name" :avatar="{ text: `${module.slot}` }" :description="module.description"></UUser>
-      <UCheckbox label="Double Module"></UCheckbox>
+    <UPageCard v-for="module in unit.modules" class="mb-2">
+      <UUser>
+        <span v-if="module.type === 'Empty'">{{module.type}}</span>
+      </UUser>
     </UPageCard>
   </UPageList>
 
-  <USelectMenu
-      v-model="module"
-      :items="hardware"
-      :loading="status === 'pending'"
-      size="xl"
-  >
-    <template #item-label="{ item }">
-      {{ item.label }}
-      <div class="text-muted">
-        {{ item.hint }}
-      </div>
-    </template>
-  </USelectMenu>
-
-  <div>
-    {{ weaponDisplayName }}
-  </div>
-
-
-  <UFieldGroup size="xl" orientation="horizontal">
-    <USelect class="w-32" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
-    <USelect class="w-32" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
-    <USelect class="w-32" v-model="weapon.power" :items="powerItems" value-key="value" ></USelect>
-    <USelect class="w-32" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
-  </UFieldGroup>
 </template>
 
 <style scoped>

@@ -47,16 +47,12 @@ const weaponDisplayName = computed(() => {
   return `${range}${type}${power}${!!subtype ? '-' : ''}${subtype} ${name}`;
 })
 
-const module = ref('')
+function weaponLabel(weapon: WeaponModule) {
+  const subtype = `${weapon.subType ? weapon.subType[0] : ''}${weapon.expendable ? 'X' : ''}`
+  return `${weapon.range[0]}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.label}`;
+}
 
-const modules = reactive([
-  { slot: 1, name: weaponDisplayName },
-  { slot: 2, name: 'Aerodrive', description: 'Ignore terrain' },
-  { slot: 3, name: 'some' },
-  { slot: 4, name: 'some' },
-  { slot: 5, name: 'some' },
-  { slot: 6, name: 'some' },
-])
+const module = ref('')
 
 const { data: hardware, status } = await useFetch('/api/hardware', {
   key: 'typicode-users',
@@ -85,11 +81,16 @@ const typeToIcon = {
   <h3>Modules</h3>
 
   <UPageList>
-    <UPageCard v-for="module in modules" class="mb-4">
-      <UUser :name="module.name" :avatar="{ text: `${module.slot}` }" :description="module.description"></UUser>
-      <UCheckbox label="Double Module"></UCheckbox>
+    <UPageCard v-for="module in entry.modules" class="mb-2">
+      <UUser :avatar="{ text: `${module.slot}` }">
+        <span v-if="module.type === 'Empty'">{{module.type}}</span>
+        <span v-if="module.type === 'Weapon'">{{weaponLabel(module.profile)}}</span>
+      </UUser>
     </UPageCard>
   </UPageList>
+
+  <hr>
+
 
   <USelectMenu
       v-model="module"
@@ -116,6 +117,7 @@ const typeToIcon = {
     <USelect class="w-32" v-model="weapon.power" :items="powerItems" value-key="value" ></USelect>
     <USelect class="w-32" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
   </UFieldGroup>
+
 </template>
 
 <style scoped>

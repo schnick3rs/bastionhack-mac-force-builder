@@ -31,13 +31,14 @@
     <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" />
     <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry" />
 
+    <hr></hr>
+
+    <pre>
+      {{entry}}
+    </pre>
+
   </UPageCard>
 
-  <UCard>
-    <code>
-      {{entry}}
-    </code>
-  </UCard>
 
   <UIcon name="i-game-icons-missile-mech" class="size-12" />
   <UIcon name="i-game-icons-tank" class="size-12" />

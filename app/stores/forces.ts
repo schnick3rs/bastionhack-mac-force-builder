@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {Auxiliary, Entry, Force, Formation, MAC} from "~~/types/unit";
+import type {Auxiliary, Entry, Force, Formation, MAC, WeaponModule,} from "~~/types/unit";
 
 export const useForcesStore = defineStore('forcesStore', {
     state: () => ({
@@ -47,12 +47,27 @@ export const useForcesStore = defineStore('forcesStore', {
             switch (variant) {
 
                 case 'MAC':
+                    const weapon: WeaponModule = {
+                        range: 'Short',
+                        type: 'Burst',
+                        power: 2,
+                        subType: 'Thermal',
+                        expendable: true,
+                        label: 'HeatFlamer',
+                    }
                     const mac: MAC = {
                         id: crypto.randomUUID(),
                         name: 'some random MAC name',
                         classification: 'MAC',
                         class: 1,
-                        modules: []
+                        modules: [
+                            { slot: 1, type: 'Weapon', profile: weapon },
+                            { slot: 2, type: 'Empty', profile: undefined },
+                            { slot: 3, type: 'Empty', profile: undefined },
+                            { slot: 4, type: 'Empty', profile: undefined },
+                            { slot: 5, type: 'Empty', profile: undefined },
+                            { slot: 6, type: 'Empty', profile: undefined },
+                        ]
                     }
                     force.entries.push(mac);
                     break;

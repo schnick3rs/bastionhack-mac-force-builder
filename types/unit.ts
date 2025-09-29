@@ -2,6 +2,7 @@
 export type ModuleConfig =
     | { slot?: number; type: 'Hardware'; profile: HardwareModule }
     | { slot?: number; type: 'Weapon'; profile: WeaponModule }
+    | { slot?: number; type: 'Empty'; profile?: any}
 
 export type Usability = 'MAC' | 'Infantry' | 'Vehicle' | 'All'
 
@@ -19,8 +20,8 @@ export type WeaponSubtype = 'Thermal' | 'Jolt' | 'Radiation'
 export interface WeaponModule {
     range: WeaponRange,
     type: WeaponType,
-    subType: WeaponSubtype | null,
-    expendable: false,
+    subType?: WeaponSubtype,
+    expendable: boolean,
     power: number,
     label: string,
 }
