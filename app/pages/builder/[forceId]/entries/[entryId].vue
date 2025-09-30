@@ -37,15 +37,9 @@
 
   </UPageCard>
 
-  <pre>
+  <pre class="hidden">
       {{entry}}
   </pre>
-
-  <UIcon name="i-game-icons-missile-mech" class="size-12" />
-  <UIcon name="i-game-icons-tank" class="size-12" />
-  <UIcon name="i-game-icons-dark-squad" class="size-12" />
-  <UIcon name="i-game-icons-anti-aircraft-gun" class="size-12" />
-
 
 </template>
 

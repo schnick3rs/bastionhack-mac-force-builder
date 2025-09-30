@@ -91,7 +91,6 @@ const cost = computed(() => calculateMacCost(entry))
     </UPageCard>
   </UPageList>
 
-  <hr>
 
 
   <USelectMenu
@@ -99,6 +98,7 @@ const cost = computed(() => calculateMacCost(entry))
       :items="hardware"
       :loading="status === 'pending'"
       size="xl"
+      class="hidden"
   >
     <template #item-label="{ item }">
       {{ item.label }}
@@ -110,7 +110,7 @@ const cost = computed(() => calculateMacCost(entry))
 
 
 
-  <UFieldGroup size="xl" orientation="horizontal">
+  <UFieldGroup size="xl" orientation="horizontal" class="hidden">
     <USelect class="w-8" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
     <USelect class="w-8" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
     <USelect class="w-8" v-model="weapon.power" :items="powerItems" value-key="value" ></USelect>

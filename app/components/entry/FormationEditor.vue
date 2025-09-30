@@ -138,11 +138,11 @@ function removeModule(name: string, index: number) {
 
   <div class="flex flex-wrap gap-2">
     <template v-for="(module, index) in unit.modules.filter(m => m.type === 'Hardware')" :key="index" >
-      <UBadge color="neutral" variant="subtle" size="lg">
+      <UBadge color="neutral" variant="subtle" size="xl">
         <UTooltip :delay-duration="0" :text="hardwareTooltip(module.profile)">
           <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{module.profile.name}}</span>
         </UTooltip>
-        <UIcon name="i-game-icons-celebration-fire" class="cursor-pointer" @click="removeModule(module.profile.name, index)"></UIcon>
+        <UIcon size="20" name="i-material-symbols-light-cancel" class="cursor-pointer" @click="removeModule(module.profile.name, index)"></UIcon>
       </UBadge>
     </template>
   </div>

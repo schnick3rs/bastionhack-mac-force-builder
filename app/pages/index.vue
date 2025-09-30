@@ -25,8 +25,10 @@ const forces = forcesStore.allForces;
 
       Create a new force
 
+      <div><em>Lists are stored in your browers local storage</em></div>
+
       <template #footer>
-        <UButton to="/builder/createForce">
+        <UButton to="/builder/createForce" class="w-full" size="xl">
           Build a new Force
         </UButton>
       </template>
@@ -35,12 +37,12 @@ const forces = forcesStore.allForces;
     <UPageCard title="My created Forces">
 
       <UPageList divide>
-        <template ></template>
         <UPageCard
+            variant="ghost"
             v-for="force in forces"
             :to="`/builder/${force.id}/entries`"
         >
-          <UUser :name="force.name"></UUser>
+          <UUser :name="force.name" :description="`A ${force.pointLimit}pt force consisting of ${force.entries.length} entries.`"></UUser>
         </UPageCard>
       </UPageList>
     </UPageCard>

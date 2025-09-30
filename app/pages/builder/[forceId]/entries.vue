@@ -32,17 +32,25 @@
 
 <template>
 
-  <h1>Build your force: {{ force.name }}</h1>
+  <h1 class="text-3xl font-bold">{{ force.name }}</h1>
+  <em>{{ force.description }}</em>
 
-  <h2>Point Cost {{cost}} / {{force.pointLimit}} pt</h2>
+  <div class="font-xl">
+    <span class="text-sm">[{{force.entries.length}} entries]</span>
+    Point {{cost}} / {{force.pointLimit}} pt
+  </div>
 
-  <h2>Rooster</h2>
-
-  <div class="grid grid-cols-2 gap-3">
+  <div class="grid grid-cols-2 gap-3 pt-4">
 
     <div>
       <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-        <UPageCard v-for="entry in force?.entries" variant="ghost" :to="`/builder/${forceId}/entries/${entry.id}`" @click="selected = entry.id">
+        <UPageCard
+            v-for="entry in force?.entries"
+            variant="ghost"
+            :to="`/builder/${forceId}/entries/${entry.id}`"
+            @click="selected = entry.id"
+
+        >
           <EntryPreviewItem :entry="entry"></EntryPreviewItem>
         </UPageCard>
       </ul>
@@ -52,11 +60,13 @@
 
       </UPageList>
 
-      <UButton @click="addMac">Add MAC</UButton>
-      <UButton @click="addVehicleFormation">Add Vehicle Formation</UButton>
-      <UButton @click="addInfantryFormation">Add Infantry Formation</UButton>
+      <UFieldGroup>
+        <UButton variant="outline" @click="addMac">Add MAC</UButton>
+        <UButton variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
+        <UButton variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
+      </UFieldGroup>
 
-      <pre>
+      <pre class="hidden">
         {{ force.entries }}
       </pre>
     </div>
@@ -66,8 +76,6 @@
     </div>
 
   </div>
-
-
 
 
 
