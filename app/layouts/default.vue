@@ -14,7 +14,6 @@
       </UContainer>
     </UMain>
 
-    <my-footer />
   </UApp>
 </template>
 

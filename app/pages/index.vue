@@ -10,23 +10,34 @@ const forces = forcesStore.allForces;
 
   <UPageGrid>
 
+    <UPageCard
+        title="MAC Attack"
+        description='"Mobile Armour Colossus. A fast-playing, explosive mecha tabletop wargame, where factions of a fractured humanity fight for dominance on alien new worlds."'
+        to="https://www.backerkit.com/c/projects/bastionland-press/mac-attack-sci-fi-mecha-miniature-wargame"
+        target="_blank"
+    >
+      <template #footer>
+        Check it out on Backerkit!
+      </template>
+    </UPageCard>
+
     <UCard>
 
       Create a new force
 
       <template #footer>
         <UButton to="/builder/createForce">
-          Create
+          Build a new Force
         </UButton>
       </template>
     </UCard>
 
-    <UPageCard title="My Forces">
+    <UPageCard title="My created Forces">
 
       <UPageList divide>
+        <template ></template>
         <UPageCard
             v-for="force in forces"
-            variant="ghost"
             :to="`/builder/${force.id}/entries`"
         >
           <UUser :name="force.name"></UUser>

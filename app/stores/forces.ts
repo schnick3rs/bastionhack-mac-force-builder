@@ -3,7 +3,7 @@ import type {Auxiliary, Entry, Force, Formation, HardwareProfile, MAC, WeaponPro
 import {parseWeaponString} from "#shared/utils/weapons";
 import {sortForceEntries} from "#shared/utils/forces";
 
-import { uniqueUsernameGenerator as gen, adjectives, nouns } from 'unique-username-generator';
+import { uniqueUsernameGenerator as gen, nouns } from 'unique-username-generator';
 
 
 export const useForcesStore = defineStore('forcesStore', {

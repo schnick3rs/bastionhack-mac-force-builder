@@ -3,8 +3,19 @@ import type { FormSubmitEvent } from '@nuxt/ui'
 import {useForcesStore} from "~/stores/forces";
 import type {Faction} from "~~/types/unit";
 
+import { uniqueUsernameGenerator as gen, adjectives, nouns } from 'unique-username-generator';
+
+function randomForceName() {
+  return `The ${gen({ dictionaries: [adjectives]})} ${gen({ dictionaries: [nouns]})} Force`;
+}
+
+function getRandomPadded() {
+  const num = Math.floor(Math.random() * 100) + 1; // 1 - 100
+  return String(num).padStart(3, '0'); // Pads with leading zeros
+}
+
 const state =  reactive({
-  name: '',
+  name: randomForceName(),
   description: '',
   pointLimit: 50,
   faction: '',
@@ -26,7 +37,7 @@ const { data: factions, status } = await useFetch('/api/factions', {
 const forces = useForcesStore()
 const toast = useToast()
 async function onSubmit(event: FormSubmitEvent<Schema>) {
-  toast.add({ title: 'Success', description: 'The form has been submitted.', color: 'success' })
+  toast.add({ title: 'Success', description: 'A new force has ben created.', color: 'success' })
 
   let force = event.data;
 
@@ -36,64 +47,105 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   navigateTo(`/builder/${createdForce.id}/entries`)
 }
 
+const pointLimitSelection = ref(50);
+
+function setPointLimit(pointLimit: number) {
+  pointLimitSelection.value = pointLimit;
+  state.pointLimit = pointLimit;
+}
+
 </script>
 
 <template>
-  <h2>Create a new force</h2>
+  <div class="flex justify-center">
 
-  <UForm :state="state" class="space-y-4 mt-8" @submit="onSubmit">
+    <UForm :state="state" class="space-y-4 mt-8" @submit="onSubmit">
 
-    <div class="flex flex-col gap-8 w-92">
+      <div class="text-center pb-4">
+        <UAvatar :ui="{ 'root': 'size-24 text-6xl' }" :icon="`i-game-icons-abstract-${getRandomPadded()}`"></UAvatar>
+      </div>
 
-      <UInput v-model="state.name" placeholder="" :ui="{ base: 'peer' }" size="xl">
-        <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-1.5 peer-placeholder-shown:font-normal">
-          <span class="inline-flex bg-default px-1">Name</span>
-        </label>
-      </UInput>
+      <div class="flex flex-col gap-8 w-92">
 
-      <UInput v-model="state.description" placeholder="" :ui="{ base: 'peer' }" size="xl">
-        <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-1.5 peer-placeholder-shown:font-normal">
-          <span class="inline-flex bg-default px-1">Description</span>
-        </label>
-      </UInput>
+        <UInput v-model="state.name" placeholder="" :ui="{ base: 'peer' }" size="xl">
+          <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+            <span class="inline-flex bg-default px-1">Name</span>
+          </label>
+          <template #trailing>
+            <UTooltip text="Generate random name" :content="{ side: 'right' }">
+              <UButton
+                  class="pointer-events"
+                  color="neutral"
+                  variant="link"
+                  icon="i-material-symbols-light-autorenew"
+                  aria-label="Clear input"
+                  @click="state.name = randomForceName()"
+              />
+            </UTooltip>
+          </template>
+        </UInput>
 
-      <USelect
-          v-model="state.faction"
-          :items="factions"
-          :loading="status === 'pending'"
-          size="xl"
-      >
-        <template #item-label="{ item }">
-          {{ item.label }}
-          <div class="text-muted">
-            {{ item.sparks.join(', ') }}
-          </div>
-        </template>
-      </USelect>
+        <UInput v-model="state.description" placeholder="" :ui="{ base: 'peer' }" size="xl">
+          <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+            <span class="inline-flex bg-default px-1">Description</span>
+          </label>
+        </UInput>
 
-      <h2>Point Limit</h2>
+        <div>
+          <USelect
+              v-model="state.faction"
+              :items="factions"
+              :loading="status === 'pending'"
+              size="xl"
+              class="w-full"
+          >
+            <template #item-label="{ item }">
+              {{ item.label }}
+              <div class="text-muted">
+                {{ item.sparks.join(', ') }}
+              </div>
+            </template>
+          </USelect>
+          <em>Experimental and only to show off..</em>
+        </div>
 
-      <UFieldGroup size="xl">
-        <UButton color="neutral" variant="subtle" label="50 pts" />
-        <UButton color="neutral" variant="outline" label="100 pts" />
-        <UButton color="neutral" variant="outline" label="200 pts" />
-      </UFieldGroup>
+        <div>
 
-      <h2>Activate Variant Rules</h2>
+          <div class="w-full font-bold pb-4">Force Point Limit</div>
 
-      <USwitch size="xl" label="Perks and Flaws" description="MACs get benefits and drawbacks"/>
+          <UFieldGroup size="xl" class="w-full">
+            <UButton @click="setPointLimit(50)" class="w-1/4" color="info" :variant="pointLimitSelection === 50 ? undefined : 'outline'" label="50pts" />
+            <UButton @click="setPointLimit(100)" class="w-1/4" color="info" :variant="pointLimitSelection === 100 ? undefined : 'outline'" label="100pts" />
+            <UButton @click="setPointLimit(200)" class="w-1/4" color="info" :variant="pointLimitSelection === 200 ? undefined : 'outline'" label="200pts" />
+            <UButton class="w-1/4" color="info" :variant="pointLimitSelection === -1 ? undefined : 'outline'" label="Custom" />
+          </UFieldGroup>
 
-      <USwitch size="xl" label="Remote Assets" description="Add off-board support effects" />
+        </div>
 
-      <USwitch size="xl" label="Pilots" description="Add Ace and Rookie pilots"/>
+        <div class="text-center">
+          <UButton type="submit" size="xl" class="w-1/2">Create Force</UButton>
+        </div>
 
-      <UButton type="submit" >Open Force Builder</UButton>
-    </div>
+        <div class="hidden">
+
+          <h2>Activate Variant Rules</h2>
+
+          <USwitch size="xl" label="Perks and Flaws" description="MACs get benefits and drawbacks"/>
+
+          <USwitch size="xl" label="Remote Assets" description="Add off-board support effects" />
+
+          <USwitch size="xl" label="Pilots" description="Add Ace and Rookie pilots"/>
+
+
+        </div>
+
+      </div>
 
 
 
 
-  </UForm>
+    </UForm>
+  </div>
 </template>
 
 <style scoped>
