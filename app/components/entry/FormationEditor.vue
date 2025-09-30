@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import type {Auxiliary, Formation, HardwareModule} from "~~/types/unit";
+import type {Auxiliary, Formation, HardwareModule, HardwareProfile} from "~~/types/unit";
+import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 
 const { entry } = defineProps<{ entry: Formation }>()
 const unit: Auxiliary = entry.unit;
@@ -60,39 +61,114 @@ const modules = reactive([
 
 const { data: hardware, status } = await useFetch('/api/hardware', {
   key: 'typicode-users',
-  transform: (data: HardwareModule[]) => {
-    return data?.map(hardware => ({
-      label: hardware.name,
-      value: hardware.key,
-      hint: hardware.effect,
-    }))
-  },
+  transform: (data: HardwareModule[]) => data || [],
   lazy: true
 })
 
+const cost = computed(() => calculateFormationCost(entry))
 
-const typeToIcon = {
-  'MAC': 'i-game-icons-missile-mech',
-  'Vehicle': 'i-game-icons-tank',
-  'Infantry': 'i-game-icons-dark-squad',
+function hardwareTooltip(hardwareProfile: HardwareProfile) {
+  const hw = hardware.value?.find((h) => h.name === hardwareProfile.name)
+  return hw?.effect ?? ''
 }
+
+const hardwareOptions = computed(() => {
+  if (!hardware.value) return [];
+  return hardware.value.filter((h) => h.usability.includes(unit.type) || h.usability.includes('All'))
+      .filter((h) => !unit.modules.filter(m => m.type === 'Hardware').map(m => m.profile.name).includes(h.name))
+})
+
+const newModule = ref('');
+
+function addModule() {
+  const h = hardware.value?.find((h) => h.name === newModule.value);
+  unit.modules.push({ type: 'Hardware', profile: { name: h.name } });
+  unit.modules.sort((a, b) => {
+    if (a.type === b.type) {
+      return a.profile.name.localeCompare(b.profile.name)
+    }
+    return a.type.localeCompare(b.type)
+  });
+  newModule.value = '';
+}
+
+function removeModule(name: string, index: number) {
+  const weaponCount = unit.modules.filter(m => m.type === 'Weapon').length
+  unit.modules.splice(index+weaponCount, 1);
+  unit.modules.sort((a, b) => {
+    if (a.type === b.type) {
+      return a.profile.name.localeCompare(b.profile.name)
+    }
+    return a.type.localeCompare(b.type)
+  });
+}
+
 </script>
 
 <template>
 
-  <UInput v-model="entry.size" size="xl" type="number" placeholder="Size" />
+  <div class="flex gap-2 justify-between items-center">
+    <UInput v-model="unit.name" class=""></UInput>
+    <span class="w-12 flex-none">{{cost}} pt</span>
+  </div>
 
-  <h3>{{ unit.type }} Formation</h3>
+  <h3 class="text-xs">
+    Size <UInput v-model="entry.size" class="w-12 mx-2" type="number" min="1" :max="entry.unit.type === 'Infantry' ? 5 : 3" size="xs" ></UInput> {{unit.type}} Formation
+  </h3>
 
-  <h3>Modules</h3>
+  <h3 class="text-2xl font-bold">Modules</h3>
+  <em class="text-xs">AUs can carry any number of modules, but cannot have more than 2 weapons or more than 2 of the same hardware.</em>
+
+  <h4 class="text-xl">Weapons</h4>
 
   <UPageList>
-    <UPageCard v-for="module in unit.modules" class="mb-2">
+    <UPageCard v-for="(module, index) in unit.modules.filter(m => m.type === 'Weapon')" :key="index" class="mb-2">
       <UUser>
-        <span v-if="module.type === 'Empty'">{{module.type}}</span>
+        <template #name>
+          <span >{{buildWeaponDisplayString(module.profile)}}</span>
+        </template>
+        <template #description>
+          <WeaponProfileTooltips :weapon="module.profile" />
+        </template>
       </UUser>
     </UPageCard>
   </UPageList>
+
+  <h4 class="text-xl">Hardware modules</h4>
+
+  <div class="flex flex-wrap gap-2">
+    <template v-for="(module, index) in unit.modules.filter(m => m.type === 'Hardware')" :key="index" >
+      <UBadge color="neutral" variant="subtle" size="lg">
+        <UTooltip :delay-duration="0" :text="hardwareTooltip(module.profile)">
+          <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{module.profile.name}}</span>
+        </UTooltip>
+        <UIcon name="i-game-icons-celebration-fire" class="cursor-pointer" @click="removeModule(module.profile.name, index)"></UIcon>
+      </UBadge>
+    </template>
+  </div>
+
+
+
+  <UFieldGroup orientation="horizontal">
+    <USelectMenu
+        v-if="hardwareOptions"
+        :items="hardwareOptions"
+        value-key="name"
+        label-key="name"
+        :loading="status === 'pending'"
+        class="flex-1"
+        v-model="newModule"
+    >
+      <template #item-label="{ item }">
+        {{ item.name }}
+        <div class="text-muted">
+          {{ item.effect }}
+        </div>
+      </template>
+    </USelectMenu>
+
+    <UButton variant="outline" @click="addModule">Add Module</UButton>
+  </UFieldGroup>
 
 </template>
 

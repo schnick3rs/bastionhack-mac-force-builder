@@ -1,8 +1,12 @@
 <script setup lang="ts">
 
-const props = defineProps<{ entry: MAC }>()
+import {rangeHint, subtypeHint, typeHint} from "#shared/utils/weapons";
 
-import type {HardwareModule, MAC, WeaponProfile} from "~~/types/unit";
+const { entry } = defineProps<{ entry: MAC }>()
+
+import type {HardwareModule, MAC, WeaponRange, WeaponSubtype, WeaponType} from "~~/types/unit";
+import {calculateMacCost} from "#shared/utils/units";
+import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 
 const weaponRangeItems = [
   { label: 'Brawl', value: '-', hint: 'Within melee'},
@@ -41,17 +45,6 @@ const weapon = reactive({
   name: 'RandomLaser',
 })
 
-const weaponDisplayName = computed(() => {
-  const {range, type, power, name } = weapon;
-  const subtype = `${weapon.subtype}${weapon.expendable ? 'X' : ''}`
-  return `${range}${type}${power}${!!subtype ? '-' : ''}${subtype} ${name}`;
-})
-
-function weaponLabel(weapon: WeaponProfile) {
-  const subtype = `${weapon.subType ? weapon.subType[0] : ''}${weapon.expendable ? 'X' : ''}`
-  return `${weapon.range[0]}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.name}`;
-}
-
 const module = ref('')
 
 const { data: hardware, status } = await useFetch('/api/hardware', {
@@ -66,26 +59,34 @@ const { data: hardware, status } = await useFetch('/api/hardware', {
   lazy: true
 })
 
+const cost = computed(() => calculateMacCost(entry))
 
-const typeToIcon = {
-  'MAC': 'i-game-icons-missile-mech',
-  'Vehicle': 'i-game-icons-tank',
-  'Infantry': 'i-game-icons-dark-squad',
-}
 </script>
 
 <template>
 
-  <h3 class="text-lg font-bold">Class {{entry.class}} MAC</h3>
+  <div class="flex gap-2 justify-between items-center">
+    <UInput v-model="entry.name" class=""></UInput>
+    <span class="w-12 flex-none">{{cost}} pt</span>
+  </div>
+
+  <h3 class="text-xs">
+    Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="4" size="xs" ></UInput> MAC
+  </h3>
 
   <h3 class="text-lg font-bold">Modules</h3>
 
   <UPageList>
-    <UPageCard v-for="module in entry.modules" class="mb-2">
+    <UPageCard v-for="module in entry.modules" :key="module.slot" class="mb-2">
       <UUser :avatar="{ text: `${module.slot}` }">
-        <span v-if="module.type === 'Weapon'">{{weaponLabel(module.profile)}}</span>
-        <span v-if="module.type === 'Hardware'">{{module.profile.name}}</span>
-        <span v-if="module.type === 'Empty'">{{module.type}}</span>
+        <template #name>
+          <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
+          <span v-if="module.type === 'Hardware'">{{module.profile.name}}</span>
+          <span v-if="module.type === 'Empty'">{{module.type}}</span>
+        </template>
+        <template #description>
+          <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
+        </template>
       </UUser>
     </UPageCard>
   </UPageList>
@@ -107,16 +108,13 @@ const typeToIcon = {
     </template>
   </USelectMenu>
 
-  <div>
-    {{ weaponDisplayName }}
-  </div>
 
 
   <UFieldGroup size="xl" orientation="horizontal">
-    <USelect class="w-32" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
-    <USelect class="w-32" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
-    <USelect class="w-32" v-model="weapon.power" :items="powerItems" value-key="value" ></USelect>
-    <USelect class="w-32" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
+    <USelect class="w-8" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
+    <USelect class="w-8" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
+    <USelect class="w-8" v-model="weapon.power" :items="powerItems" value-key="value" ></USelect>
+    <USelect class="w-8" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
   </UFieldGroup>
 
 </template>

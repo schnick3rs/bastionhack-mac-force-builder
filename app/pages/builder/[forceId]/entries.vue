@@ -6,7 +6,10 @@
   const forcesStore = useForcesStore();
   const route = useRoute();
   const forceId: string = route.params.forceId as string;
-  const force: Force = forcesStore.forceById(forceId)
+  const force: Force | undefined = forcesStore.forceById(forceId)
+  if (!force) {
+    throw new Error('Force not found')
+  }
 
   function addMac() {
     forcesStore.addNewEntry(forceId, 'MAC');
@@ -17,6 +20,8 @@
   function addInfantryFormation() {
     forcesStore.addNewEntry(forceId, 'Infantry');
   }
+
+  const selected = ref('')
 
   const cost = computed(() => {
     return calculateForceCost(force)
@@ -37,7 +42,7 @@
 
     <div>
       <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
-        <UPageCard v-for="entry in force?.entries" variant="ghost" :to="`/builder/${forceId}/entries/${entry.id}`">
+        <UPageCard v-for="entry in force?.entries" variant="ghost" :to="`/builder/${forceId}/entries/${entry.id}`" @click="selected = entry.id">
           <EntryPreviewItem :entry="entry"></EntryPreviewItem>
         </UPageCard>
       </ul>
@@ -56,7 +61,7 @@
       </pre>
     </div>
 
-    <div>
+    <div :key="selected">
       <NuxtPage/>
     </div>
 

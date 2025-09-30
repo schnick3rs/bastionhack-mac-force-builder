@@ -30,26 +30,16 @@
 
 <template>
 
-  <UPageCard v-if="entry">
-
-    <template #header>
-      <span class="font-bold">{{ entryDisplayName }}</span>
-      <span class="font-light">Point Cost {{cost}} pt</span>
-    </template>
-
-    <hr>
+  <UPageCard v-if="entry" :key="entry.id">
 
     <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" />
     <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry" />
 
-    <hr>
-
-    <pre>
-      {{entry}}
-    </pre>
-
   </UPageCard>
 
+  <pre>
+      {{entry}}
+  </pre>
 
   <UIcon name="i-game-icons-missile-mech" class="size-12" />
   <UIcon name="i-game-icons-tank" class="size-12" />

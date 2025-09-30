@@ -22,9 +22,9 @@ export type WeaponType = 'Burst' | 'Piercing' | 'Guided' | 'Multi'
 export type WeaponSubtype = 'Thermal' | 'Jolt' | 'Radiation'
 
 export interface WeaponProfile {
-    range?: WeaponRange,
+    range: WeaponRange,
     type: WeaponType,
-    subType?: WeaponSubtype,
+    subtype?: WeaponSubtype,
     expendable: boolean,
     power: number,
     name: string,
