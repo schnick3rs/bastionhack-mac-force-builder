@@ -1,7 +1,7 @@
 
 export type ModuleConfig =
-    | { slot?: number; type: 'Hardware'; profile: HardwareModule }
-    | { slot?: number; type: 'Weapon'; profile: WeaponModule }
+    | { slot?: number; type: 'Hardware'; double?: boolean; profile: HardwareProfile }
+    | { slot?: number; type: 'Weapon';  double?: boolean; profile: WeaponProfile }
     | { slot?: number; type: 'Empty'; profile?: any}
 
 export type Usability = 'MAC' | 'Infantry' | 'Vehicle' | 'All'
@@ -13,17 +13,21 @@ export interface HardwareModule {
     usability: Usability[],
 }
 
+export interface HardwareProfile {
+    name: string,
+}
+
 export type WeaponRange = 'Brawl' | 'Short' | 'Long' | 'Arc'
 export type WeaponType = 'Burst' | 'Piercing' | 'Guided' | 'Multi'
 export type WeaponSubtype = 'Thermal' | 'Jolt' | 'Radiation'
 
-export interface WeaponModule {
-    range: WeaponRange,
+export interface WeaponProfile {
+    range?: WeaponRange,
     type: WeaponType,
     subType?: WeaponSubtype,
     expendable: boolean,
     power: number,
-    label: string,
+    name: string,
 }
 
 

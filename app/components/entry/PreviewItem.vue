@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import type {Entry, MAC} from "~~/types/unit";
+import type {Entry, HardwareModule, HardwareProfile, MAC} from "~~/types/unit";
+import {calculateEntityCost} from "#shared/utils/units";
+import {buildWeaponDisplayString} from "#shared/utils/weapons";
 
 const { entry } = defineProps<{ entry: Entry }>()
 
@@ -35,10 +37,62 @@ const description = computed(() => {
   }
 })
 
+const cost = computed(() => {
+  return calculateEntityCost(entry)
+})
+
+const { data: hardware, status } = await useFetch('/api/hardware', { lazy: true });
+
+function tooltip(hardwareProfile: HardwareProfile) {
+  const hw = hardware.value?.find((h) => h.name === hardwareProfile.name)
+  return hw?.effect ?? ''
+}
+
 </script>
 
 <template>
-  <UUser :name="name" :description="description" :avatar="{ icon: icon }" size="xl"></UUser>
+
+
+  <li class="pb-3 sm:pb-4">
+    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+
+      <div class="shrink-0">
+        <UAvatar :icon="icon"size="xl"></UAvatar>
+      </div>
+
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+          <span v-if="entry.classification === 'Formation'">{{entry.size}}x </span>
+          {{ name }}
+        </p>
+        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+          {{ description }}
+        </p>
+
+        <template v-if="entry.classification === 'Formation'">
+
+          <template v-for="module in entry.unit.modules.sort((a,b) => b.type.localeCompare(a.type))">
+            <template v-if="module.type === 'Weapon'">
+              <span class="text-xs pr-2" >{{ buildWeaponDisplayString(module.profile) }}</span>
+            </template>
+            <template v-if="module.type === 'Hardware'">
+              <span class="text-xs pr-2" style="text-decoration: underline dashed; text-underline-offset: 4px">{{ module.profile.name }}</span>
+            </template>
+          </template>
+        </template>
+
+      </div>
+
+      <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+        {{cost}} pt
+      </div>
+
+      <div>
+
+      </div>
+    </div>
+  </li>
+
 </template>
 
 <style scoped>

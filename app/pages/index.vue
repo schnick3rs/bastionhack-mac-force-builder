@@ -27,7 +27,7 @@ const forces = forcesStore.allForces;
         <UPageCard
             v-for="force in forces"
             variant="ghost"
-            :to="`/builder/${force.id}`"
+            :to="`/builder/${force.id}/entries`"
         >
           <UUser :name="force.name"></UUser>
         </UPageCard>

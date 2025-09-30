@@ -1,5 +1,6 @@
 import {defineStore} from "pinia";
-import type {Auxiliary, Entry, Force, Formation, MAC, WeaponModule,} from "~~/types/unit";
+import type {Auxiliary, Entry, Force, Formation, HardwareProfile, MAC, WeaponProfile,} from "~~/types/unit";
+import {parseWeaponString} from "#shared/utils/weapons";
 
 export const useForcesStore = defineStore('forcesStore', {
     state: () => ({
@@ -47,26 +48,18 @@ export const useForcesStore = defineStore('forcesStore', {
             switch (variant) {
 
                 case 'MAC':
-                    const weapon: WeaponModule = {
-                        range: 'Short',
-                        type: 'Burst',
-                        power: 2,
-                        subType: 'Thermal',
-                        expendable: true,
-                        label: 'HeatFlamer',
-                    }
                     const mac: MAC = {
                         id: crypto.randomUUID(),
-                        name: 'some random MAC name',
+                        name: 'The Sabre',
                         classification: 'MAC',
-                        class: 1,
+                        class: 2,
                         modules: [
-                            { slot: 1, type: 'Weapon', profile: weapon },
-                            { slot: 2, type: 'Empty', profile: undefined },
-                            { slot: 3, type: 'Empty', profile: undefined },
-                            { slot: 4, type: 'Empty', profile: undefined },
-                            { slot: 5, type: 'Empty', profile: undefined },
-                            { slot: 6, type: 'Empty', profile: undefined },
+                            { slot: 1, type: 'Weapon', double: false, profile: parseWeaponString('SP2 IonBeam') as WeaponProfile },
+                            { slot: 2, type: 'Weapon', double: false, profile: parseWeaponString('SP2 IonBeam') as WeaponProfile },
+                            { slot: 3, type: 'Weapon', double: false, profile: parseWeaponString('P2 Piston') as WeaponProfile },
+                            { slot: 4, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
+                            { slot: 5, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
+                            { slot: 6, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
                         ]
                     }
                     force.entries.push(mac);
@@ -77,12 +70,15 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: "Auxiliary unit",
                         name: "Battle Tank",
                         type: 'Vehicle',
-                        modules: []
+                        modules: [
+                            { type: 'Weapon', profile: parseWeaponString('LP2 RailCannon') as WeaponProfile },
+                            { type: 'Hardware', profile: { name: 'Armour' } },
+                        ]
                     }
                     const vehicleFormation: Formation = {
                         classification: "Formation",
                         id: crypto.randomUUID(),
-                        size: 1,
+                        size: 3,
                         unit: vehicle
                     }
                     force.entries.push(vehicleFormation);
@@ -91,14 +87,16 @@ export const useForcesStore = defineStore('forcesStore', {
                 case 'Infantry':
                     const infantry: Auxiliary = {
                         classification: "Auxiliary unit",
-                        name: "Rouge Squad",
+                        name: "Leaser Team",
                         type: 'Infantry',
-                        modules: []
+                        modules: [
+                            { type: 'Weapon', profile: parseWeaponString('SP1 LaserRifles') as WeaponProfile },
+                        ]
                     }
                     const infantryFormation: Formation = {
                         classification: "Formation",
                         id: crypto.randomUUID(),
-                        size: 1,
+                        size: 4,
                         unit: infantry
                     }
                     force.entries.push(infantryFormation);

@@ -2,6 +2,7 @@
   import type {Entry, HardwareModule} from "~~/types/unit";
   import {useForcesStore} from "~/stores/forces";
   import MacEditor from "~/components/entry/MacEditor.vue";
+  import {calculateEntityCost} from "#shared/utils/units";
 
   const route = useRoute();
 
@@ -20,18 +21,28 @@
       return entry.unit.name;
     }
   })
+
+  const cost = computed(() => {
+    return calculateEntityCost(entry)
+  })
+
 </script>
 
 <template>
 
-  <UPageCard
-      :title="entryDisplayName"
-      icon="i-game-icons-missile-mech"
-  >
+  <UPageCard v-if="entry">
+
+    <template #header>
+      <span class="font-bold">{{ entryDisplayName }}</span>
+      <span class="font-light">Point Cost {{cost}} pt</span>
+    </template>
+
+    <hr>
+
     <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" />
     <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry" />
 
-    <hr></hr>
+    <hr>
 
     <pre>
       {{entry}}

@@ -2,7 +2,7 @@
 
 const props = defineProps<{ entry: MAC }>()
 
-import type {HardwareModule, MAC} from "~~/types/unit";
+import type {HardwareModule, MAC, WeaponProfile} from "~~/types/unit";
 
 const weaponRangeItems = [
   { label: 'Brawl', value: '-', hint: 'Within melee'},
@@ -47,9 +47,9 @@ const weaponDisplayName = computed(() => {
   return `${range}${type}${power}${!!subtype ? '-' : ''}${subtype} ${name}`;
 })
 
-function weaponLabel(weapon: WeaponModule) {
+function weaponLabel(weapon: WeaponProfile) {
   const subtype = `${weapon.subType ? weapon.subType[0] : ''}${weapon.expendable ? 'X' : ''}`
-  return `${weapon.range[0]}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.label}`;
+  return `${weapon.range[0]}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.name}`;
 }
 
 const module = ref('')
@@ -76,15 +76,16 @@ const typeToIcon = {
 
 <template>
 
-  <h3>Class {{entry.class}} MAC</h3>
+  <h3 class="text-lg font-bold">Class {{entry.class}} MAC</h3>
 
-  <h3>Modules</h3>
+  <h3 class="text-lg font-bold">Modules</h3>
 
   <UPageList>
     <UPageCard v-for="module in entry.modules" class="mb-2">
       <UUser :avatar="{ text: `${module.slot}` }">
-        <span v-if="module.type === 'Empty'">{{module.type}}</span>
         <span v-if="module.type === 'Weapon'">{{weaponLabel(module.profile)}}</span>
+        <span v-if="module.type === 'Hardware'">{{module.profile.name}}</span>
+        <span v-if="module.type === 'Empty'">{{module.type}}</span>
       </UUser>
     </UPageCard>
   </UPageList>
