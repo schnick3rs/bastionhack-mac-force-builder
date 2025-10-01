@@ -29,13 +29,13 @@ export default defineNuxtConfig({
                 { name: 'twitter:card', content: 'summary_large_image' },
                 { name: 'twitter:title', content: 'MAC Attack Force Builder' },
                 { name: 'twitter:description', content: 'Build and manage your MAC force lists' },
-                { name: 'twitter:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social.webp' },
+                { name: 'twitter:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social_robot_daniel-r_pixabay.png' },
 
                 { name: 'og:site_name', content: 'MAC Attack Force Builder' },
                 { name: 'og:type', content: 'website' },
                 { name: 'og:title', content: 'MAC Attack Force Builder' },
                 { name: 'og:description', content: 'Build and manage your MAC force lists' },
-                { name: 'og:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social.webp' },
+                { name: 'og:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social_robot_daniel-r_pixabay.png' },
 
             ],
             htmlAttrs: {
