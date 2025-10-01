@@ -1,4 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+const metaDescription: string = 'The MACtory allows you to create and organize multiple forces ' +
+    'for the MAC Attack tabletop game by Chris McDowall. ' +
+    'Create, manage and view your forces online, saved in your local browser storage.';
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: {
@@ -22,19 +27,22 @@ export default defineNuxtConfig({
 
     app: {
         head: {
-            title: 'MAC Attack Force Builder', // default fallback title
+            title: 'MACtory | A MAC Attack fan page', // default fallback title
             meta: [
-                { name: 'description', content: 'Build and manage your MAC force lists' },
+                { name: 'description', content: metaDescription },
 
                 { name: 'twitter:card', content: 'summary_large_image' },
-                { name: 'twitter:title', content: 'MAC Attack Force Builder' },
-                { name: 'twitter:description', content: 'Build and manage your MAC force lists' },
+                { property:"twitter:domain", content:"mac-forces-0068b59196af.herokuapp.com" },
+                { property:"twitter:url", content:"https://mac-forces-0068b59196af.herokuapp.com/" },
+                { name: 'twitter:title', content: 'MACtory | A MAC Attack fan page' },
+                { name: 'twitter:description', content: metaDescription },
                 { name: 'twitter:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social_robot_daniel-r_pixabay.png' },
+                { name: 'twitter:image:alt', content: 'Image Credit: Daniel R by Pixabay' },
 
                 { name: 'og:site_name', content: 'MAC Attack Force Builder' },
                 { name: 'og:type', content: 'website' },
-                { name: 'og:title', content: 'MAC Attack Force Builder' },
-                { name: 'og:description', content: 'Build and manage your MAC force lists' },
+                { name: 'og:title', content: 'MACtory | A MAC Attack fan page' },
+                { name: 'og:description', content: metaDescription },
                 { name: 'og:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social_robot_daniel-r_pixabay.png' },
 
             ],
