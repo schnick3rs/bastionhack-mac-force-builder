@@ -6,43 +6,6 @@ import type {HardwareModule, MAC} from "~~/types/unit";
 import {calculateMacCost} from "#shared/utils/units";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 
-const weaponRangeItems = [
-  { label: 'Brawl', value: '-', hint: 'Within melee'},
-  { label: 'Short', value: 'S', hint: 'Max Range 12"'},
-  { label: 'Long', value: 'L', hint: 'Min Range 6"'},
-  { label: 'Arc', value: 'A', hint: 'Min Range 12, fire indirect"'},
-]
-
-const weaponTypeItems = [
-  { label: 'Burst', value: 'B', hint: 'Reroll misses'},
-  { label: 'Piercing', value: 'P', hint: 'Hits explode'},
-  { label: 'Guided', value: 'G', hint: 'Use lowest Motionx2'},
-  { label: 'Multi', value: 'M', hint: 'Attack 2nd target within 6" for 0 heat"'},
-]
-
-const powerItems = [
-  { label: '1', value: '1', hint: 'Light cannons and guns' },
-  { label: '2', value: '2', hint: 'Heavy mounted guns' },
-  { label: '3', value: '3', hint: 'MAC-only weapons'},
-  { label: '4', value: '4', hint: 'Largest MAC weapons'},
-]
-
-const weaponSubtypes = [
-  { label: 'None', value: '-', hint: 'Just damage'},
-  { label: 'Thermal', value: 'T', hint: 'Ignore Cover, cause heat'},
-  { label: 'Jolt', value: 'J', hint: 'Jot deals ffamage on movement'},
-  { label: 'Rad', value: 'R', hint: 'Deal damage then half Rad'},
-]
-
-const weapon = reactive({
-  range: 'S',
-  type: 'B',
-  power: "2",
-  subtype: '',
-  expendable: true,
-  name: 'RandomLaser',
-})
-
 const module = ref('')
 
 const { data: hardware, status } = await useFetch('/api/hardware', {
@@ -77,7 +40,7 @@ const cost = computed(() => calculateMacCost(entry))
   <h3 class="text-lg font-bold">Modules</h3>
 
   <UPageList>
-    <UPageCard v-for="module in entry.modules" :key="module.slot" class="mb-2">
+    <UPageCard v-for="module in entry.modules" :key="module.slot" class="mb-2" orientation="horizontal">
       <UUser :avatar="{ text: `${module.slot}` }">
         <template #name>
           <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
@@ -90,8 +53,6 @@ const cost = computed(() => calculateMacCost(entry))
       </UUser>
     </UPageCard>
   </UPageList>
-
-
 
   <USelectMenu
       v-model="module"
@@ -108,14 +69,6 @@ const cost = computed(() => calculateMacCost(entry))
     </template>
   </USelectMenu>
 
-
-
-  <UFieldGroup size="xl" orientation="horizontal" class="hidden">
-    <USelect class="w-8" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
-    <USelect class="w-8" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
-    <USelect class="w-8" v-model="weapon.power" :items="powerItems" value-key="value" ></USelect>
-    <USelect class="w-8" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
-  </UFieldGroup>
 
 </template>
 

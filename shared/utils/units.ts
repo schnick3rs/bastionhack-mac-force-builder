@@ -37,7 +37,7 @@ export function calculateMacCost(mac: MAC): number {
         .filter(module => module.double === true)
         .length;
 
-    return baseCost + frameModuleCount + doubleModuleCount;
+    return baseCost - frameModuleCount + doubleModuleCount;
 }
 
 export function calculateFormationCost(formation: Formation): number {

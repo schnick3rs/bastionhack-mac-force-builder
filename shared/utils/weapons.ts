@@ -2,7 +2,7 @@ import type {WeaponProfile, WeaponRange, WeaponSubtype, WeaponType} from "~~/typ
 
 const regex = /(?<range>\D?)(?<type>\D)(?<power>\d)-?(?<ex>X)?(?<sub>\D)?\s(?<name>\w*)/;
 
-const rangeMap: Record<string, WeaponRange> = {
+export const rangeMap: Record<string, WeaponRange> = {
     "S": "Short",
     "L": "Long",
     "A": "Arc",
@@ -30,14 +30,14 @@ export const subtypeHint: Record<WeaponSubtype | "Expendable", string> = {
     'Expendable': 'Roll extra AD equal to power. Depleted (not destroyed) after one attack.',
 }
 
-const typeMap: Record<string, WeaponType> = {
+export const typeMap: Record<string, WeaponType> = {
     "B": "Burst",
     "P": "Piercing",
     "G": "Guided",
     "M": "Multi",
 }
 
-const subtypeMap: Record<string, WeaponSubtype> = {
+export const subtypeMap: Record<string, WeaponSubtype> = {
     "T": "Thermal",
     "J": "Jolt",
     "R": "Radiation",

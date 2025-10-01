@@ -1,29 +1,29 @@
 <script setup lang="ts">
-import type {Auxiliary, Formation, HardwareModule, HardwareProfile} from "~~/types/unit";
+import type {Auxiliary, Formation, HardwareModule, HardwareProfile, WeaponProfile, WeaponRange} from "~~/types/unit";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 
 const { entry } = defineProps<{ entry: Formation }>()
 const unit: Auxiliary = entry.unit;
 
-const { data: hardware, status } = await useFetch('/api/hardware', {lazy: true})
+import hardware from "~~/server/data/hardwareRepository";
 
 const cost = computed(() => calculateFormationCost(entry))
 
 function hardwareTooltip(hardwareProfile: HardwareProfile) {
-  const hw = hardware.value?.find((h) => h.name === hardwareProfile.name)
+  const hw = hardware.find((h) => h.name === hardwareProfile.name)
   return hw?.effect ?? ''
 }
 
 const hardwareOptions = computed(() => {
-  if (!hardware.value) return [];
-  return hardware.value.filter((h) => h.usability.includes(unit.type) || h.usability.includes('All'))
+  if (!hardware) return [];
+  return hardware.filter((h) => h.usability.includes(unit.type) || h.usability.includes('All'))
       .filter((h) => !unit.hardware.map(h => h.name).includes(h.name))
 })
 
 const newModule = ref('');
 
 function addHardware() {
-  const h = hardware.value?.find((h) => h.name === newModule.value);
+  const h = hardware.find((h) => h.name === newModule.value);
   if (!h) return;
   unit.hardware.push({ name: h.name });
   unit.hardware.sort((a, b) => {
@@ -35,9 +35,18 @@ function addHardware() {
 function removeHardware(name: string, index: number) {
   const weaponCount = unit.weapons.length
   unit.hardware.splice(index, 1);
-  unit.hardware.sort((a, b) => {
-    return a.name.localeCompare(b.name)
+}
+
+function addWeapon(event: WeaponProfile) {
+  console.info('addWeapon', event)
+  unit.weapons.push(event);
+  unit.weapons.sort((a, b) => {
+    return a.power - b.power;
   });
+}
+
+function removeWeapon(index: number) {
+  unit.weapons.splice(index, 1);
 }
 
 </script>
@@ -63,17 +72,20 @@ function removeHardware(name: string, index: number) {
   <h4 class="text-xl font-semibold">Weapons ({{unit.weapons.length}} of 2)</h4>
 
   <UPageList>
-    <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2">
-      <UUser>
+    <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2" orientation="horizontal">
+      <UUser class="w-full">
         <template #name>
-          <span >{{buildWeaponDisplayString(weapon)}}</span>
+          <span>{{buildWeaponDisplayString(weapon)}}</span>
         </template>
         <template #description>
           <WeaponProfileTooltips :weapon="weapon" />
         </template>
       </UUser>
+      <UIcon size="20" name="i-material-symbols-light-cancel" class="cursor-pointer" @click="removeWeapon(index)"></UIcon>
     </UPageCard>
   </UPageList>
+
+  <EntryWeaponEditor :auxiliaryType="unit.type" @add-weapon="addWeapon"></EntryWeaponEditor>
 
   <h4 class="text-xl font-semibold">Hardware</h4>
 
@@ -94,7 +106,6 @@ function removeHardware(name: string, index: number) {
         :items="hardwareOptions"
         value-key="name"
         label-key="name"
-        :loading="status === 'pending'"
         class="flex-1"
         v-model="newModule"
     >
