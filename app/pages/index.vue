@@ -42,7 +42,12 @@ const forces = forcesStore.allForces;
             v-for="force in forces"
             :to="`/builder/${force.id}/entries`"
         >
-          <UUser :name="force.name" :description="`A ${force.pointLimit}pt force consisting of ${force.entries.length} entries.`"></UUser>
+          <UUser
+              :name="force.name"
+              :description="`A ${force.pointLimit}pt force consisting of ${force.entries.length} entries.`"
+              :avatar="{ src: `/factions/${force.faction}-symbol.png` }"
+          >
+          </UUser>
         </UPageCard>
       </UPageList>
     </UPageCard>

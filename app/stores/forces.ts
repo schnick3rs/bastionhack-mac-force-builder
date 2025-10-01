@@ -132,6 +132,7 @@ export const useForcesStore = defineStore('forcesStore', {
                 name: options.name,
                 pointLimit: options.pointLimit,
                 entries: [],
+                faction: options.factionKey || undefined,
             }
             this.forces.push(force);
             return force;
@@ -146,7 +147,7 @@ export const useForcesStore = defineStore('forcesStore', {
                 case 'MAC':
                     const mac: MAC = {
                         id: crypto.randomUUID(),
-                        name: `The ${gen({dictionaries: [nouns]})}`,
+                        name: `The ${gen({dictionaries: [nouns], style: 'capital'})}`,
                         classification: 'MAC',
                         class: 2,
                         modules: [
@@ -158,13 +159,16 @@ export const useForcesStore = defineStore('forcesStore', {
                             { slot: 6, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
                         ]
                     }
+                    if (force.faction === 'first-regiment') {
+                        mac.modules.unshift({ slot: 0, type: 'Weapon', double: false, profile: parseWeaponString('SP2 IonBeam') as WeaponProfile });
+                    }
                     force.entries.push(mac);
                     break;
 
                 case 'Vehicle':
                     const vehicle: Auxiliary = {
                         classification: "Auxiliary unit",
-                        name: `${gen({dictionaries: [militaryAdjectives]})} ${gen({dictionaries: [vehicleNouns]})}`,
+                        name: `${gen({dictionaries: [militaryAdjectives], style: 'capital'})} ${gen({dictionaries: [vehicleNouns], style: 'capital'})}`,
                         type: 'Vehicle',
                         modules: [
                             { type: 'Weapon', profile: parseWeaponString('LP2 RailCannon') as WeaponProfile },
@@ -174,7 +178,7 @@ export const useForcesStore = defineStore('forcesStore', {
                     const vehicleFormation: Formation = {
                         classification: "Formation",
                         id: crypto.randomUUID(),
-                        size: 3,
+                        size: 2,
                         unit: vehicle
                     }
                     force.entries.push(vehicleFormation);
@@ -183,7 +187,7 @@ export const useForcesStore = defineStore('forcesStore', {
                 case 'Infantry':
                     const infantry: Auxiliary = {
                         classification: "Auxiliary unit",
-                        name: `${gen({dictionaries: [infantryDescriptors]})} ${gen({dictionaries: [unitTypes]})}`,
+                        name: `${gen({dictionaries: [infantryDescriptors], style: 'capital'})} ${gen({dictionaries: [unitTypes], style: 'capital'})}`,
                         type: 'Infantry',
                         modules: [
                             { type: 'Weapon', profile: parseWeaponString('SP1 LaserRifles') as WeaponProfile },
@@ -192,7 +196,7 @@ export const useForcesStore = defineStore('forcesStore', {
                     const infantryFormation: Formation = {
                         classification: "Formation",
                         id: crypto.randomUUID(),
-                        size: 4,
+                        size: 3,
                         unit: infantry
                     }
                     force.entries.push(infantryFormation);

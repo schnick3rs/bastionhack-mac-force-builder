@@ -31,7 +31,16 @@
 
 <template>
 
-  <h1 class="text-3xl font-bold">{{ force.name }}</h1>
+  <div>
+    <UUser
+        :avatar="{ src: `/factions/${force.faction}-symbol.png` }"
+        :name="force.name"
+        :description="`${force.faction} Faction`"
+    >
+    </UUser>
+    <h1 class="text-3xl font-bold">{{ force.name }}</h1>
+  </div>
+
   <em>{{ force.description }}</em>
 
   <div class="font-xl">
@@ -66,6 +75,10 @@
         <UButton variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
         <UButton variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
       </UFieldGroup>
+
+      <pre>
+        {{ force }}
+      </pre>
 
       <pre class="hidden">
         {{ force.entries }}

@@ -9,16 +9,30 @@ function randomForceName() {
   return `The ${gen({ dictionaries: [adjectives]})} ${gen({ dictionaries: [nouns]})} Force`;
 }
 
+function randomFactionSymbol(abstract_id: string = getRandomPadded()) {
+  return `i-game-icons-abstract-${abstract_id}`
+}
+
 function getRandomPadded() {
   const num = Math.floor(Math.random() * 120) + 1; // 1 - 100
   return String(num).padStart(3, '0'); // Pads with leading zeros
 }
 
 const state =  reactive({
+  symbol: randomFactionSymbol(),
   name: randomForceName(),
   description: '',
   pointLimit: 50,
   faction: '',
+})
+
+const faction = ref('')
+
+const symbol = computed(() => {
+  if (faction.value) {
+    return `/factions/${faction.value}-symbol.png`
+  }
+  return randomFactionSymbol();
 })
 
 const { data: factions, status } = await useFetch('/api/factions', {
@@ -41,7 +55,7 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   let force = event.data;
 
-  const createdForce = await forces.createNewForceList(force)
+  const createdForce = await forces.createNewForceList({...force, symbol, factionKey: faction.value})
 
   console.log('force', createdForce)
   navigateTo(`/builder/${createdForce.id}/entries`)
@@ -54,6 +68,7 @@ function setPointLimit(pointLimit: number) {
   state.pointLimit = pointLimit;
 }
 
+
 </script>
 
 <template>
@@ -62,7 +77,8 @@ function setPointLimit(pointLimit: number) {
     <UForm :state="state" class="space-y-4 mt-8" @submit="onSubmit">
 
       <div class="text-center pb-4">
-        <UAvatar :ui="{ 'root': 'size-24 text-6xl' }" :icon="`i-game-icons-abstract-${getRandomPadded()}`"></UAvatar>
+        <UAvatar v-if="faction" :ui="{ 'root': 'size-24 text-6xl' }" :src="symbol"></UAvatar>
+        <UAvatar v-else :ui="{ 'root': 'size-24 text-6xl' }" :icon="symbol" @click="state.symbol = randomFactionSymbol()"></UAvatar>
       </div>
 
       <div class="flex flex-col gap-8 w-92">
@@ -93,7 +109,7 @@ function setPointLimit(pointLimit: number) {
 
         <div>
           <USelect
-              v-model="state.faction"
+              v-model="faction"
               :items="factions"
               :loading="status === 'pending'"
               size="xl"

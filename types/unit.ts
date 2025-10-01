@@ -55,15 +55,36 @@ export interface Formation {
     unit: Auxiliary
 }
 
-export type Entry = MAC | Formation
-
-export interface Force {
+export interface RemoteAsset {
     id: string
     name: string
+    classification: 'Remote asset'
+}
+
+export type Entry = MAC | Formation | RemoteAsset
+
+export interface RemoteAssetDefinition {
+    key: string, // aka slug
+    name: string,
+    cost: number,
+    effect: string,
+}
+
+export interface Force {
+
+    id: string
+
+    // essentials
     entries: Entry[]
-    description?: string
     pointLimit: number
     faction?: string
+
+    // flavour
+    name: string
+    description?: string
+    symbol?: string // an avatar style icon to be displayed
+
+    // mods and variants
     mods?: string[]
 }
 

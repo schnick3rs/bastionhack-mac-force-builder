@@ -61,7 +61,7 @@ factions.push(
         ' elegant, bright, intertwined, cruel'
     ),
     create(
-        'Dynapolis Forsight',
+        'Dynapolis Foresight',
         'Formerly HumanityFleet Outlook Mobility',
         { name: 'Temporal Overclocking', description: 'Once per turn, a MAC can reroll any number of attack dice, keeping the new results. Each rerolled die showing 1-3 causes 1 Heat to the MAC.'},
         createHardware('Halo', 'Destroy this module to ignore all hits from a single attack or other source.', ['All']),
