@@ -6,21 +6,18 @@ import type {HardwareModule, MAC} from "~~/types/unit";
 import {calculateMacCost} from "#shared/utils/units";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 
-const module = ref('')
-
-const { data: hardware, status } = await useFetch('/api/hardware', {
-  key: 'typicode-users',
-  transform: (data: HardwareModule[]) => {
-    return data?.map(hardware => ({
-      label: hardware.name,
-      value: hardware.key,
-      hint: hardware.effect,
-    }))
-  },
-  lazy: true
-})
-
 const cost = computed(() => calculateMacCost(entry))
+
+function removeModule(index: number, slot: number) {
+  entry.modules[index] = { slot: slot, type: 'Empty' };
+}
+
+import hardware from "~~/server/data/hardwareRepository";
+
+const hardwareOptions = computed(() => {
+  if (!hardware) return [];
+  return hardware.filter((h) => h.usability.includes('MAC') || h.usability.includes('All'))
+})
 
 </script>
 
@@ -40,7 +37,7 @@ const cost = computed(() => calculateMacCost(entry))
   <h3 class="text-lg font-bold">Modules</h3>
 
   <UPageList>
-    <UPageCard v-for="module in entry.modules" :key="module.slot" class="mb-2" orientation="horizontal">
+    <UPageCard v-for="(module, index) in entry.modules" :key="module.slot" class="mb-2" orientation="horizontal">
       <UUser :avatar="{ text: `${module.slot}` }">
         <template #name>
           <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
@@ -51,24 +48,33 @@ const cost = computed(() => calculateMacCost(entry))
           <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
         </template>
       </UUser>
+      <UButton
+          v-if="module.type !== 'Empty'"
+          icon="i-material-symbols-light-cancel"
+          color="error"
+          variant="outline"
+          class="cursor-pointer w-fit"
+          @click="removeModule(index, module.slot)">
+        Remove
+      </UButton>
+      <template v-else-if="module.type === 'Empty'">
+        <UFieldGroup>
+          <UButton
+              variant="outline"
+              class="cursor-pointer"
+              @click="removeModule(index, module.slot)">
+             Hardware
+          </UButton>
+          <UButton
+              variant="outline"
+              class="cursor-pointer"
+              @click="removeModule(index, module.slot)">
+             Weapon
+          </UButton>
+        </UFieldGroup>
+      </template>
     </UPageCard>
   </UPageList>
-
-  <USelectMenu
-      v-model="module"
-      :items="hardware"
-      :loading="status === 'pending'"
-      size="xl"
-      class="hidden"
-  >
-    <template #item-label="{ item }">
-      {{ item.label }}
-      <div class="text-muted">
-        {{ item.hint }}
-      </div>
-    </template>
-  </USelectMenu>
-
 
 </template>
 

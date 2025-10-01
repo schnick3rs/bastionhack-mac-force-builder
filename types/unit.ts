@@ -1,8 +1,8 @@
 
 export type ModuleConfig =
-    | { slot?: number; type: 'Hardware'; double?: boolean; profile: HardwareProfile }
-    | { slot?: number; type: 'Weapon';  double?: boolean; profile: WeaponProfile }
-    | { slot?: number; type: 'Empty'; profile?: any}
+    | { slot: number; type: 'Hardware'; double?: boolean; profile: HardwareProfile }
+    | { slot: number; type: 'Weapon';  double?: boolean; profile: WeaponProfile }
+    | { slot: number; type: 'Empty' }
 
 export type Usability = 'MAC' | 'Infantry' | 'Vehicle' | 'All'
 

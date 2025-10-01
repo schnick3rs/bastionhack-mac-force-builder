@@ -16,7 +16,8 @@ function hardwareTooltip(hardwareProfile: HardwareProfile) {
 
 const hardwareOptions = computed(() => {
   if (!hardware) return [];
-  return hardware.filter((h) => h.usability.includes(unit.type) || h.usability.includes('All'))
+  return hardware
+      .filter((h) => h.usability.includes(unit.type) || h.usability.includes('All'))
       .filter((h) => !unit.hardware.map(h => h.name).includes(h.name))
 })
 
@@ -73,19 +74,22 @@ function removeWeapon(index: number) {
 
   <UPageList>
     <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2" orientation="horizontal">
-      <UUser class="w-full">
-        <template #name>
-          <span>{{buildWeaponDisplayString(weapon)}}</span>
-        </template>
-        <template #description>
-          <WeaponProfileTooltips :weapon="weapon" />
-        </template>
-      </UUser>
-      <UIcon size="20" name="i-material-symbols-light-cancel" class="cursor-pointer" @click="removeWeapon(index)"></UIcon>
+      <div>
+        <UUser>
+          <template #name>
+            <span>{{buildWeaponDisplayString(weapon)}}</span>
+          </template>
+          <template #description>
+            <WeaponProfileTooltips :weapon="weapon" />
+          </template>
+        </UUser></div>
+      <UButton icon="i-material-symbols-light-cancel" color="error" variant="outline" class="cursor-pointer w-fit" @click="removeWeapon(index)">
+        Remove
+      </UButton>
     </UPageCard>
   </UPageList>
 
-  <EntryWeaponEditor :auxiliaryType="unit.type" @add-weapon="addWeapon"></EntryWeaponEditor>
+  <EntryWeaponEditor :auxiliaryType="unit.type" @add-weapon="addWeapon" :disabled="unit.weapons.length >= 2"></EntryWeaponEditor>
 
   <h4 class="text-xl font-semibold">Hardware</h4>
 
@@ -95,7 +99,7 @@ function removeWeapon(index: number) {
         <UTooltip :delay-duration="0" :text="hardwareTooltip(hardware)">
           <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{hardware.name}}</span>
         </UTooltip>
-        <UIcon size="20" name="i-material-symbols-light-cancel" class="cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
+        <UIcon size="20" name="i-material-symbols-light-cancel" color="error" class="cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
       </UBadge>
     </template>
   </div>

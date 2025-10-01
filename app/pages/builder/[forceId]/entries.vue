@@ -10,7 +10,7 @@
     throw new Error('Force not found')
   }
 
-  const { data: faction, status } = await useFetch(`/api/factions/${force.faction}`, { lazy: true });
+  const { data: faction } = await useFetch(`/api/factions/${force.faction}`, { lazy: true });
 
   function addMac() {
     forcesStore.addNewEntry(forceId, 'MAC');
@@ -20,6 +20,9 @@
   }
   function addInfantryFormation() {
     forcesStore.addNewEntry(forceId, 'Infantry');
+  }
+  function addRemoteAsset() {
+    forcesStore.addNewEntry(forceId, 'RemoteAsset');
   }
 
   const selected = ref('')
@@ -50,6 +53,16 @@
     Point {{cost}} / {{force.pointLimit}} pt
   </div>
 
+
+  <UFieldGroup class="py-4">
+    <UButton variant="outline" @click="addMac">Add MAC</UButton>
+    <UButton variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
+    <UButton variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
+    <UTooltip text="Enable Remote Assets Variant Rule">
+      <UButton color="neutral" variant="subtle" disabled @click="addRemoteAsset">Add Remote Asset</UButton>
+    </UTooltip>
+  </UFieldGroup>
+
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4" >
 
     <div>
@@ -66,17 +79,6 @@
           <EntryPreviewItem :entry="entry"></EntryPreviewItem>
         </UPageCard>
       </UPageList>
-
-      <UPageList divide>
-
-
-      </UPageList>
-
-      <UFieldGroup>
-        <UButton variant="outline" @click="addMac">Add MAC</UButton>
-        <UButton variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
-        <UButton variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
-      </UFieldGroup>
 
       <pre class="hidden">
         {{ force }}

@@ -2,8 +2,9 @@
 import type {AuxiliaryType, WeaponProfile} from "~~/types/unit";
 import {rangeMap, subtypeMap, typeMap} from "#shared/utils/weapons";
 
-const { auxiliaryType } = defineProps({
+const { auxiliaryType, disabled } = defineProps({
   auxiliaryType: String as PropType<AuxiliaryType>,
+  disabled: Boolean,
 })
 
 const max = auxiliaryType === 'Vehicle' ? 2 : 1
@@ -34,7 +35,7 @@ const weaponSubtypes = [
 const weapon = reactive({
   range: 'S',
   type: 'B',
-  power: 1,
+  power: auxiliaryType === 'Vehicle' ? 2 : 1,
   subtype: '',
   expendable: true,
   name: 'RandomLaser',
@@ -65,7 +66,7 @@ function addWeapon() {
 
   <UFieldGroup orientation="horizontal">
     <UInput v-model="weapon.name" class="flex-1"></UInput>
-    <UButton variant="outline" @click="addWeapon()">Add Weapon</UButton>
+    <UButton variant="outline" @click="addWeapon()" :disabled="disabled">Add Weapon</UButton>
   </UFieldGroup>
 
 
