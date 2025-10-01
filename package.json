@@ -8,7 +8,8 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "postversion": "git push origin main --tags"
   },
   "dependencies": {
     "@iconify-json/game-icons": "^1.2.3",
