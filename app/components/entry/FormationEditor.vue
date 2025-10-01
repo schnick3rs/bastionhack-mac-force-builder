@@ -60,7 +60,7 @@ function removeHardware(name: string, index: number) {
     <p class="text-xs italic">AUs can carry any number of modules, but cannot have more than 2 weapons or more than 2 of the same hardware.</p>
   </div>
 
-  <h4 class="text-xl">Weapons</h4>
+  <h4 class="text-xl font-semibold">Weapons ({{unit.weapons.length}} of 2)</h4>
 
   <UPageList>
     <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2">
@@ -75,7 +75,7 @@ function removeHardware(name: string, index: number) {
     </UPageCard>
   </UPageList>
 
-  <h4 class="text-xl">Hardware modules</h4>
+  <h4 class="text-xl font-semibold">Hardware</h4>
 
   <div class="flex flex-wrap gap-2">
     <template v-for="(hardware, index) in unit.hardware" :key="index" >
