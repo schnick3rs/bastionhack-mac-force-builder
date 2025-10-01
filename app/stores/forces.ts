@@ -5,6 +5,98 @@ import {sortForceEntries} from "#shared/utils/forces";
 
 import { uniqueUsernameGenerator as gen, nouns } from 'unique-username-generator';
 
+const militaryAdjectives = [
+    'Armoured',
+    'Battle',
+    'Heavy',
+    'Subsonic',
+    'Supersonic',
+    'Stealth',
+    'Siege',
+    'Mobile',
+    'Tactical',
+    'Rapid',
+    'Experimental',
+    'Plasma',
+    'Laser',
+    'Cyber',
+    'Storm',
+    'Shadow',
+    'Iron',
+    'Steel',
+    'Phantom',
+    'Vortex',
+]
+
+const vehicleNouns = [
+    'Tank',
+    'Transporter',
+    'Crawler',
+    'Fighter',
+    'Bomber',
+    'Carrier',
+    'Destroyer',
+    'Interceptor',
+    'Gunship',
+    'Drone',
+    'Frigate',
+    'Speeder',
+    'Juggernaut',
+    'Harvester',
+    'Striker',
+    'Marauder',
+    'Sentinel',
+    'Dreadnought',
+]
+
+// Infantry Name Generator Parts
+
+const infantryDescriptors = [
+    "Laser",
+    "Plasma",
+    "Thermal",
+    "Jet",
+    "Ghost",
+    "Shadow",
+    "Storm",
+    "Iron",
+    "Steel",
+    "Flame",
+    "Night",
+    "Crimson",
+    "Phantom",
+    "Shock",
+    "Venom",
+    "Cyber",
+    "Stormborn",
+    "Toxic",
+    "Warborn",
+    "Frost"
+];
+
+const unitTypes = [
+    "Squad",
+    "Team",
+    "Sappers",
+    "Grenadiers",
+    "Marines",
+    "Assassins",
+    "Hunters",
+    "Raiders",
+    "Rangers",
+    "Commandos",
+    "Troopers",
+    "Scouts",
+    "Blades",
+    "Gunners",
+    "Saboteurs",
+    "Snipers",
+    "Skirmishers",
+    "Enforcers",
+    "Operators",
+    "Legion"
+];
+
 
 export const useForcesStore = defineStore('forcesStore', {
     state: () => ({
@@ -72,7 +164,7 @@ export const useForcesStore = defineStore('forcesStore', {
                 case 'Vehicle':
                     const vehicle: Auxiliary = {
                         classification: "Auxiliary unit",
-                        name: `${gen({dictionaries: [['Battle', 'Combat', 'Strike']]})} ${gen({dictionaries: [['Tank', 'Transporter', 'Fighter']]})}`,
+                        name: `${gen({dictionaries: [militaryAdjectives]})} ${gen({dictionaries: [vehicleNouns]})}`,
                         type: 'Vehicle',
                         modules: [
                             { type: 'Weapon', profile: parseWeaponString('LP2 RailCannon') as WeaponProfile },
@@ -91,7 +183,7 @@ export const useForcesStore = defineStore('forcesStore', {
                 case 'Infantry':
                     const infantry: Auxiliary = {
                         classification: "Auxiliary unit",
-                        name: `${gen({dictionaries: [['Laser', 'Sniper', 'Stalker']]})} ${gen({dictionaries: [['Group', 'Squad', 'Team', 'Gang']]})}`,
+                        name: `${gen({dictionaries: [infantryDescriptors]})} ${gen({dictionaries: [unitTypes]})}`,
                         type: 'Infantry',
                         modules: [
                             { type: 'Weapon', profile: parseWeaponString('SP1 LaserRifles') as WeaponProfile },
