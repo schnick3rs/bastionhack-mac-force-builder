@@ -10,7 +10,7 @@ function randomForceName() {
 }
 
 function getRandomPadded() {
-  const num = Math.floor(Math.random() * 100) + 1; // 1 - 100
+  const num = Math.floor(Math.random() * 120) + 1; // 1 - 100
   return String(num).padStart(3, '0'); // Pads with leading zeros
 }
 
@@ -28,7 +28,7 @@ const { data: factions, status } = await useFetch('/api/factions', {
       label: faction.name,
       value: faction.key,
       sparks: faction.sparks,
-      avatar: { src: `/factions/${faction.key}-leader-avatar.png` }
+      avatar: { src: `/factions/${faction.key}-symbol.png` }
     }))
   },
   lazy: true
@@ -106,7 +106,6 @@ function setPointLimit(pointLimit: number) {
               </div>
             </template>
           </USelect>
-          <em>Experimental and only to show off..</em>
         </div>
 
         <div>
