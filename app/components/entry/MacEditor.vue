@@ -1,10 +1,8 @@
 <script setup lang="ts">
 
-import {rangeHint, subtypeHint, typeHint} from "#shared/utils/weapons";
-
 const { entry } = defineProps<{ entry: MAC }>()
 
-import type {HardwareModule, MAC, WeaponRange, WeaponSubtype, WeaponType} from "~~/types/unit";
+import type {HardwareModule, MAC} from "~~/types/unit";
 import {calculateMacCost} from "#shared/utils/units";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 
@@ -64,6 +62,8 @@ const cost = computed(() => calculateMacCost(entry))
 </script>
 
 <template>
+
+  <div class="font-light font-mono text-sm"># {{entry.id}}</div>
 
   <div class="flex gap-2 justify-between items-center">
     <UInput v-model="entry.name" class=""></UInput>

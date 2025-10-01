@@ -1,7 +1,6 @@
 <script setup lang="ts">
   import {useForcesStore} from "~/stores/forces";
-  import type {Entry, Force, HardwareModule} from "~~/types/unit";
-  import {calculateEntityCost} from "#shared/utils/units";
+  import type {Force} from "~~/types/unit";
 
   const forcesStore = useForcesStore();
   const route = useRoute();
@@ -40,20 +39,22 @@
     Point {{cost}} / {{force.pointLimit}} pt
   </div>
 
-  <div class="grid grid-cols-2 gap-3 pt-4">
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4" >
 
     <div>
-      <ul class="max-w-md divide-y divide-gray-200 dark:divide-gray-700">
+
+      <UPageList>
         <UPageCard
+            class="cursor-pointer mb-2"
+            :highlight="entry.id === selected"
             v-for="entry in force?.entries"
-            variant="ghost"
+            variant="subtle"
             :to="`/builder/${forceId}/entries/${entry.id}`"
             @click="selected = entry.id"
-
         >
           <EntryPreviewItem :entry="entry"></EntryPreviewItem>
         </UPageCard>
-      </ul>
+      </UPageList>
 
       <UPageList divide>
 

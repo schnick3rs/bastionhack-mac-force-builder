@@ -53,7 +53,7 @@ function tooltip(hardwareProfile: HardwareProfile) {
 <template>
 
 
-  <li class="pb-3 sm:pb-4">
+  <div class="pb-3 sm:pb-4">
     <div class="flex items-center space-x-4 rtl:space-x-reverse">
 
       <div class="shrink-0">
@@ -91,7 +91,7 @@ function tooltip(hardwareProfile: HardwareProfile) {
 
       </div>
     </div>
-  </li>
+  </div>
 
 </template>
 

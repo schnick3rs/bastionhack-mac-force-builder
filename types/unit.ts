@@ -67,11 +67,16 @@ export interface Force {
     mods?: string[]
 }
 
+export interface FactionRule {
+    name: string
+    description: string
+}
+
 export interface Faction {
     key: string
     name: string
     origin: string
-    specialRule: string
-    specialModule: string
+    specialRule: FactionRule
+    specialModule: HardwareModule
     sparks: string[]
 }

@@ -117,7 +117,7 @@ function setPointLimit(pointLimit: number) {
             <UButton @click="setPointLimit(50)" class="w-1/4" color="info" :variant="pointLimitSelection === 50 ? undefined : 'outline'" label="50pts" />
             <UButton @click="setPointLimit(100)" class="w-1/4" color="info" :variant="pointLimitSelection === 100 ? undefined : 'outline'" label="100pts" />
             <UButton @click="setPointLimit(200)" class="w-1/4" color="info" :variant="pointLimitSelection === 200 ? undefined : 'outline'" label="200pts" />
-            <UButton class="w-1/4" color="info" :variant="pointLimitSelection === -1 ? undefined : 'outline'" label="Custom" />
+            <UButton class="w-1/4" color="info" :variant="pointLimitSelection === -1 ? undefined : 'outline'" label="Custom" disabled />
           </UFieldGroup>
 
         </div>

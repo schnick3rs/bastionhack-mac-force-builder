@@ -39,7 +39,7 @@ export default defineNuxtConfig({
                 { name: 'twitter:image', content: 'https://mac-forces-0068b59196af.herokuapp.com/social_robot_daniel-r_pixabay.png' },
                 { name: 'twitter:image:alt', content: 'Image Credit: Daniel R by Pixabay' },
 
-                { name: 'og:site_name', content: 'MAC Attack Force Builder' },
+                { name: 'og:site_name', content: 'MACtory' },
                 { name: 'og:type', content: 'website' },
                 { name: 'og:title', content: 'MACtory | A MAC Attack fan page' },
                 { name: 'og:description', content: metaDescription },

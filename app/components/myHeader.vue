@@ -17,7 +17,7 @@ const items = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <UHeader title="MAC Attack Force Builder">
+  <UHeader title="MACtory">
 
     <UNavigationMenu :items="items" />
 
