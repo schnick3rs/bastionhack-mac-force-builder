@@ -6,7 +6,7 @@ import type {Faction} from "~~/types/unit";
 import { uniqueUsernameGenerator as gen, adjectives, nouns } from 'unique-username-generator';
 
 function randomForceName() {
-  return `The ${gen({ dictionaries: [adjectives]})} ${gen({ dictionaries: [nouns]})} Force`;
+  return `The ${gen({ dictionaries: [adjectives], style: 'capital'})} ${gen({ dictionaries: [nouns], style: 'capital'})} Force`;
 }
 
 function randomFactionSymbol(abstract_id: string = getRandomPadded()) {
