@@ -46,11 +46,10 @@ export function calculateFormationCost(formation: Formation): number {
 
 export function calculateAuxiliaryCost(auxiliary: Auxiliary): number {
 
-    const numberHardware = auxiliary.modules.filter(module => module.type === 'Hardware').length;
+    const numberHardware = auxiliary.hardware.length;
 
-    const totalWeaponPower = auxiliary.modules
-        .filter(module => module.type === 'Weapon')
-        .map(module => module.profile.power)
+    const totalWeaponPower = auxiliary.weapons
+        .map(profile => profile.power)
         .reduce((a, b) => a + b, 0);
 
     return 1 + numberHardware + totalWeaponPower;

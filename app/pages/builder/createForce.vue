@@ -78,7 +78,7 @@ function setPointLimit(pointLimit: number) {
 
       <div class="text-center pb-4">
         <UAvatar v-if="faction" :ui="{ 'root': 'size-24 text-6xl' }" :src="symbol"></UAvatar>
-        <UAvatar v-else :ui="{ 'root': 'size-24 text-6xl' }" :icon="symbol" @click="state.symbol = randomFactionSymbol()"></UAvatar>
+        <UAvatar v-else :ui="{ 'root': 'size-24 text-6xl' }" :icon="symbol"></UAvatar>
       </div>
 
       <div class="flex flex-col gap-8 w-92">
@@ -122,6 +122,7 @@ function setPointLimit(pointLimit: number) {
               </div>
             </template>
           </USelect>
+          <em class="font-light text-sm">NOTE: Faction rules and modules are mostly not working atm</em>
         </div>
 
         <div>

@@ -71,14 +71,14 @@ function tooltip(hardwareProfile: HardwareProfile) {
 
         <template v-if="entry.classification === 'Formation'">
 
-          <template v-for="module in entry.unit.modules.sort((a,b) => b.type.localeCompare(a.type))">
-            <template v-if="module.type === 'Weapon'">
-              <span class="text-xs pr-2" >{{ buildWeaponDisplayString(module.profile) }}</span>
-            </template>
-            <template v-if="module.type === 'Hardware'">
-              <span class="text-xs pr-2" style="text-decoration: underline dashed; text-underline-offset: 4px">{{ module.profile.name }}</span>
-            </template>
+          <template v-for="weapon in entry.unit.weapons.sort((a,b) => a.power - b.power)">
+            <span class="text-xs pr-2" >{{ buildWeaponDisplayString(weapon) }}</span>
           </template>
+
+          <template v-for="hardware in entry.unit.hardware.sort((a,b) => a.name.localeCompare(b.name))">
+            <span class="text-xs pr-2" style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
+          </template>
+
         </template>
 
       </div>

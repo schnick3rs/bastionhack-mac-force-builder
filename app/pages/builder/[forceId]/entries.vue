@@ -10,6 +10,8 @@
     throw new Error('Force not found')
   }
 
+  const { data: faction, status } = await useFetch(`/api/factions/${force.faction}`, { lazy: true });
+
   function addMac() {
     forcesStore.addNewEntry(forceId, 'MAC');
   }
@@ -35,7 +37,7 @@
     <UUser
         :avatar="{ src: `/factions/${force.faction}-symbol.png` }"
         :name="force.name"
-        :description="`${force.faction} Faction`"
+        :description="`${faction?.name}`"
     >
     </UUser>
     <h1 class="text-3xl font-bold">{{ force.name }}</h1>
@@ -76,12 +78,8 @@
         <UButton variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
       </UFieldGroup>
 
-      <pre>
-        {{ force }}
-      </pre>
-
       <pre class="hidden">
-        {{ force.entries }}
+        {{ force }}
       </pre>
     </div>
 

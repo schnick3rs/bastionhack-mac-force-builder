@@ -45,7 +45,8 @@ export interface Auxiliary {
     name: string
     classification: 'Auxiliary unit'
     type: AuxiliaryType
-    modules: ModuleConfig[]
+    weapons: WeaponProfile[]
+    hardware: HardwareProfile[]
 }
 
 export interface Formation {

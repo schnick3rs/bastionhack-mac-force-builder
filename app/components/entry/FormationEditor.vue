@@ -5,9 +5,7 @@ import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue"
 const { entry } = defineProps<{ entry: Formation }>()
 const unit: Auxiliary = entry.unit;
 
-const { data, status } = await useFetch('/api/hardware', {lazy: true})
-
-const hardware: HardwareModule[] = data || [];
+const { data: hardware, status } = await useFetch('/api/hardware', {lazy: true})
 
 const cost = computed(() => calculateFormationCost(entry))
 
@@ -19,31 +17,26 @@ function hardwareTooltip(hardwareProfile: HardwareProfile) {
 const hardwareOptions = computed(() => {
   if (!hardware.value) return [];
   return hardware.value.filter((h) => h.usability.includes(unit.type) || h.usability.includes('All'))
-      .filter((h) => !unit.modules.filter(m => m.type === 'Hardware').map(m => m.profile.name).includes(h.name))
+      .filter((h) => !unit.hardware.map(h => h.name).includes(h.name))
 })
 
 const newModule = ref('');
 
-function addModule() {
+function addHardware() {
   const h = hardware.value?.find((h) => h.name === newModule.value);
-  unit.modules.push({ type: 'Hardware', profile: { name: h.name } });
-  unit.modules.sort((a, b) => {
-    if (a.type === b.type) {
-      return a.profile.name.localeCompare(b.profile.name)
-    }
-    return a.type.localeCompare(b.type)
+  if (!h) return;
+  unit.hardware.push({ name: h.name });
+  unit.hardware.sort((a, b) => {
+    return a.name.localeCompare(b.name)
   });
   newModule.value = '';
 }
 
-function removeModule(name: string, index: number) {
-  const weaponCount = unit.modules.filter(m => m.type === 'Weapon').length
-  unit.modules.splice(index+weaponCount, 1);
-  unit.modules.sort((a, b) => {
-    if (a.type === b.type) {
-      return a.profile.name.localeCompare(b.profile.name)
-    }
-    return a.type.localeCompare(b.type)
+function removeHardware(name: string, index: number) {
+  const weaponCount = unit.weapons.length
+  unit.hardware.splice(index, 1);
+  unit.hardware.sort((a, b) => {
+    return a.name.localeCompare(b.name)
   });
 }
 
@@ -70,13 +63,13 @@ function removeModule(name: string, index: number) {
   <h4 class="text-xl">Weapons</h4>
 
   <UPageList>
-    <UPageCard v-for="(module, index) in unit.modules.filter(m => m.type === 'Weapon')" :key="index" class="mb-2">
+    <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2">
       <UUser>
         <template #name>
-          <span >{{buildWeaponDisplayString(module.profile)}}</span>
+          <span >{{buildWeaponDisplayString(weapon)}}</span>
         </template>
         <template #description>
-          <WeaponProfileTooltips :weapon="module.profile" />
+          <WeaponProfileTooltips :weapon="weapon" />
         </template>
       </UUser>
     </UPageCard>
@@ -85,17 +78,15 @@ function removeModule(name: string, index: number) {
   <h4 class="text-xl">Hardware modules</h4>
 
   <div class="flex flex-wrap gap-2">
-    <template v-for="(module, index) in unit.modules.filter(m => m.type === 'Hardware')" :key="index" >
+    <template v-for="(hardware, index) in unit.hardware" :key="index" >
       <UBadge color="neutral" variant="subtle" size="xl">
-        <UTooltip :delay-duration="0" :text="hardwareTooltip(module.profile)">
-          <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{module.profile.name}}</span>
+        <UTooltip :delay-duration="0" :text="hardwareTooltip(hardware)">
+          <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{hardware.name}}</span>
         </UTooltip>
-        <UIcon size="20" name="i-material-symbols-light-cancel" class="cursor-pointer" @click="removeModule(module.profile.name, index)"></UIcon>
+        <UIcon size="20" name="i-material-symbols-light-cancel" class="cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
       </UBadge>
     </template>
   </div>
-
-
 
   <UFieldGroup orientation="horizontal">
     <USelectMenu
@@ -115,7 +106,7 @@ function removeModule(name: string, index: number) {
       </template>
     </USelectMenu>
 
-    <UButton variant="outline" @click="addModule">Add Module</UButton>
+    <UButton variant="outline" @click="addHardware">Add Hardware</UButton>
   </UFieldGroup>
 
 </template>

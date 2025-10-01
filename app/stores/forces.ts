@@ -170,10 +170,8 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: "Auxiliary unit",
                         name: `${gen({dictionaries: [militaryAdjectives], style: 'capital'})} ${gen({dictionaries: [vehicleNouns], style: 'capital'})}`,
                         type: 'Vehicle',
-                        modules: [
-                            { type: 'Weapon', profile: parseWeaponString('LP2 RailCannon') as WeaponProfile },
-                            { type: 'Hardware', profile: { name: 'Armour' } },
-                        ]
+                        weapons: [parseWeaponString('LP2 RailCannon') as WeaponProfile],
+                        hardware: [{ name: 'Armour' }],
                     }
                     const vehicleFormation: Formation = {
                         classification: "Formation",
@@ -189,9 +187,8 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: "Auxiliary unit",
                         name: `${gen({dictionaries: [infantryDescriptors], style: 'capital'})} ${gen({dictionaries: [unitTypes], style: 'capital'})}`,
                         type: 'Infantry',
-                        modules: [
-                            { type: 'Weapon', profile: parseWeaponString('SP1 LaserRifles') as WeaponProfile },
-                        ]
+                        weapons: [parseWeaponString('SP1 LaserRifles') as WeaponProfile],
+                        hardware: [{ name: 'Transport' }],
                     }
                     const infantryFormation: Formation = {
                         classification: "Formation",
