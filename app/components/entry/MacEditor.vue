@@ -12,12 +12,10 @@ function removeModule(index: number, slot: number) {
   entry.modules[index] = { slot: slot, type: 'Empty' };
 }
 
-import hardware from "~~/server/data/hardwareRepository";
-
-const hardwareOptions = computed(() => {
-  if (!hardware) return [];
-  return hardware.filter((h) => h.usability.includes('MAC') || h.usability.includes('All'))
-})
+function setSlotModule(slot: number, moduleName: string) {
+  console.info('setSlotModule', slot, moduleName)
+  entry.modules[slot - 1] = { slot: slot, type: 'Hardware', profile: { name: moduleName} };
+}
 
 </script>
 
@@ -38,6 +36,7 @@ const hardwareOptions = computed(() => {
 
   <UPageList>
     <UPageCard v-for="(module, index) in entry.modules" :key="module.slot" class="mb-2" orientation="horizontal">
+
       <UUser :avatar="{ text: `${module.slot}` }">
         <template #name>
           <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
@@ -48,6 +47,7 @@ const hardwareOptions = computed(() => {
           <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
         </template>
       </UUser>
+
       <UButton
           v-if="module.type !== 'Empty'"
           icon="i-material-symbols-light-cancel"
@@ -57,23 +57,33 @@ const hardwareOptions = computed(() => {
           @click="removeModule(index, module.slot)">
         Remove
       </UButton>
+
       <template v-else-if="module.type === 'Empty'">
+
+        <template v-if="module.slot > 3">
+          <EntryMacSlotHardwareEditor :slot="module.slot" @setModule="setSlotModule(module.slot, $event)" />
+        </template>
+
         <UFieldGroup>
           <UButton
+              v-if="module.slot <= 3"
+              variant="outline"
+              class="flex-1 cursor-pointer"
+              @click="removeModule(index, module.slot)">
+            Weapon
+          </UButton>
+          <UButton
+              v-if="module.slot !== 1 && module.slot < 4"
               variant="outline"
               class="cursor-pointer"
               @click="removeModule(index, module.slot)">
              Hardware
           </UButton>
-          <UButton
-              variant="outline"
-              class="cursor-pointer"
-              @click="removeModule(index, module.slot)">
-             Weapon
-          </UButton>
         </UFieldGroup>
       </template>
+
     </UPageCard>
+
   </UPageList>
 
 </template>

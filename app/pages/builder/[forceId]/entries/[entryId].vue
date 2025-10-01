@@ -37,7 +37,7 @@
 
   </UPageCard>
 
-  <pre class="hidden">
+  <pre>
       {{entry}}
   </pre>
 

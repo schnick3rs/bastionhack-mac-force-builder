@@ -63,7 +63,7 @@ commonHardware.push(
     ['MAC']
   ),
   createHardware(
-    'Disrutpr',
+    'Disruptor',
     'At the end of your move turn, you may force a visible MAC within 3” of you to pass a system check or crash.'
   ),
   createHardware('Dozer', 'Count as 2 classes larger for collisions you cause.', ['Vehicle']),
