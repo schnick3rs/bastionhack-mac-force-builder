@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {Auxiliary, Entry, Force, Formation, HardwareProfile, MAC, WeaponProfile,} from "~~/types/unit";
+import type {Auxiliary, Entry, Force, Formation, MAC, WeaponProfile,} from "~~/types/unit";
 import {parseWeaponString} from "#shared/utils/weapons";
 import {sortForceEntries} from "#shared/utils/forces";
 

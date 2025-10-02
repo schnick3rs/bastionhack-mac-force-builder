@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {MAC} from "~~/types/unit";
+import MAC from "~~/types/unit";
 
 const props = defineProps<{ text: string }>()
 </script>

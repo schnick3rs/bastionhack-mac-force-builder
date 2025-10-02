@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-const { entry } = defineProps<{ entry: MAC }>()
+const { entry, factionKey } = defineProps<{ entry: MAC, factionKey: string | undefined }>()
 
 import type {HardwareModule, MAC} from "~~/types/unit";
 import {calculateMacCost} from "#shared/utils/units";
@@ -61,7 +61,7 @@ function setSlotModule(slot: number, moduleName: string) {
       <template v-else-if="module.type === 'Empty'">
 
         <template v-if="module.slot > 3">
-          <EntryMacSlotHardwareEditor :slot="module.slot" @setModule="setSlotModule(module.slot, $event)" />
+          <EntryMacSlotHardwareEditor :slot="module.slot" :factionKey="factionKey" @setModule="setSlotModule(module.slot, $event)" />
         </template>
 
         <UFieldGroup>

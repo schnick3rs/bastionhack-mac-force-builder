@@ -1,11 +1,12 @@
 <script setup lang="ts">
-import type {Auxiliary, Formation, HardwareModule, HardwareProfile, WeaponProfile, WeaponRange} from "~~/types/unit";
+import type {Auxiliary, Formation, HardwareProfile, MAC, WeaponProfile} from "~~/types/unit";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
+import {getHardwareCatalogue} from "#shared/utils/modules";
 
-const { entry } = defineProps<{ entry: Formation }>()
+const { entry, factionKey } = defineProps<{ entry: Formation, factionKey: string | undefined }>()
 const unit: Auxiliary = entry.unit;
 
-import hardware from "~~/server/data/hardwareRepository";
+const hardware = getHardwareCatalogue(factionKey)
 
 const cost = computed(() => calculateFormationCost(entry))
 

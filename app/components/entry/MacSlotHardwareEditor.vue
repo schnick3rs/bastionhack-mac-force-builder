@@ -1,9 +1,11 @@
 <script setup lang="ts">
-const { slot } = defineProps<{ slot: number }>()
+import {getHardwareCatalogue} from "#shared/utils/modules";
+
+const { slot, factionKey } = defineProps<{ slot: number, factionKey: string | undefined }>()
 
 const emit = defineEmits(['setModule'])
 
-import hardware from "~~/server/data/hardwareRepository";
+const hardware = getHardwareCatalogue(factionKey)
 
 const hardwareOptions = computed(() => {
   if (!hardware) return [];

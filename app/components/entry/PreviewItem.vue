@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type {Entry, HardwareModule, HardwareProfile, MAC} from "~~/types/unit";
+import type {Entry, HardwareProfile, MAC} from "~~/types/unit";
 import {calculateEntityCost} from "#shared/utils/units";
 import {buildWeaponDisplayString} from "#shared/utils/weapons";
 
@@ -37,15 +37,17 @@ const description = computed(() => {
   }
 })
 
-const cost = computed(() => {
-  return calculateEntityCost(entry)
-})
+const cost = computed(() => calculateEntityCost(entry))
 
-const { data: hardware, status } = await useFetch('/api/hardware', { lazy: true });
+import hardware from "~~/server/data/hardwareRepository";
 
 function tooltip(hardwareProfile: HardwareProfile) {
-  const hw = hardware.value?.find((h) => h.name === hardwareProfile.name)
+  const hw = hardware.find((h) => h.name === hardwareProfile.name)
   return hw?.effect ?? ''
+}
+
+function removeEntry(id: string) {
+  console.info('removeEntry', id)
 }
 
 </script>
@@ -88,7 +90,9 @@ function tooltip(hardwareProfile: HardwareProfile) {
       </div>
 
       <div>
+        <UButton icon="i-material-symbols-light-cancel" size="xl" color="error" variant="ghost" class="cursor-pointer w-fit" @click="removeEntry(entry.id)">
 
+        </UButton>
       </div>
     </div>
   </div>

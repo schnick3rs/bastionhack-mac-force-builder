@@ -1,8 +1,6 @@
 <script setup lang="ts">
-  import type {Entry, HardwareModule} from "~~/types/unit";
+  import type {Entry} from "~~/types/unit";
   import {useForcesStore} from "~/stores/forces";
-  import MacEditor from "~/components/entry/MacEditor.vue";
-  import {calculateEntityCost} from "#shared/utils/units";
 
   const route = useRoute();
 
@@ -11,20 +9,8 @@
 
   const forceStore = useForcesStore();
 
+  const force = forceStore.forceById(forceId);
   const entry: Entry = forceStore.getEntry(forceId, entryId);
-
-  const entryDisplayName = computed(() => {
-    if (entry.classification === 'MAC') {
-      return entry.name;
-    }
-    if (entry.classification === 'Formation') {
-      return entry.unit.name;
-    }
-  })
-
-  const cost = computed(() => {
-    return calculateEntityCost(entry)
-  })
 
 </script>
 
@@ -32,14 +18,10 @@
 
   <UPageCard v-if="entry" :key="entry.id">
 
-    <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" />
-    <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry" />
+    <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" :factionKey="force?.faction" />
+    <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry"  :factionKey="force?.faction" />
 
   </UPageCard>
-
-  <pre>
-      {{entry}}
-  </pre>
 
 </template>
 
