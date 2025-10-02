@@ -1,7 +1,6 @@
 import hardware from "~~/server/data/hardwareRepository";
 import factions from "~~/server/data/factionRepository";
 
-
 export function getHardwareCatalogue(factionKey: string | undefined = undefined) {
 
     const hardwareList = [...hardware];

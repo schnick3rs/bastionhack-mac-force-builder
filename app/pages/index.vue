@@ -52,6 +52,16 @@ const forces = forcesStore.allForces;
       </UPageList>
     </UPageCard>
 
+    <UPageCard
+        title="Learn the Factions"
+        description='...'
+        to="/factions"
+    >
+      <template #footer>
+
+      </template>
+    </UPageCard>
+
 
 
   </UPageGrid>
