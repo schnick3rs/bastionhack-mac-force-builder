@@ -28,6 +28,10 @@ export default defineNuxtConfig({
     app: {
         head: {
             title: 'MACtory | A MAC Attack fan page', // default fallback title
+            link: [
+                { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
+                { rel: 'icon', type: 'image/png', sizes: '16x16', href: '/favicon-16x16.png' },
+            ],
             meta: [
                 { name: 'description', content: metaDescription },
 
