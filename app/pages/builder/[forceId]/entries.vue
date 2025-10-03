@@ -27,10 +27,7 @@
 
   const selected = ref('')
 
-  const cost = computed(() => {
-    return calculateForceCost(force)
-  })
-
+  const cost = computed(() => calculateForceCost(force));
 
 </script>
 
@@ -94,10 +91,4 @@
 
   </div>
 
-
-
 </template>
-
-<style scoped>
-
-</style>

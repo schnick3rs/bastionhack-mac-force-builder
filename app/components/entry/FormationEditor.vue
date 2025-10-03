@@ -82,10 +82,13 @@ function removeWeapon(index: number) {
     <p class="text-xs italic">AUs can carry any number of modules, but cannot have more than 2 weapons or more than 2 of the same hardware.</p>
   </div>
 
+  <!-- WEAPONS -->
+
   <h4 class="text-xl font-semibold">Weapons ({{unit.weapons.length}} of 2)</h4>
 
   <UPageList>
     <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2" orientation="horizontal">
+
       <div>
         <UUser>
           <template #name>
@@ -94,14 +97,19 @@ function removeWeapon(index: number) {
           <template #description>
             <WeaponProfileTooltips :weapon="weapon" />
           </template>
-        </UUser></div>
+        </UUser>
+      </div>
+
       <UButton icon="i-material-symbols-light-cancel-outline" color="error" variant="outline" class="cursor-pointer w-fit" @click="removeWeapon(index)">
         Remove
       </UButton>
+
     </UPageCard>
   </UPageList>
 
-  <EntryWeaponEditor :max="calcMaxWeaponPower(entry)" @add-weapon="addWeapon" :disabled="unit.weapons.length >= 2"></EntryWeaponEditor>
+  <EntryWeaponEditor :max="calcMaxWeaponPower(entry)" @add-weapon="addWeapon" v-if="unit.weapons.length < 2"></EntryWeaponEditor>
+
+  <!-- HARDWARE -->
 
   <h4 class="text-xl font-semibold">Hardware</h4>
 
