@@ -105,7 +105,9 @@ export const useForcesStore = defineStore('forcesStore', {
 
     }),
 
-    persist: true,
+    persist: {
+        storage: piniaPluginPersistedstate.localStorage(),
+    },
 
     getters: {
 

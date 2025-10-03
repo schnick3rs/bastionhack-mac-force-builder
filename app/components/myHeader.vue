@@ -17,8 +17,12 @@ const items = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <UHeader title="MACtory">
-
+  <UHeader>
+    <template #title>
+      <NuxtImg src="mactory-square-800x800.jpg" class="w-8"></NuxtImg>
+      MACtory
+    </template>
+    pinia-plugin-persistedstate
     <UNavigationMenu :items="items" />
 
     <template #right>
