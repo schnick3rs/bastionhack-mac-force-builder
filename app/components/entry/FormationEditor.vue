@@ -2,6 +2,7 @@
 import type {Auxiliary, Formation, HardwareProfile, MAC, WeaponProfile} from "~~/types/unit";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 import {getHardwareCatalogue} from "#shared/utils/modules";
+import {calcMaxWeaponPower} from "#shared/utils/units";
 
 const { entry, factionKey } = defineProps<{ entry: Formation, factionKey: string | undefined }>()
 const unit: Auxiliary = entry.unit;
@@ -90,7 +91,7 @@ function removeWeapon(index: number) {
     </UPageCard>
   </UPageList>
 
-  <EntryWeaponEditor :auxiliaryType="unit.type" @add-weapon="addWeapon" :disabled="unit.weapons.length >= 2"></EntryWeaponEditor>
+  <EntryWeaponEditor :max="calcMaxWeaponPower(entry)" @add-weapon="addWeapon" :disabled="unit.weapons.length >= 2"></EntryWeaponEditor>
 
   <h4 class="text-xl font-semibold">Hardware</h4>
 

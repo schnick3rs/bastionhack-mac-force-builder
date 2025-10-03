@@ -114,6 +114,7 @@ function setPointLimit(pointLimit: number) {
               :loading="status === 'pending'"
               size="xl"
               class="w-full"
+              placeholder="Unaligned"
           >
             <template #item-label="{ item }">
               {{ item.label }}

@@ -1,13 +1,11 @@
 <script setup lang="ts">
-import type {AuxiliaryType, WeaponProfile} from "~~/types/unit";
+import type {WeaponProfile} from "~~/types/unit";
 import {rangeMap, subtypeMap, typeMap} from "#shared/utils/weapons";
 
-const { auxiliaryType, disabled } = defineProps({
-  auxiliaryType: String as PropType<AuxiliaryType>,
+const { max, disabled } = defineProps({
+  max: Number,
   disabled: Boolean,
 })
-
-const max = auxiliaryType === 'Vehicle' ? 2 : 1
 
 const emit = defineEmits(['addWeapon'])
 
@@ -35,7 +33,7 @@ const weaponSubtypes = [
 const weapon = reactive({
   range: 'S',
   type: 'B',
-  power: auxiliaryType === 'Vehicle' ? 2 : 1,
+  power: max,
   subtype: '',
   expendable: true,
   name: 'RandomLaser',
@@ -56,6 +54,7 @@ function addWeapon() {
 </script>
 
 <template>
+
   <UFieldGroup size="xl" orientation="horizontal">
     <USelect class="w-1/4" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
     <USelect class="w-1/4" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
@@ -68,7 +67,6 @@ function addWeapon() {
     <UInput v-model="weapon.name" class="flex-1"></UInput>
     <UButton variant="outline" @click="addWeapon()" :disabled="disabled">Add Weapon</UButton>
   </UFieldGroup>
-
 
 </template>
 

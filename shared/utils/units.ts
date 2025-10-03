@@ -54,3 +54,19 @@ export function calculateAuxiliaryCost(auxiliary: Auxiliary): number {
 
     return 1 + numberHardware + totalWeaponPower;
 }
+
+export function calcMaxWeaponPower(entry: Entry, slot: number = 0): number {
+    if (entry.classification === 'MAC') {
+        const slotBonus = (slot && slot === 1) ? 1 : 0;
+        return entry.class + slotBonus;
+    }
+    if (entry.classification === 'Formation') {
+        if (entry.unit.type === 'Infantry') {
+            return 1;
+        }
+        if (entry.unit.type === 'Vehicle') {
+            return 2;
+        }
+    }
+    return 4
+}
