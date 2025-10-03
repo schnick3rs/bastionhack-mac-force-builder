@@ -21,7 +21,6 @@ function setSlotModule(slot: number, moduleName: string) {
 
 <template>
 
-  <div class="font-light font-mono text-sm"># {{entry.id}}</div>
 
   <div class="flex gap-2 justify-between items-center">
     <UInput v-model="entry.name" class=""></UInput>

@@ -69,10 +69,11 @@
 
       <UPageList>
         <UPageCard
-            class="cursor-pointer mb-2"
+            class="mb-2"
             :highlight="entry.id === selected"
             v-for="entry in force?.entries"
             variant="subtle"
+            orientation="vertical"
             :to="`/builder/${forceId}/entries/${entry.id}`"
             @click="selected = entry.id"
         >

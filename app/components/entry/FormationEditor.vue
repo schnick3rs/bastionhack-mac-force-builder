@@ -11,6 +11,22 @@ const hardware = getHardwareCatalogue(factionKey)
 
 const cost = computed(() => calculateFormationCost(entry))
 
+type Niceware = { name: string, count: number }
+
+const niceHardware = computed(() => {
+  const niceware: Niceware[] = Object.values(
+      unit.hardware.reduce<Record<string, Niceware>>((acc, { name }) => {
+        if (!acc[name]) {
+          acc[name] = { name, count: 0 }
+        }
+        acc[name].count++
+        return acc
+      }, {})
+  )
+  return niceware;
+
+})
+
 function hardwareTooltip(hardwareProfile: HardwareProfile) {
   const hw = hardware.find((h) => h.name === hardwareProfile.name)
   return hw?.effect ?? ''
@@ -27,6 +43,16 @@ const newModule = ref('');
 
 function addHardware() {
   const h = hardware.find((h) => h.name === newModule.value);
+  if (!h) return;
+  unit.hardware.push({ name: h.name });
+  unit.hardware.sort((a, b) => {
+    return a.name.localeCompare(b.name)
+  });
+  newModule.value = '';
+}
+
+function doubleHardware(hardwareName: string) {
+  const h = hardware.find((h) => h.name === hardwareName);
   if (!h) return;
   unit.hardware.push({ name: h.name });
   unit.hardware.sort((a, b) => {
@@ -55,8 +81,6 @@ function removeWeapon(index: number) {
 </script>
 
 <template>
-
-  <div class="font-light font-mono text-sm"># {{entry.id}}</div>
 
   <div class="flex gap-2 justify-between items-center">
     <UInput v-model="unit.name" class=""></UInput>
@@ -96,17 +120,25 @@ function removeWeapon(index: number) {
   <h4 class="text-xl font-semibold">Hardware</h4>
 
   <div class="flex flex-wrap gap-2">
-    <template v-for="(hardware, index) in unit.hardware" :key="index" >
+    <template v-for="(hardware, index) in niceHardware" :key="index" >
+
       <UBadge color="neutral" variant="subtle" size="xl">
         <UTooltip :delay-duration="0" :text="hardwareTooltip(hardware)">
-          <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{hardware.name}}</span>
+          <span v-if="hardware.count > 1">2x </span>
+          <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+            {{hardware.name}}
+          </span>
         </UTooltip>
-        <UIcon size="20" name="i-material-symbols-light-cancel" color="error" class="cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
+        <UIcon v-if="hardware.count <= 1" size="24" name="i-material-symbols-light-upload-2" color="error" class="ml-2 cursor-pointer" @click="doubleHardware(hardware.name)"></UIcon>
+        <UIcon v-if="hardware.count > 1" size="24" name="i-material-symbols-light-download-2" color="error" class="ml-2 cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
+        <UIcon size="24" name="i-material-symbols-light-cancel-outline" color="error" class="cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
       </UBadge>
+
     </template>
   </div>
 
-  <UFieldGroup orientation="horizontal">
+  <UFieldGroup oientation="horizontal">
+    <UBadge color="neutral" variant="subtle" @click="addHardware">Select to add Hardware</UBadge>
     <USelectMenu
         v-if="hardwareOptions"
         :items="hardwareOptions"
@@ -114,6 +146,7 @@ function removeWeapon(index: number) {
         label-key="name"
         class="flex-1"
         v-model="newModule"
+        @change="addHardware"
     >
       <template #item-label="{ item }">
         {{ item.name }}
@@ -123,7 +156,7 @@ function removeWeapon(index: number) {
       </template>
     </USelectMenu>
 
-    <UButton variant="outline" @click="addHardware">Add Hardware</UButton>
+
   </UFieldGroup>
 
 </template>

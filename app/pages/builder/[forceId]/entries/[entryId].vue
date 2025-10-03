@@ -16,7 +16,9 @@
 
 <template>
 
-  <UPageCard v-if="entry" :key="entry.id">
+  <UPageCard v-if="entry" :key="entry.id" >
+
+    <div class="font-light font-mono text-sm"># {{entry.id}}</div>
 
     <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" :factionKey="force?.faction" />
     <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry"  :factionKey="force?.faction" />

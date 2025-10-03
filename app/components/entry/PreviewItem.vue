@@ -55,14 +55,15 @@ function removeEntry(id: string) {
 <template>
 
 
-  <div class="pb-3 sm:pb-4">
-    <div class="flex items-center space-x-4 rtl:space-x-reverse">
+  <div class="flex flex-col items-center space-x-4 rtl:space-x-reverse">
+
+    <div class="w-full flex gap-1">
 
       <div class="shrink-0">
         <UAvatar :icon="icon"size="xl"></UAvatar>
       </div>
 
-      <div class="flex-1 min-w-0">
+      <div class="flex-1">
         <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
           <span v-if="entry.classification === 'Formation'">{{entry.size}}x </span>
           {{ name }}
@@ -70,19 +71,6 @@ function removeEntry(id: string) {
         <p class="text-sm text-gray-500 truncate dark:text-gray-400">
           {{ description }}
         </p>
-
-        <template v-if="entry.classification === 'Formation'">
-
-          <template v-for="weapon in entry.unit.weapons.sort((a,b) => a.power - b.power)">
-            <span class="text-xs pr-2" >{{ buildWeaponDisplayString(weapon) }}</span>
-          </template>
-
-          <template v-for="hardware in entry.unit.hardware.sort((a,b) => a.name.localeCompare(b.name))">
-            <span class="text-xs pr-2" style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
-          </template>
-
-        </template>
-
       </div>
 
       <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
@@ -94,6 +82,51 @@ function removeEntry(id: string) {
 
         </UButton>
       </div>
+
+    </div>
+
+    <div class="w-full">
+
+      <template v-if="entry.classification === 'MAC'">
+
+        <div class="flex flex-row gap-1 mt-2">
+          <h4 class="font-bold ">Modules</h4>
+          <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.2); top: 12px; position: relative;"></div>
+        </div>
+        <ul class="flex flex-wrap gap-2">
+          <template v-for="weapon in entry.modules.filter(m => m.type === 'Weapon').map(m => m.profile)">
+            <li>{{ buildWeaponDisplayString(weapon) }}</li> ⸱
+          </template>
+          <template v-for="(hardware, index) in entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile)">
+            <li style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</li>
+            <span v-if="index < entry.modules.filter(m => m.type === 'Hardware').length -1"> ⸱ </span>
+          </template>
+        </ul>
+
+      </template>
+
+      <template v-if="entry.classification === 'Formation'">
+
+        <div class="flex flex-row gap-1 mt-2">
+          <h4 class="font-bold ">Modules</h4>
+          <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.2); top: 12px; position: relative;"></div>
+        </div>
+        <ul class="flex flex-wrap gap-2">
+          <template v-for="(weapon) in entry.unit.weapons">
+            <li>{{ buildWeaponDisplayString(weapon) }}</li>
+            <span> ⸱ </span>
+          </template>
+
+          <template v-for="(hardware, index) in entry.unit.hardware">
+            <li style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</li>
+            <span v-if="index < entry.unit.hardware.length -1"> ⸱ </span>
+          </template>
+        </ul>
+
+
+
+      </template>
+
     </div>
   </div>
 

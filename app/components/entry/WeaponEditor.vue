@@ -65,7 +65,7 @@ function addWeapon() {
 
   <UFieldGroup orientation="horizontal">
     <UInput v-model="weapon.name" class="flex-1"></UInput>
-    <UButton variant="outline" @click="addWeapon()" :disabled="disabled">Add Weapon</UButton>
+    <UButton variant="subtle" @click="addWeapon()" :disabled="disabled">Add Weapon</UButton>
   </UFieldGroup>
 
 </template>

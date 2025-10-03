@@ -101,6 +101,7 @@ const unitTypes = [
 export const useForcesStore = defineStore('forcesStore', {
     state: () => ({
 
+        version: 1, // defines if the store must be migrated OR depleted
         forces: [] as Force[],
 
     }),
