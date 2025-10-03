@@ -43,7 +43,7 @@ function addWeapon() {
   const profile: WeaponProfile = {
     range: rangeMap[weapon.range] ?? "Brawl",
     type: typeMap[weapon.type] ?? "Burst",
-    power: weapon.power,
+    power: weapon.power || 1,
     expendable: !!weapon.expendable, // any expendable marker works
     subtype: subtypeMap[weapon.subtype],
     name: weapon.name
@@ -58,7 +58,8 @@ function addWeapon() {
   <UFieldGroup size="xl" orientation="horizontal">
     <USelect class="w-1/4" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
     <USelect class="w-1/4" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
-    <UInput class="w-1/8" v-model="weapon.power" min="1" :max="max" type="number" ></UInput>
+    <UBadge v-if="max === 1" color="neutral" variant="soft" >{{max}}</UBadge>
+    <UInput v-else class="w-1/8" v-model="weapon.power" min="1" :max="max" type="number" ></UInput>
     <UCheckbox v-model="weapon.expendable" label="eXpendable" class="mt-2 px-2"></UCheckbox>
     <USelect class="w-1/4" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
   </UFieldGroup>

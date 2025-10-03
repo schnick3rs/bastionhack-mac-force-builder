@@ -69,7 +69,7 @@
 
       <UPageList>
         <UPageCard
-            class="mb-2"
+            class="mb-3"
             :ui="{ container: 'sm:p-4' }"
             highlight-color="info"
             :highlight="entry.id === selected"
