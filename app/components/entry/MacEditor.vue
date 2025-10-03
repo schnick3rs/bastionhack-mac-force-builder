@@ -28,7 +28,7 @@ function setSlotModule(slot: number, moduleName: string) {
   </div>
 
   <h3 class="text-xs">
-    Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="4" size="xs" ></UInput> MAC
+    Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="3" size="xs" ></UInput> MAC
   </h3>
 
   <h3 class="text-lg font-bold">Modules</h3>
@@ -49,7 +49,7 @@ function setSlotModule(slot: number, moduleName: string) {
 
       <UButton
           v-if="module.type !== 'Empty'"
-          icon="i-material-symbols-light-cancel"
+          icon="i-material-symbols-light-cancel-outline"
           color="error"
           variant="outline"
           class="cursor-pointer w-fit"

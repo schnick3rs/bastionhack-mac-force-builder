@@ -60,12 +60,12 @@ function removeEntry(id: string) {
 
     <div class="w-full flex gap-1">
 
-      <div class="shrink-0">
-        <UAvatar :icon="icon"size="xl"></UAvatar>
+      <div class="shrink-0 pr-2">
+        <UAvatar :icon="icon"size="3xl"></UAvatar>
       </div>
 
       <div class="flex-1">
-        <p class="text-sm font-medium text-gray-900 truncate dark:text-white">
+        <p class=" font-medium text-gray-900 truncate dark:text-white">
           <span v-if="entry.classification === 'Formation'">{{entry.size}}x </span>
           {{ name }}
         </p>
@@ -79,8 +79,14 @@ function removeEntry(id: string) {
       </div>
 
       <div>
-        <UButton icon="i-material-symbols-light-cancel" size="xl" color="error" variant="ghost" class="cursor-pointer w-fit" @click="removeEntry(entry.id)">
-
+        <UButton
+            icon="i-material-symbols-light-cancel-outline"
+            size="xl"
+            color="error"
+            variant="ghost"
+            class="cursor-pointer w-fit"
+            @click="removeEntry(entry.id)"
+        >
         </UButton>
       </div>
 
@@ -98,9 +104,12 @@ function removeEntry(id: string) {
           <template v-for="weapon in entry.modules.filter(m => m.type === 'Weapon').map(m => m.profile)">
             <li>{{ buildWeaponDisplayString(weapon) }}</li> ⸱
           </template>
-          <template v-for="(hardware, index) in entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile)">
-            <li style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</li>
-            <span v-if="index < entry.modules.filter(m => m.type === 'Hardware').length -1"> ⸱ </span>
+          <template v-for="(hardware, index) in convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile))">
+            <li>
+              <span v-if="hardware.count > 1">2x </span>
+              <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
+            </li>
+            <span v-if="index < convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile)).length -1"> ⸱ </span>
           </template>
         </ul>
 
@@ -127,15 +136,9 @@ function removeEntry(id: string) {
           </template>
         </ul>
 
-
-
       </template>
 
     </div>
   </div>
 
 </template>
-
-<style scoped>
-
-</style>

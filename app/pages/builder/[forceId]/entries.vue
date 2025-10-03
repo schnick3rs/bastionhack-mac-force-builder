@@ -55,9 +55,9 @@
 
 
   <UFieldGroup class="py-4">
-    <UButton variant="outline" @click="addMac">Add MAC</UButton>
-    <UButton variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
-    <UButton variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
+    <UButton color="info" variant="outline" @click="addMac">Add MAC</UButton>
+    <UButton color="info" variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
+    <UButton color="info" variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
     <UTooltip text="Enable Remote Assets Variant Rule">
       <UButton color="neutral" variant="subtle" disabled @click="addRemoteAsset">Add Remote Asset</UButton>
     </UTooltip>
