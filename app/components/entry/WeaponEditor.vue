@@ -30,13 +30,22 @@ const weaponSubtypes = [
   { label: 'Rad', value: 'R', hint: 'Deal damage then half Rad'},
 ]
 
+import { uniqueUsernameGenerator as gen } from 'unique-username-generator';
+
+const prefix = ['Laser', 'Auto', 'Flare', 'Fusion', 'Heat', 'Rad', 'Shock'];
+const suffix = ['Cannon', 'Carbine', 'Rifle', 'Launcher', 'Hammer', 'Repeater', 'Flak', 'Bombs', 'Missiles', 'Pod'];
+
+function randomWeaponName() {
+  return `${gen({dictionaries: [prefix], style: 'capital'})}${gen({dictionaries: [suffix], style: 'capital'})}`;
+}
+
 const weapon = reactive({
   range: 'S',
   type: 'B',
   power: max,
   subtype: '',
   expendable: true,
-  name: 'RandomLaser',
+  name: randomWeaponName(),
 })
 
 function addWeapon() {
@@ -56,17 +65,21 @@ function addWeapon() {
 <template>
 
   <UFieldGroup size="xl" orientation="horizontal">
-    <USelect v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
-    <USelect v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
+    <USelect class="w-1/4" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
+    <USelect class="w-1/4" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
     <UBadge v-if="max === 1" color="neutral" variant="soft" >{{max}}</UBadge>
     <UInput v-else v-model="weapon.power" min="1" :max="max" type="number" ></UInput>
     <UBadge color="neutral" variant="soft">-</UBadge>
-    <USelect v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
-    <UCheckbox v-model="weapon.expendable" label="eXpendable" class="mt-2 px-2"></UCheckbox>
+    <USelect class="w-1/4" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
+    <UCheckbox v-model="weapon.expendable" label="eXpendable" class="mt-3 px-2" color="info" size="sm"></UCheckbox>
   </UFieldGroup>
 
   <UFieldGroup orientation="horizontal">
-    <UInput v-model="weapon.name" class="flex-1"></UInput>
+    <UInput v-model="weapon.name" class="flex-1" >
+      <template #trailing>
+        <UIcon name="i-material-symbols-light-autorenew"  class="cursor-pointer"  @click="weapon.name = randomWeaponName()" />
+      </template>
+    </UInput>
     <UButton color="info" variant="subtle" @click="addWeapon()" class="cursor-pointer" :disabled="disabled">Add Weapon</UButton>
   </UFieldGroup>
 
