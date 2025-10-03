@@ -22,13 +22,13 @@ function setSlotModule(slot: number, moduleName: string) {
 <template>
 
 
-  <div class="flex gap-2 justify-between items-center">
-    <UInput v-model="entry.name" class=""></UInput>
+  <div class="flex gap-2 justify-between items-center font-bold">
+    <UInput v-model="entry.name" class="" size="xl"></UInput>
     <span class="w-12 flex-none">{{cost}} pt</span>
   </div>
 
-  <h3 class="text-xs">
-    Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="3" size="xs" ></UInput> MAC
+  <h3 >
+    Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="3" ></UInput> MAC
   </h3>
 
   <h3 class="text-lg font-bold">Modules</h3>
@@ -66,6 +66,7 @@ function setSlotModule(slot: number, moduleName: string) {
         <UFieldGroup>
           <UButton
               v-if="module.slot <= 3"
+              color="info"
               variant="outline"
               class="flex-1 cursor-pointer"
               @click="removeModule(index, module.slot)">
@@ -73,6 +74,7 @@ function setSlotModule(slot: number, moduleName: string) {
           </UButton>
           <UButton
               v-if="module.slot !== 1 && module.slot < 4"
+              color="info"
               variant="outline"
               class="cursor-pointer"
               @click="removeModule(index, module.slot)">

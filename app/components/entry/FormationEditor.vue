@@ -68,13 +68,13 @@ function removeWeapon(index: number) {
 
 <template>
 
-  <div class="flex gap-2 justify-between items-center">
-    <UInput v-model="unit.name" class=""></UInput>
+  <div class="flex gap-2 justify-between items-center  font-bold">
+    <UInput v-model="unit.name" size="xl"></UInput>
     <span class="w-12 flex-none">{{cost}} pt</span>
   </div>
 
-  <h3 class="text-xs">
-    Size <UInput v-model="entry.size" class="w-12 mx-2" type="number" min="1" :max="entry.unit.type === 'Infantry' ? 5 : 3" size="xs" ></UInput> {{unit.type}} Formation
+  <h3>
+    Size <UInput v-model="entry.size" class="w-12 mx-2" type="number" min="1" :max="entry.unit.type === 'Infantry' ? 5 : 3" ></UInput> {{unit.type}} Formation
   </h3>
 
   <div>
@@ -95,7 +95,7 @@ function removeWeapon(index: number) {
             <WeaponProfileTooltips :weapon="weapon" />
           </template>
         </UUser></div>
-      <UButton icon="i-material-symbols-light-cancel" color="error" variant="outline" class="cursor-pointer w-fit" @click="removeWeapon(index)">
+      <UButton icon="i-material-symbols-light-cancel-outline" color="error" variant="outline" class="cursor-pointer w-fit" @click="removeWeapon(index)">
         Remove
       </UButton>
     </UPageCard>
@@ -115,9 +115,9 @@ function removeWeapon(index: number) {
             {{hardware.name}}
           </span>
         </UTooltip>
-        <UIcon v-if="hardware.count <= 1" size="24" name="i-material-symbols-light-upload-2" color="error" class="ml-2 cursor-pointer" @click="doubleHardware(hardware.name)"></UIcon>
-        <UIcon v-if="hardware.count > 1" size="24" name="i-material-symbols-light-download-2" color="error" class="ml-2 cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
-        <UIcon size="24" name="i-material-symbols-light-cancel-outline" color="error" class="cursor-pointer" @click="removeHardware(hardware.name, index)"></UIcon>
+        <UIcon v-if="hardware.count <= 1" size="24" name="i-material-symbols-light-upload-2" color="error" class="ml-2 cursor-pointer bg-info" @click="doubleHardware(hardware.name)"></UIcon>
+        <UIcon v-if="hardware.count > 1" size="24" name="i-material-symbols-light-download-2" color="error" class="ml-2 cursor-pointer bg-error" @click="removeHardware(hardware.name, index)"></UIcon>
+        <UIcon size="24" name="i-material-symbols-light-cancel-outline" color="error" class="cursor-pointer bg-error" @click="removeHardware(hardware.name, index)"></UIcon>
       </UBadge>
 
     </template>

@@ -27,13 +27,19 @@ const hardwareModule = ref('')
       color="success"
       @change="emit('setModule', hardwareModule)"
   >
+
     <template #item-label="{ item }">
+
       {{ item.name }}
+
       <div class="text-muted">
         {{ item.effect }}
       </div>
+
     </template>
+
   </USelectMenu>
+
 </template>
 
 <style scoped>

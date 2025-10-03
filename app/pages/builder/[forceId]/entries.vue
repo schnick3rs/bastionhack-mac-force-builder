@@ -71,6 +71,7 @@
         <UPageCard
             class="mb-2"
             :ui="{ container: 'sm:p-4' }"
+            highlight-color="info"
             :highlight="entry.id === selected"
             v-for="entry in force?.entries"
             variant="subtle"

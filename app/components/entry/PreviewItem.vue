@@ -106,7 +106,7 @@ function removeEntry(id: string) {
           </template>
           <template v-for="(hardware, index) in convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile))">
             <li>
-              <span v-if="hardware.count > 1">2x </span>
+              <span v-if="hardware.count > 1">{{hardware.count}}x </span>
               <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
             </li>
             <span v-if="index < convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile)).length -1"> ⸱ </span>
@@ -119,7 +119,7 @@ function removeEntry(id: string) {
 
         <div class="flex flex-row gap-1 mt-2">
           <h4 class="font-bold ">Modules</h4>
-          <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.2); top: 12px; position: relative;"></div>
+          <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.1); top: 12px; position: relative;"></div>
         </div>
         <ul class="flex flex-wrap gap-2">
           <template v-for="(weapon) in entry.unit.weapons">
