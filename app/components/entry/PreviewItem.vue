@@ -40,6 +40,7 @@ const description = computed(() => {
 const cost = computed(() => calculateEntityCost(entry))
 
 import hardware from "~~/server/data/hardwareRepository";
+import {convertToNiceware} from "#shared/utils/modules";
 
 function tooltip(hardwareProfile: HardwareProfile) {
   const hw = hardware.find((h) => h.name === hardwareProfile.name)
@@ -117,9 +118,12 @@ function removeEntry(id: string) {
             <span> ⸱ </span>
           </template>
 
-          <template v-for="(hardware, index) in entry.unit.hardware">
-            <li style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</li>
-            <span v-if="index < entry.unit.hardware.length -1"> ⸱ </span>
+          <template v-for="(hardware, index) in convertToNiceware(entry.unit.hardware)">
+            <li>
+              <span v-if="hardware.count > 1">2x </span>
+              <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
+            </li>
+            <span v-if="index < convertToNiceware(entry.unit.hardware).length -1"> ⸱ </span>
           </template>
         </ul>
 

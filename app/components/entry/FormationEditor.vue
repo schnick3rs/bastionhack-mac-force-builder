@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Auxiliary, Formation, HardwareProfile, MAC, WeaponProfile} from "~~/types/unit";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
-import {getHardwareCatalogue} from "#shared/utils/modules";
+import {convertToNiceware, getHardwareCatalogue, type Niceware} from "#shared/utils/modules";
 import {calcMaxWeaponPower} from "#shared/utils/units";
 
 const { entry, factionKey } = defineProps<{ entry: Formation, factionKey: string | undefined }>()
@@ -9,23 +9,9 @@ const unit: Auxiliary = entry.unit;
 
 const hardware = getHardwareCatalogue(factionKey)
 
-const cost = computed(() => calculateFormationCost(entry))
+const cost = computed(() => calculateFormationCost(entry));
 
-type Niceware = { name: string, count: number }
-
-const niceHardware = computed(() => {
-  const niceware: Niceware[] = Object.values(
-      unit.hardware.reduce<Record<string, Niceware>>((acc, { name }) => {
-        if (!acc[name]) {
-          acc[name] = { name, count: 0 }
-        }
-        acc[name].count++
-        return acc
-      }, {})
-  )
-  return niceware;
-
-})
+const niceHardware = computed(() => convertToNiceware(unit.hardware));
 
 function hardwareTooltip(hardwareProfile: HardwareProfile) {
   const hw = hardware.find((h) => h.name === hardwareProfile.name)
