@@ -58,7 +58,7 @@ function removeEntry(id: string) {
 
   <div class="flex flex-col items-center space-x-4 rtl:space-x-reverse">
 
-    <div class="w-full flex gap-1">
+    <div class="w-full flex gap-1 justify-between items-center">
 
       <div class="shrink-0 pr-2">
         <UAvatar :icon="icon"size="3xl"></UAvatar>
@@ -74,7 +74,7 @@ function removeEntry(id: string) {
         </p>
       </div>
 
-      <div class="inline-flex items-center text-base font-semibold text-gray-900 dark:text-white">
+      <div class="font-semibold text-gray-900 dark:text-white">
         {{cost}} pt
       </div>
 
