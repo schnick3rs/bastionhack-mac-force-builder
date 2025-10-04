@@ -22,10 +22,6 @@ function removeModule() {
   emit('setModule', { slot: module.slot, type: 'Empty' })
 }
 
-function setSlotModule(moduleName: string) {
-  emit('setModule', { slot: module.slot, type: 'Hardware', profile: { name: moduleName} })
-}
-
 const mode = ref('')
 
 const hardware = getHardwareCatalogue(factionKey)
