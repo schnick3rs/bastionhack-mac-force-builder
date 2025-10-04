@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type {Auxiliary, Formation, HardwareProfile, MAC, WeaponProfile} from "~~/types/unit";
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
-import {convertToNiceware, getHardwareCatalogue, type Niceware} from "#shared/utils/modules";
+import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
 import {calcMaxWeaponPower} from "#shared/utils/units";
 
 const { entry, factionKey } = defineProps<{ entry: Formation, factionKey: string | undefined }>()
@@ -132,7 +132,9 @@ function removeWeapon(index: number) {
   </div>
 
   <UFieldGroup oientation="horizontal">
-    <UBadge color="neutral" variant="subtle" @click="addHardware">Select to add Hardware</UBadge>
+
+    <UBadge color="neutral" variant="subtle">Select to add Hardware</UBadge>
+
     <USelectMenu
         v-if="hardwareOptions"
         :items="hardwareOptions"
@@ -149,7 +151,6 @@ function removeWeapon(index: number) {
         </div>
       </template>
     </USelectMenu>
-
 
   </UFieldGroup>
 
