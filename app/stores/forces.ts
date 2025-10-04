@@ -204,6 +204,13 @@ export const useForcesStore = defineStore('forcesStore', {
             }
             force.entries = sortForceEntries(force.entries);
 
-        }
+        },
+
+        removeEntry(forceId: string, entryId: string) {
+            let force = this.forces.find((force) => force.id === forceId);
+            if (!force) return; // ✅ safety
+            const index = force.entries.findIndex(entry => entry.id === entryId);
+            force.entries.splice(index, 1);
+        },
     }
 });

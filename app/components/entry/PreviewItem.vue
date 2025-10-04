@@ -5,6 +5,8 @@ import {buildWeaponDisplayString} from "#shared/utils/weapons";
 
 const { entry } = defineProps<{ entry: Entry }>()
 
+const emit = defineEmits(['removeEntry']);
+
 const name = computed(() => {
   if (entry.classification === 'MAC') {
     return entry.name;
@@ -47,8 +49,9 @@ function tooltip(hardwareProfile: HardwareProfile) {
   return hw?.effect ?? ''
 }
 
-function removeEntry(id: string) {
-  console.info('removeEntry', id)
+function remove(id: string) {
+  console.info('remove entry', id)
+  emit('removeEntry', id);
 }
 
 </script>
@@ -85,7 +88,7 @@ function removeEntry(id: string) {
             color="error"
             variant="ghost"
             class="cursor-pointer w-fit"
-            @click="removeEntry(entry.id)"
+            @click="remove(entry.id)"
         >
         </UButton>
       </div>

@@ -25,7 +25,21 @@
     forcesStore.addNewEntry(forceId, 'RemoteAsset');
   }
 
+  function removeEntry(entryId: string) {
+    if (selected.value === entryId) {
+      selected.value = '';
+      // TODO push to parent
+      navigateTo( {path: `/builder/${forceId}/entries`})
+    }
+    forcesStore.removeEntry(forceId, entryId);
+  }
+
   const selected = ref('')
+
+  function selectEntry(entryId: string) {
+    selected.value = entryId
+    navigateTo( {path: `/builder/${forceId}/entries/${entryId}`})
+  }
 
   const cost = computed(() => calculateForceCost(force));
 
@@ -73,10 +87,9 @@
             v-for="entry in force?.entries"
             variant="subtle"
             orientation="vertical"
-            :to="`/builder/${forceId}/entries/${entry.id}`"
-            @click="selected = entry.id"
+            @click="selectEntry(entry.id)"
         >
-          <EntryPreviewItem :entry="entry"></EntryPreviewItem>
+          <EntryPreviewItem :entry="entry" @removeEntry="removeEntry($event)"></EntryPreviewItem>
         </UPageCard>
       </UPageList>
 
