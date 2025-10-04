@@ -11,8 +11,9 @@ const cost = computed(() => calculateMacCost(entry))
 
 
 function setSlotModule(slot: number, module: ModuleConfig) {
-  console.info('setSlotModule', slot, module)
-  entry.modules[slot] = module;
+  console.info('setSlotModule', slot, module, entry.modules)
+  const index = entry.modules.findIndex(item => item.slot === slot);
+  entry.modules[index] = module;
 }
 
 </script>
