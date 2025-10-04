@@ -88,7 +88,7 @@ function remove(id: string) {
             color="error"
             variant="ghost"
             class="cursor-pointer w-fit"
-            @click="remove(entry.id)"
+            @click.stop="remove(entry.id)"
         >
         </UButton>
       </div>
