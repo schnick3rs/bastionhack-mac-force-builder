@@ -1,17 +1,19 @@
-import type {HardwareModule, Usability} from "~~/types/unit";
+import type {HardwareModule, Origin, Usability} from "~~/types/unit";
 
 const commonHardware: HardwareModule[] = [];
 
 export const createHardware = (
     name: string,
     effect: string,
-    usability: Usability[] = ['All']
+    usability: Usability[] = ['All'],
+    origin: Origin = 'common'
 ): HardwareModule => {
     return {
         key: name.toLowerCase().replace(/\s+/g, '-'), // example slug
         name,
         effect,
         usability: usability,
+        origin: origin,
     }
 }
 

@@ -6,11 +6,14 @@ export type ModuleConfig =
 
 export type Usability = 'MAC' | 'Infantry' | 'Vehicle' | 'All'
 
+export type Origin = 'common' | 'faction'
+
 export interface HardwareModule {
     key: string,
     name: string,
     effect: string,
     usability: Usability[],
+    origin: Origin
 }
 
 export interface HardwareProfile {
@@ -79,6 +82,9 @@ export interface Force {
     entries: Entry[]
     pointLimit: number
     faction?: string
+
+    createdAt: number
+    updatedAt: number
 
     // flavour
     name: string

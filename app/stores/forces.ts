@@ -136,6 +136,8 @@ export const useForcesStore = defineStore('forcesStore', {
                 pointLimit: options.pointLimit,
                 entries: [],
                 faction: options.factionKey || undefined,
+                createdAt: Date.now(),
+                updatedAt: Date.now(),
             }
             this.forces.push(force);
             return force;

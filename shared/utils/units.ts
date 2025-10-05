@@ -85,3 +85,30 @@ export function displayClassificaition(entry: Entry) {
         return `${entry.unit.type} Formation`;
     }
 }
+
+
+export function getUsedAUHardware(au: Formation) {
+    const modules = au.unit.hardware.map(m => m.name).sort((a, b) => a.localeCompare(b))
+    let uniueModules = [...new Set(modules)];
+    return uniueModules;
+}
+
+export function getUsedMacHardware(mac: MAC) {
+    const modules = mac.modules.filter(m => m.type === 'Hardware').map(m => m.profile.name).sort((a, b) => a.localeCompare(b))
+    let uniueModules = [...new Set(modules)];
+    return uniueModules;
+}
+
+export function getUsedForceHardware(force: Force) {
+    let modules: string[] = [];
+    force.entries.forEach(entry => {
+        if (entry.classification === 'MAC') {
+            modules.push(...getUsedMacHardware(entry as MAC))
+        }
+        if (entry.classification === 'Formation') {
+            modules.push(...getUsedAUHardware(entry as Formation))
+        }
+    })
+    let uniueModules = [...new Set(modules)];
+    return uniueModules.sort((a, b) => a.localeCompare(b));
+}
