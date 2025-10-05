@@ -50,7 +50,12 @@ export function calculateAuxiliaryCost(auxiliary: Auxiliary): number {
     const numberHardware = auxiliary.hardware.length;
 
     const totalWeaponPower = auxiliary.weapons
-        .map(profile => profile.power)
+        .map(profile => {
+            if (profile.range === 'Brawl') {
+                return 1;
+            }
+            return profile.power;
+        })
         .reduce((a, b) => a + b, 0);
 
     return 1 + numberHardware + totalWeaponPower;
