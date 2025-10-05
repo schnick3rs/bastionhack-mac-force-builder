@@ -145,11 +145,13 @@ export const useForcesStore = defineStore('forcesStore', {
             let force = this.forces.find((force) => force.id === forceId);
             if (!force) return; // ✅ safety
 
+            let id = crypto.randomUUID();
+
             switch (variant) {
 
                 case 'MAC':
                     const mac: MAC = {
-                        id: crypto.randomUUID(),
+                        id: id,
                         name: `The ${gen({dictionaries: [nouns], style: 'capital'})}`,
                         classification: 'MAC',
                         class: 2,
@@ -178,7 +180,7 @@ export const useForcesStore = defineStore('forcesStore', {
                     }
                     const vehicleFormation: Formation = {
                         classification: "Formation",
-                        id: crypto.randomUUID(),
+                        id: id,
                         size: 2,
                         unit: vehicle
                     }
@@ -195,7 +197,7 @@ export const useForcesStore = defineStore('forcesStore', {
                     }
                     const infantryFormation: Formation = {
                         classification: "Formation",
-                        id: crypto.randomUUID(),
+                        id: id,
                         size: 3,
                         unit: infantry
                     }
@@ -203,7 +205,7 @@ export const useForcesStore = defineStore('forcesStore', {
                     break;
             }
             force.entries = sortForceEntries(force.entries);
-
+            return id;
         },
 
         removeEntry(forceId: string, entryId: string) {

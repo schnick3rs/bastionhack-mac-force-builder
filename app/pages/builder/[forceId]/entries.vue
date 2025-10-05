@@ -13,16 +13,32 @@
   const { data: faction } = await useFetch(`/api/factions/${force.faction}`, { lazy: true });
 
   function addMac() {
-    forcesStore.addNewEntry(forceId, 'MAC');
+    const id = forcesStore.addNewEntry(forceId, 'MAC');
+    console.info('New MAC added', id)
+    if (id) {
+      selectEntry(id)
+    }
   }
   function addVehicleFormation() {
-    forcesStore.addNewEntry(forceId, 'Vehicle');
+    const id = forcesStore.addNewEntry(forceId, 'Vehicle');
+    console.info('New Vehicle added', id)
+    if (id) {
+      selectEntry(id)
+    }
   }
   function addInfantryFormation() {
-    forcesStore.addNewEntry(forceId, 'Infantry');
+    const id = forcesStore.addNewEntry(forceId, 'Infantry');
+    console.info('New Infantry added', id)
+    if (id) {
+      selectEntry(id)
+    }
   }
   function addRemoteAsset() {
-    forcesStore.addNewEntry(forceId, 'RemoteAsset');
+    const id = forcesStore.addNewEntry(forceId, 'RemoteAsset');
+    console.info('New RemoteAsset added', id)
+    if (id) {
+      selectEntry(id)
+    }
   }
 
   function removeEntry(entryId: string) {
