@@ -30,7 +30,15 @@ const hardwareOptions = computed(() => {
   return hardware
       .filter((h) => h.usability.includes("MAC") || h.usability.includes('All'))
 })
+
+
 const newModule = ref('');
+
+function editHardware(currnetModuleName: string) {
+  newModule.value = currnetModuleName
+  mode.value = 'Hardware'
+}
+
 function addHardware() {
   const h = hardware.find((h) => h.name === newModule.value);
   if (!h) return;
@@ -53,6 +61,18 @@ function addHardware() {
         <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
       </template>
     </UUser>
+
+
+    <UButton
+        v-if="module.type === 'Hardware'"
+        color="info"
+        :variant="mode === 'Hardware' ? 'solid' : 'outline'"
+        icon="i-material-symbols-light-edit-square-outline"
+        class="cursor-pointer"
+        @click="editHardware(module.profile.name)"
+    >
+      Hardware
+    </UButton>
 
     <UButton
         v-if="module.type !== 'Empty'"
