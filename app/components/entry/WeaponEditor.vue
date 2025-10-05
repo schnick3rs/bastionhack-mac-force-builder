@@ -2,10 +2,11 @@
 import type {WeaponProfile} from "~~/types/unit";
 import {rangeMap, subtypeMap, typeMap} from "#shared/utils/weapons";
 
-const { max, disabled } = defineProps({
-  max: Number,
-  disabled: Boolean,
-})
+const props = defineProps<{
+  max: number,
+  disabled?: boolean,
+  initialWeapon?: WeaponProfile
+}>()
 
 const emit = defineEmits(['addWeapon'])
 
@@ -42,7 +43,7 @@ function randomWeaponName() {
 const weapon = reactive({
   range: 'S',
   type: 'B',
-  power: max,
+  power: props.max,
   subtype: '',
   expendable: false,
   name: randomWeaponName(),
@@ -59,6 +60,18 @@ function addWeapon() {
   }
   emit('addWeapon', profile)
 }
+
+watch(() => props.initialWeapon, (val) => {
+  if (val) {
+    console.info('An initial weapon as given', val);
+    weapon.range = Object.keys(rangeMap).find(k => rangeMap[k] === val.range) ?? 'S'
+    weapon.type = Object.keys(typeMap).find(k => typeMap[k] === val.type) ?? 'B'
+    weapon.power = val.power
+    weapon.subtype = Object.keys(subtypeMap).find(k => subtypeMap[k] === val.subtype) ?? ''
+    weapon.expendable = val.expendable
+    weapon.name = val.name
+  }
+}, { immediate: true })
 
 </script>
 
@@ -80,7 +93,7 @@ function addWeapon() {
         <UIcon name="i-material-symbols-light-autorenew"  class="cursor-pointer"  @click="weapon.name = randomWeaponName()" />
       </template>
     </UInput>
-    <UButton color="info" variant="subtle" @click="addWeapon()" class="cursor-pointer" :disabled="disabled">Add Weapon</UButton>
+    <UButton color="info" variant="subtle" @click="addWeapon()" class="cursor-pointer" :disabled="disabled">{{ props.initialWeapon ? 'Save Changes' : 'Add Weapon' }}</UButton>
   </UFieldGroup>
 
 </template>

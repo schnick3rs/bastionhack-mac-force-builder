@@ -12,6 +12,12 @@ const max = computed(() => {
 
 const emit = defineEmits(['setModule'])
 
+function editWeapon(currentProfile: WeaponProfile) {
+  console.info("Edit Weapon", currentProfile)
+  newWeapon.value = currentProfile;
+  mode.value = 'Weapon'
+}
+
 function addWeapon(weapon: WeaponProfile) {
   console.info('addWeapon', weapon)
   emit('setModule', { slot: module.slot, type: 'Weapon', profile: weapon })
@@ -31,7 +37,7 @@ const hardwareOptions = computed(() => {
       .filter((h) => h.usability.includes("MAC") || h.usability.includes('All'))
 })
 
-
+const newWeapon = ref<WeaponProfile>();
 const newModule = ref('');
 
 function editHardware(currnetModuleName: string) {
@@ -62,6 +68,16 @@ function addHardware() {
       </template>
     </UUser>
 
+    <UButton
+        v-if="module.type === 'Weapon'"
+        color="info"
+        :variant="mode === 'Weapon' ? 'solid' : 'outline'"
+        icon="i-material-symbols-light-edit-square-outline"
+        class="cursor-pointer"
+        @click="editWeapon(module.profile)"
+    >
+      Weapon
+    </UButton>
 
     <UButton
         v-if="module.type === 'Hardware'"
@@ -81,7 +97,7 @@ function addHardware() {
         variant="outline"
         class="cursor-pointer w-fit"
         @click="removeModule()">
-      Remove
+
     </UButton>
 
     <template v-if="module.type === 'Empty'">
@@ -110,7 +126,7 @@ function addHardware() {
     <hr >
 
     <template v-if="mode === 'Weapon'">
-      <EntryWeaponEditor :max="max" @add-weapon="addWeapon" ></EntryWeaponEditor>
+      <EntryWeaponEditor :max="max" @add-weapon="addWeapon" :initialWeapon="newWeapon"></EntryWeaponEditor>
     </template>
 
     <template v-if="mode === 'Hardware'">
