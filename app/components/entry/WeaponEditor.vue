@@ -50,10 +50,15 @@ const weapon = reactive({
 })
 
 function addWeapon() {
+  let power = weapon.power || 1;
+  if (weapon.range === '-') {
+    power = 2;
+  }
+
   const profile: WeaponProfile = {
     range: rangeMap[weapon.range] ?? "Brawl",
     type: typeMap[weapon.type] ?? "Burst",
-    power: weapon.power || 1,
+    power:power,
     expendable: !!weapon.expendable, // any expendable marker works
     subtype: subtypeMap[weapon.subtype],
     name: weapon.name
@@ -80,8 +85,11 @@ watch(() => props.initialWeapon, (val) => {
   <UFieldGroup size="xl" orientation="horizontal">
     <USelect class="w-1/4" v-model="weapon.range" :items="weaponRangeItems" value-key="value" ></USelect>
     <USelect class="w-1/4" v-model="weapon.type" :items="weaponTypeItems" value-key="value" ></USelect>
-    <UBadge v-if="max === 1" color="neutral" variant="soft" >{{max}}</UBadge>
+
+    <UBadge v-if="weapon.range === '-'" color="neutral" variant="soft" >2</UBadge>
+    <UBadge v-else-if="max === 1" color="neutral" variant="soft" >{{max}}</UBadge>
     <UInput v-else v-model="weapon.power" min="1" :max="max" type="number" ></UInput>
+
     <UBadge color="neutral" variant="soft">-</UBadge>
     <USelect class="w-1/4" v-model="weapon.subtype" :items="weaponSubtypes" value-key="value" ></USelect>
     <UCheckbox v-model="weapon.expendable" label="eXpendable" class="mt-3 px-2" color="info" size="sm"></UCheckbox>
