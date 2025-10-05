@@ -13,7 +13,10 @@ if (!force) {
 
 // `i-game-icons--card-{value}-{blatt}
 
-const blatt = ref('spades')
+const suit = ref('spades')
+
+//'spades', 'hearts', 'diamonds', 'clubs'
+const suitOptions = ['spades', 'hearts', 'diamonds', 'clubs']
 
 const indexToCard = [
   'ace',
@@ -39,13 +42,24 @@ const indexToCard = [
   <div class="flex flex-col justify-center align-center w-fit" v-if="force">
     <h1>{{ force.name }}</h1>
 
+    <div class="flex justify-center mb-4">
+      <UFieldGroup size="xl">
+        <UButton color="neutral" :variant="suit === 'clubs' ? 'solid' : 'outline'" icon="i-game-icons-clubs" @click="suit = 'clubs'" />
+        <UButton color="neutral" :variant="suit === 'spades' ? 'solid' : 'outline'" icon="i-game-icons-spades" @click="suit = 'spades'" />
+        <UButton color="error" :variant="suit === 'hearts' ? 'solid' : 'outline'" icon="i-game-icons-hearts" @click="suit = 'hearts'" />
+        <UButton color="error" :variant="suit === 'diamonds' ? 'solid' : 'outline'" icon="i-game-icons-diamonds" @click="suit = 'diamonds'" />
+      </UFieldGroup>
+    </div>
+
     <UPageList>
 
       <UPageCard
         v-for="(entry, index) in force.entries"
         orientation="horizontal"
+        class="mb-3"
+        :ui="{ container: 'sm:p-2' }"
       >
-        <UIcon :name="`i-game-icons-card-${ indexToCard[index] }-${ blatt }`" class="size-16" />
+        <UIcon :name="`i-game-icons-card-${ indexToCard[index] }-${ suit }`" class="size-16" :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"/>
         <div>
           <h2>{{ entry.name || `${entry.size}x ${entry.unit.name}` }}</h2>
           <h3>{{ displayClassificaition(entry) }}</h3>
