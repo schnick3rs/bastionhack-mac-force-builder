@@ -44,7 +44,7 @@ const weapon = reactive({
   type: 'B',
   power: max,
   subtype: '',
-  expendable: true,
+  expendable: false,
   name: randomWeaponName(),
 })
 
