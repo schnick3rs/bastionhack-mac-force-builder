@@ -51,7 +51,7 @@ commonHardware.push(
   createHardware(
     'Cloak',
     'When you hold as your move, you may set Motion to 6. AUs can do this.',
-    ['MAC']
+    ['All']
   ),
   createHardware(
     'Conductor',

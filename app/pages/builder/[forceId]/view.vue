@@ -45,7 +45,7 @@ const indexToCard = [
         v-for="(entry, index) in force.entries"
         orientation="horizontal"
       >
-        <UIcon :name="`i-game-icons-card-${ indexToCard[index+1] }-${ blatt }`" class="size-16" />
+        <UIcon :name="`i-game-icons-card-${ indexToCard[index] }-${ blatt }`" class="size-16" />
         <div>
           <h2>{{ entry.name || `${entry.size}x ${entry.unit.name}` }}</h2>
           <h3>{{ displayClassificaition(entry) }}</h3>
