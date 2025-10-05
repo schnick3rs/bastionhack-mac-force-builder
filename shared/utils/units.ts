@@ -23,7 +23,8 @@ export function calculateEntityCost(entry: Entry): number {
 
 export function calculateMacCost(mac: MAC): number {
     if (!(mac.class in classToCost)) {
-        throw new Error(`Invalid MAC class: ${mac.class}`)
+        console.warn(`Invalid MAC class, valid values are 1, 2, 3`)
+        return 999;
     }
     const baseCost: number = classToCost[mac.class] as number;
 
@@ -69,4 +70,13 @@ export function calcMaxWeaponPower(entry: Entry, slot: number = 0): number {
         }
     }
     return 4
+}
+
+export function displayClassificaition(entry: Entry) {
+    if (entry.classification === 'MAC') {
+        return `Class ${entry.class} MAC`;
+    }
+    if (entry.classification === 'Formation') {
+        return `${entry.unit.type} Formation`;
+    }
 }

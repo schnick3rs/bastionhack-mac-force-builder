@@ -154,16 +154,16 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: 'MAC',
                         class: 2,
                         modules: [
-                            { slot: 1, type: 'Weapon', double: false, profile: parseWeaponString('SP2 IonBeam') as WeaponProfile },
-                            { slot: 2, type: 'Weapon', double: false, profile: parseWeaponString('SP2-XJ IonBeam') as WeaponProfile },
-                            { slot: 3, type: 'Weapon', double: false, profile: parseWeaponString('P2 Piston') as WeaponProfile },
-                            { slot: 4, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
-                            { slot: 5, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
-                            { slot: 6, type: 'Hardware', double: false, profile: { name: 'Radiator' } },
+                            { slot: 1, type: 'Empty' },
+                            { slot: 2, type: 'Empty' },
+                            { slot: 3, type: 'Empty' },
+                            { slot: 4, type: 'Empty' },
+                            { slot: 5, type: 'Empty' },
+                            { slot: 6, type: 'Empty' },
                         ]
                     }
                     if (force.faction === 'first-regiment') {
-                        mac.modules.unshift({ slot: 0, type: 'Weapon', double: false, profile: parseWeaponString('SP2 IonBeam') as WeaponProfile });
+                        mac.modules.unshift({ slot: 0, type: 'Empty' });
                     }
                     force.entries.push(mac);
                     break;
@@ -173,8 +173,8 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: "Auxiliary unit",
                         name: `${gen({dictionaries: [militaryAdjectives], style: 'capital'})} ${gen({dictionaries: [vehicleNouns], style: 'capital'})}`,
                         type: 'Vehicle',
-                        weapons: [parseWeaponString('LP2 RailCannon') as WeaponProfile],
-                        hardware: [{ name: 'Armour' }],
+                        weapons: [],
+                        hardware: [],
                     }
                     const vehicleFormation: Formation = {
                         classification: "Formation",
@@ -190,8 +190,8 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: "Auxiliary unit",
                         name: `${gen({dictionaries: [infantryDescriptors], style: 'capital'})} ${gen({dictionaries: [unitTypes], style: 'capital'})}`,
                         type: 'Infantry',
-                        weapons: [parseWeaponString('SP1 LaserRifles') as WeaponProfile],
-                        hardware: [{ name: 'Transport' }],
+                        weapons: [],
+                        hardware: [],
                     }
                     const infantryFormation: Formation = {
                         classification: "Formation",

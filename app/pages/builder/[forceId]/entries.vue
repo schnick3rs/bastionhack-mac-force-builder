@@ -54,7 +54,6 @@
         :description="`${faction?.name}`"
     >
     </UUser>
-    <h1 class="text-3xl font-bold">{{ force.name }}</h1>
   </div>
 
   <em>{{ force.description }}</em>
@@ -62,6 +61,7 @@
   <div class="font-xl">
     <span class="text-sm">[{{force.entries.length}} entries]</span>
     Point {{cost}} / {{force.pointLimit}} pt
+    <UButton size="sm" color="info" variant="outline" icon="i-material-symbols-light-eye-tracking-outline" :to="`/builder/${force.id}/view`">Print</UButton>
   </div>
 
 
