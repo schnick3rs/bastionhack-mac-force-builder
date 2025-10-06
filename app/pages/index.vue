@@ -31,7 +31,7 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
       <div><em>Lists are stored in your browsers local storage</em></div>
 
       <template #footer>
-        <UButton to="/builder/createForce" class="w-full" size="xl">
+        <UButton to="/builder/createForce" class="w-full" size="xl" color="info">
           Build a new Force
         </UButton>
       </template>
@@ -42,7 +42,7 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
       <template #title>
         <UIcon name="i-game-icons-checklist" class="mr-2" size="20" />
         <span>Saved forces</span>
-        <UButton to="/forces" variant="ghost" class="flex-2">View All</UButton>
+        <UButton to="/forces" variant="ghost" class="flex-2 font-bold" color="info">View All</UButton>
       </template>
 
       <UPageList divide>
@@ -74,7 +74,7 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
 
     <UPageCard
         title="Learn the Factions"
-        description='...'
+        description='Check or the various factions that are available in the game.'
         to="/factions"
     >
       <template #footer>
