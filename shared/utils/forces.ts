@@ -81,7 +81,7 @@ export function validateForce(force: Force) {
     }
 
     if (auCount > macCount) {
-        invalids.push({ check: 'max MAC Formations', valid: false, message: `More than ${macCount} Formations found, only ${auCount} allowed.` })
+        invalids.push({ check: 'max MAC Formations', valid: false, message: `${auCount} Formations found. Only ${macCount} allowed.` })
     } else {
         invalids.push({ check: 'max MAC Formations', valid: true, message: `No more than ${macCount} Formations found.` })
     }
