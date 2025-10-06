@@ -100,14 +100,18 @@ const unitTypes = [
 
 export const useForcesStore = defineStore('forcesStore', {
     state: () => ({
-
         version: 1, // defines if the store must be migrated OR depleted
         forces: [] as Force[],
-
+        hydrated: false,
     }),
 
     persist: {
         storage: piniaPluginPersistedstate.localStorage(),
+        afterHydrate: (ctx) => {
+            if (ctx.store.forces) {
+                ctx.store.hydrated = true;
+            }
+        },
     },
 
     getters: {
@@ -129,6 +133,21 @@ export const useForcesStore = defineStore('forcesStore', {
     },
 
     actions: {
+
+        async fetchAllForces() {
+            return this.forces;
+        },
+
+        touchForce(forceId: string) {
+            const force = this.forceById(forceId);
+            if (force) {
+                if (!force.createdAt) {
+                    force.createdAt = Date.now()
+                }
+                force.updatedAt = Date.now();
+            }
+        },
+
         async createNewForceList(options: any) {
             const force = {
                 id: `force-${crypto.randomUUID()}`,
@@ -207,6 +226,7 @@ export const useForcesStore = defineStore('forcesStore', {
                     break;
             }
             force.entries = sortForceEntries(force.entries);
+            this.touchForce(force.id)
             return id;
         },
 
@@ -215,6 +235,7 @@ export const useForcesStore = defineStore('forcesStore', {
             if (!force) return; // ✅ safety
             const index = force.entries.findIndex(entry => entry.id === entryId);
             force.entries.splice(index, 1);
+            this.touchForce(force.id);
         },
     }
 });

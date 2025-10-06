@@ -64,6 +64,18 @@ const usedHardware = computed((): HardwareModule[] => {
   return modules;
 })
 
+const totalUnitCount = computed(() => {
+  return force.entries.reduce((acc, entry) => {
+    if (entry.classification === 'MAC') {
+      return acc + 1
+    }
+    if (entry.classification === 'Formation') {
+      return acc + entry.size
+    }
+    return acc
+  }, 0)
+})
+
 </script>
 
 <template>
@@ -94,17 +106,24 @@ const usedHardware = computed((): HardwareModule[] => {
           <div class="flex flex-row gap-2">
 
             <!-- SUIT CARD -->
-            <UIcon :name="`i-game-icons-card-${ indexToCard[index] }-${ suit }`" class="size-16 shrink-0" :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"/>
+            <div class="flex flex-col justify-top items-center w-16">
+              <UIcon :name="`i-game-icons-card-${ indexToCard[index] }-${ suit }`" class="size-16 shrink-0" :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"/>
+              <UIcon name="i-game-icons-square" class="size-12 text-gray-300" />
+              <span class="text-sm italic text-gray-400">Division</span>
+            </div>
 
             <!-- ENTRY CARD -->
             <div class="flex-1 w-full">
 
-              <h2 class="font-bold text-xl">{{ entry.name || `${entry.size}x ${entry.unit.name}` }}</h2>
+              <h2 class="font-bold text-xl">
+                {{ entry.name || `${entry.size}x ${entry.unit.name}` }}
+                ⸱ [{{ calculateEntityCost(entry)}}pts]
+              </h2>
 
               <div class="mb-2">
                 {{ displayClassificaition(entry) }}
                 <span v-if="entry.classification === 'MAC'" class="flex-row">
-                    <UIcon v-for="i in entry.class" name="i-material-symbols-light-check-box-outline-blank" class=""></UIcon>
+                    <UIcon v-for="i in (entry.class + (force.faction === 'arksworn-order' ? 1 : 0))" name="i-material-symbols-light-check-box-outline-blank" class=""></UIcon>
                   </span>
               </div>
 
@@ -143,14 +162,10 @@ const usedHardware = computed((): HardwareModule[] => {
 
               <template v-if="entry.classification === 'Formation'">
 
-                <div class="flex flex-row gap-1 mt-2">
-                  <h4 class="font-bold ">Modules</h4>
-                  <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.1); top: 12px; position: relative;"></div>
-                </div>
                 <ul class="flex flex-wrap gap-2">
-                  <template v-for="(weapon) in entry.unit.weapons">
+                  <template v-for="(weapon, index) in entry.unit.weapons">
                     <li>{{ buildWeaponDisplayString(weapon) }}</li>
-                    <span> ⸱ </span>
+                    <span v-if="index < (entry.unit.weapons.length + convertToNiceware(entry.unit.hardware).length) -1"> ⸱ </span>
                   </template>
 
                   <template v-for="(hardware, index) in convertToNiceware(entry.unit.hardware)">
@@ -193,7 +208,6 @@ const usedHardware = computed((): HardwareModule[] => {
           </div>
         </div>
 
-
         <div class="mt-4">
           <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Hardware Rules</h4>
           <p v-for="item in usedHardware" class="pb-2">
@@ -206,6 +220,18 @@ const usedHardware = computed((): HardwareModule[] => {
             {{ item.effect }}
           </p>
 
+        </div>
+
+        <!-- Reminders -->
+        <div class="mt-4">
+          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Deployment Cheat Sheet</h4>
+          <h4>Run the game (see pg. 20)</h4>
+          <ol class="list-decimal list-inside">
+            <li>Split force into 3 divisions</li>
+            <li>No division can contain more than <strong>{{Math.floor(force.entries.length / 2)}}</strong> units (MAC or Formations).</li>
+            <li>Each division must contain 1 MAC</li>
+            <li>A MAC within Division A must be specified as your <strong>commander</strong></li>
+          </ol>
         </div>
 
       </div>

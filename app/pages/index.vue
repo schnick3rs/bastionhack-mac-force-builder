@@ -5,6 +5,8 @@ import {factionName} from "#shared/utils/factions";
 const forcesStore = useForcesStore();
 const forces = forcesStore.allForces;
 
+const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.updatedAt))
+
 </script>
 
 <template>
@@ -26,7 +28,7 @@ const forces = forcesStore.allForces;
 
       Create a new force
 
-      <div><em>Lists are stored in your browers local storage</em></div>
+      <div><em>Lists are stored in your browsers local storage</em></div>
 
       <template #footer>
         <UButton to="/builder/createForce" class="w-full" size="xl">
@@ -35,27 +37,41 @@ const forces = forcesStore.allForces;
       </template>
     </UCard>
 
-    <UPageCard title="My created Forces">
+    <UPageCard :ui="{ title: 'flex-row items-center justify-between' }">
+
+      <template #title>
+        <UIcon name="i-game-icons-checklist" class="mr-2" size="20" />
+        <span>Saved forces</span>
+        <UButton to="/forces" variant="ghost" class="flex-2">View All</UButton>
+      </template>
 
       <UPageList divide>
         <UPageCard
             variant="ghost"
-            v-for="force in forces"
+            v-for="force in sortedForces.slice(0, 3)"
             :to="`/builder/${force.id}/entries`"
         >
+
           <UUser
-              :name="`${force.name}${force.faction ? ` ⸱ ${factionName(force.faction)}` : ''}`"
-              :description="`${force.pointLimit}pt ⸱ ${force.entries.length} entries`"
+              :description="`${force.pointLimit}pts ⸱ ${force.entries.length} entries`"
               :avatar="{ src: `/factions/${force.faction}-symbol.png` }"
           >
+            <template #name>{{force.name}}</template>
+            <template #description>
+              {{force.pointLimit}}pts ⸱ {{force.entries.length}} entries
+              <span v-if="force.faction"> ⸱ {{factionName(force.faction)}}</span>
+            </template>
           </UUser>
+
           <div v-if="force.createdAt" class="text-xs">
-            Created {{ new Date(force.createdAt).toLocaleString("en-GB", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }) }}
+            Modified {{ new Date(force.updatedAt).toLocaleString("en-GB", {  year: "numeric", month: "numeric", day: "numeric", hour: "2-digit", minute: "2-digit" }) }}
           </div>
 
         </UPageCard>
+
       </UPageList>
     </UPageCard>
+
     <UPageCard
         title="Learn the Factions"
         description='...'
