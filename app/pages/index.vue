@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import {useForcesStore} from "~/stores/forces";
+import {factionName} from "#shared/utils/factions";
 
 const forcesStore = useForcesStore();
 const forces = forcesStore.allForces;
@@ -43,11 +44,15 @@ const forces = forcesStore.allForces;
             :to="`/builder/${force.id}/entries`"
         >
           <UUser
-              :name="force.name"
-              :description="`A ${force.pointLimit}pt force consisting of ${force.entries.length} entries.`"
+              :name="`${force.name}${force.faction ? ` ⸱ ${factionName(force.faction)}` : ''}`"
+              :description="`${force.pointLimit}pt ⸱ ${force.entries.length} entries`"
               :avatar="{ src: `/factions/${force.faction}-symbol.png` }"
           >
           </UUser>
+          <div v-if="force.createdAt" class="text-xs">
+            Created {{ new Date(force.createdAt).toLocaleString("en-GB", { weekday: "long", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" }) }}
+          </div>
+
         </UPageCard>
       </UPageList>
     </UPageCard>

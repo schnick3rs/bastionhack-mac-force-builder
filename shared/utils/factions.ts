@@ -1,4 +1,4 @@
-
+import factions from "~~/server/data/factionRepository";
 
 
 export const iconMap: Record<string, string> = {
@@ -7,3 +7,7 @@ export const iconMap: Record<string, string> = {
     'arksworn-order': 'i-game-icons-abstract-010',
     'tourchbearer-archive': 'i-game-icons-abstract-010',
 };
+
+export function factionName(key: string) {
+    return factions.find(f => f.key === key)?.name || 'Unknown Faction';
+}
