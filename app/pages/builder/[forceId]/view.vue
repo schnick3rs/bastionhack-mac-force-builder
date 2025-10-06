@@ -5,6 +5,7 @@ import {displayClassificaition, getUsedForceHardware} from "#shared/utils/units"
 import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
 import factions from "~~/server/data/factionRepository";
 import {buildWeaponDisplayString} from "#shared/utils/weapons";
+import {factionName} from "#shared/utils/factions";
 
 const forcesStore = useForcesStore();
 const route = useRoute();
@@ -132,7 +133,7 @@ const totalUnitCount = computed(() => {
                 <div class="grid grid-cols-2 gap-2">
 
                   <ul>
-                    <li v-for="module in entry.modules" class="w-full flex flex-row justify-between items-center">
+                    <li v-for="module in entry.modules" class="w-full flex flex-row justify-between items-center odd:bg-gray-100 dark:odd:bg-gray-800" >
                       {{module.slot}} -
                       <template v-if="module.type === 'Weapon'">
                         {{buildWeaponDisplayString(module.profile)}}
@@ -194,11 +195,10 @@ const totalUnitCount = computed(() => {
 
         <div>
           {{calculateForceCost(force)}}pt ⸱ {{force.entries.length}} entries
+          <span v-if="force.faction"> ⸱ {{factionName(force.faction)}} Faction</span>
         </div>
 
         <div v-if="faction">
-          <h2 class="font-bold text-xl ">A <em>{{ faction.name }}</em> Force</h2>
-
           <div class="mt-4">
             <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Faction Special Rule</h4>
             <p class="pb-2">
@@ -208,7 +208,7 @@ const totalUnitCount = computed(() => {
           </div>
         </div>
 
-        <div class="mt-4">
+        <div class="mt-4" v-if="usedHardware && usedHardware.length > 0">
           <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Hardware Rules</h4>
           <p v-for="item in usedHardware" class="pb-2">
             <span class="font-bold">
@@ -224,13 +224,12 @@ const totalUnitCount = computed(() => {
 
         <!-- Reminders -->
         <div class="mt-4">
-          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Deployment Cheat Sheet</h4>
-          <h4>Run the game (see pg. 20)</h4>
+          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Deployment Cheat Sheet (see pg. 20)</h4>
           <ol class="list-decimal list-inside">
             <li>Split force into 3 divisions</li>
             <li>No division can contain more than <strong>{{Math.floor(force.entries.length / 2)}}</strong> units (MAC or Formations).</li>
             <li>Each division must contain 1 MAC</li>
-            <li>A MAC within Division A must be specified as your <strong>commander</strong></li>
+            <li>A MAC within Division A must be specified as your commander</li>
           </ol>
         </div>
 
