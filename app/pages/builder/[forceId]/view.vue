@@ -6,6 +6,7 @@ import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
 import factions from "~~/server/data/factionRepository";
 import {buildWeaponDisplayString} from "#shared/utils/weapons";
 import {factionName} from "#shared/utils/factions";
+import {validateForce} from "#shared/utils/forces";
 
 const forcesStore = useForcesStore();
 const route = useRoute();
@@ -75,6 +76,10 @@ const totalUnitCount = computed(() => {
     }
     return acc
   }, 0)
+})
+
+const validate = computed(() => {
+  return validateForce(force)
 })
 
 </script>
@@ -231,6 +236,17 @@ const totalUnitCount = computed(() => {
             <li>Each division must contain 1 MAC</li>
             <li>A MAC within Division A must be specified as your commander</li>
           </ol>
+        </div>
+
+        <!-- Validation -->
+        <div class="mt-4">
+          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Validation</h4>
+          <ul>
+            <li v-for="v in validate" class="mb-2">
+              <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
+              <UAlert v-else icon="i-material-symbols-light-error-outline" color="error" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
+            </li>
+          </ul>
         </div>
 
       </div>

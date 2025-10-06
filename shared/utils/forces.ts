@@ -1,4 +1,5 @@
-import type {AuxiliaryType, Entry, MAC} from "~~/types/unit";
+import type {AuxiliaryType, Entry, Force, MAC} from "~~/types/unit";
+import {calculateForceCost} from "#shared/utils/units";
 
 function sortEntries(entries: Entry[]): Entry[] {
     return [...entries].sort((a, b) => {
@@ -50,4 +51,41 @@ function sortEntries(entries: Entry[]): Entry[] {
 
 export function sortForceEntries(entries: Entry[]) {
     return sortEntries(entries);
+}
+
+/**
+ * 1. at least 3 MAC
+ * 2. max MAC Formations
+ *
+ * @param force
+ */
+export function validateForce(force: Force) {
+
+    const invalids = []
+
+    const macCount = force.entries.filter(e => e.classification === "MAC" ).length;
+    const auCount = force.entries.filter(e => e.classification === "Formation" ).length;
+
+
+    const forceCost = calculateForceCost(force);
+    if (forceCost > force.pointLimit) {
+        invalids.push({ check: 'point limit', valid: false, message: `Force cost (${forceCost}) exceeds point limit (${force.pointLimit}).` })
+    } else {
+        invalids.push({ check: 'point limit', valid: true, message: 'Force cost is within point limit.' })
+    }
+
+    if (macCount < 3) {
+        invalids.push({ check: 'at least 3 MAC', valid: false, message: `Only ${macCount} MACs found, need at least 3.` })
+    } else {
+        invalids.push({ check: 'at least 3 MAC', valid: true, message: 'At least 3 MACs found.' })
+    }
+
+    if (auCount > macCount) {
+        invalids.push({ check: 'max MAC Formations', valid: false, message: `More than ${macCount} Formations found, only ${auCount} allowed.` })
+    } else {
+        invalids.push({ check: 'max MAC Formations', valid: true, message: `No more than ${macCount} Formations found.` })
+    }
+
+
+    return invalids;
 }

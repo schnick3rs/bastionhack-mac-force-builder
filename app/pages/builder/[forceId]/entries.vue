@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import {useForcesStore} from "~/stores/forces";
   import type {Force} from "~~/types/unit";
+  import {validateForce} from "#shared/utils/forces";
 
   const forcesStore = useForcesStore();
   const route = useRoute();
@@ -59,6 +60,8 @@
 
   const cost = computed(() => calculateForceCost(force));
 
+  const validate = computed(() => validateForce(force))
+
 </script>
 
 <template>
@@ -108,6 +111,16 @@
           <EntryPreviewItem :entry="entry" @removeEntry="removeEntry($event)"></EntryPreviewItem>
         </UPageCard>
       </UPageList>
+
+      <!-- Validation -->
+      <div class="mt-4">
+        <ul>
+          <li v-for="v in validate" class="mb-2">
+            <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
+            <UAlert v-else icon="i-material-symbols-light-error-outline" color="error" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
+          </li>
+        </ul>
+      </div>
 
       <pre class="hidden">
         {{ force }}
