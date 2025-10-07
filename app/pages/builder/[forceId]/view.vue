@@ -97,7 +97,7 @@ const validate = computed(() => {
 
   <div class="flex flex-col justify-center align-center page" v-if="force">
 
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 print-layout">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 print:gap-4 print-layout">
 
       <!-- ENTRIES -->
       <UPageList class="col-span-3" data="page-list">
@@ -105,7 +105,7 @@ const validate = computed(() => {
         <UPageCard
             v-for="(entry, index) in force.entries"
             orientation="vertical"
-            class="mb-3 page-unit-card"
+            class="mb-3 print:break-inside-avoid"
             :ui="{ container: 'sm:p-2' }"
         >
           <div class="flex flex-row gap-2">
@@ -152,11 +152,7 @@ const validate = computed(() => {
                   </ul>
 
                   <div>
-                    <div class="flex flex-row gap-1">
-                      <h4 class="font-bold ">Notes</h4>
-                      <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.1); top: 12px; position: relative;"></div>
-                    </div>
-                    <UTextarea class="w-full" :rows="5" placeholder="Perks, Flaws, Pilot Skills, ...."></UTextarea>
+                    <UTextarea class="w-full" :rows="4" placeholder="Perks, Flaws, Pilot Skills, ...."></UTextarea>
                   </div>
 
                 </div>
@@ -228,8 +224,9 @@ const validate = computed(() => {
 
         <!-- Reminders -->
         <div class="mt-4">
-          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Deployment Cheat Sheet (see pg. 20)</h4>
-          <ol class="list-decimal list-inside">
+          <h4 class="font-bold text-xl pb-1 underline underline-offset-4 under">Deployment Cheat Sheet</h4>
+          <p class="italic pb-2">see pg. 20</p>
+          <ol class="list-decimal ml-4">
             <li>Split force into 3 divisions</li>
             <li>No division can contain more than <strong>{{Math.floor(force.entries.length / 2)}}</strong> units (MAC or Formations).</li>
             <li>Each division must contain 1 MAC</li>
@@ -257,7 +254,20 @@ const validate = computed(() => {
 </template>
 
 <style scoped>
+
 @media print {
+
+  body {
+    zoom: 1.0;
+  }
+
+  @page {
+    size: A4;
+    margin-top: 5mm; /* or whatever you want */
+    margin-left: 5mm;
+    margin-right: 5mm;
+    margin-bottom: 5mm;
+  }
 
   .page {
     font-size: 3.6mm;
@@ -268,8 +278,8 @@ const validate = computed(() => {
     font-size: 4.2mm;
   }
 
-  .page-unit-card {
-    break-inside: avoid-page;
+  .card {
+    margin-top: 1rem; /* extra spacing from top */
   }
 }
 
