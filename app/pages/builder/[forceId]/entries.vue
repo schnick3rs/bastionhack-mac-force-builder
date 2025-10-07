@@ -110,7 +110,7 @@
         v-if="force.mods?.includes('Remote Assets')"
         v-model:open="remoteAssetModelOpen"
         title="Add Remote Asset"
-        description="Add a remote asset to the force"
+        description="See pg. 54-55 from the MAC attack Rulebook."
     >
       <UButton
           color="info"
@@ -122,21 +122,23 @@
       <template #body>
         <div class="flex flex-col gap-2">
 
-          <UInput v-model="remoteAsset.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-2">
-            <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
-              <span class="inline-flex bg-default px-1">Name</span>
-            </label>
-          </UInput>
+          <UFieldGroup>
+            <UInput v-model="remoteAsset.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4 w-full">
+              <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+                <span class="inline-flex bg-default px-1">Name</span>
+              </label>
+            </UInput>
 
-          <UInput v-model="remoteAsset.cost" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-2" type="number" min="1" max="5">
-            <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
-              <span class="inline-flex bg-default px-1">Cost (pts)</span>
-            </label>
-          </UInput>
+            <UInput v-model="remoteAsset.cost" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4 w-24" type="number" min="1" max="5">
+              <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+                <span class="inline-flex bg-default px-1">Cost</span>
+              </label>
+            </UInput>
+          </UFieldGroup>
 
-          <UTextarea v-model="remoteAsset.effect" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-2" :rows="6" autoresize>
+          <UTextarea v-model="remoteAsset.effect" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4" :rows="6" autoresize>
             <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
-              <span class="inline-flex bg-default px-1">effect</span>
+              <span class="inline-flex bg-default px-1">Effect / Description</span>
             </label>
           </UTextarea>
 
