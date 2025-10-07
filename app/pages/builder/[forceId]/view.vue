@@ -218,7 +218,7 @@ function handlePrint() {
       <!-- RULES -->
       <div class="col-span-2">
 
-        <h1 class="font-bold text-2xl">{{ force.name }}</h1>
+        <h1 class="font-bold text-2xl page-headline" >{{ force.name }}</h1>
 
         <div>
           {{calculateForceCost(force)}}pt ⸱ {{force.entries.length}} entries
@@ -227,7 +227,7 @@ function handlePrint() {
 
         <div v-if="faction">
           <div class="mt-4">
-            <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Faction Special Rule</h4>
+            <h4 class="font-bold text-xl pb-1 under">Faction Special Rule</h4>
             <p class="pb-2">
               <span class="font-bold">{{ faction.specialRule.name }}:</span>
               {{ faction.specialRule.description }}
@@ -236,7 +236,7 @@ function handlePrint() {
         </div>
 
         <div class="mt-4" v-if="usedHardware && usedHardware.length > 0">
-          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Hardware Rules</h4>
+          <h4 class="font-bold text-xl pb-1 under">Hardware Rules</h4>
           <p v-for="item in usedHardware" class="pb-2">
             <span class="font-bold">
               {{ item.name }}
@@ -251,7 +251,7 @@ function handlePrint() {
 
         <!-- Reminders -->
         <div class="mt-4">
-          <h4 class="font-bold text-xl pb-1 underline underline-offset-4 under">Deployment Cheat Sheet</h4>
+          <h4 class="font-bold text-xl under">Deployment Cheat Sheet</h4>
           <p class="italic pb-2">see pg. 20</p>
           <ol class="list-decimal ml-4">
             <li>Split force into 3 divisions</li>
@@ -262,11 +262,11 @@ function handlePrint() {
         </div>
 
         <!-- Validation -->
-        <div class="mt-4">
-          <h4 class="font-bold text-xl pb-2 underline underline-offset-4 under">Validation</h4>
+        <div class="mt-4" :class="{ 'print:hidden': validate.filter(v => v.valid).length > 0 }">
+          <h4 class="font-bold text-xl pb-1 under">Validation</h4>
           <ul>
             <li v-for="v in validate" class="mb-2">
-              <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
+              <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" class=" print:hidden" :ui="{ root: 'p-2'}"></UAlert>
               <UAlert v-else icon="i-material-symbols-light-error-outline" color="error" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
             </li>
           </ul>
@@ -309,6 +309,15 @@ function handlePrint() {
   .page {
     font-size: 3.6mm;
     line-height: 1.2;
+  }
+
+  .page-headline {
+    font-family: serif !important;
+    background-color: black;
+    color: white;
+    border-radius: 2mm 0 0 2mm;
+    padding-left: 3mm;
+    font-size: 4.5mm;
   }
 
   .page-xl {
