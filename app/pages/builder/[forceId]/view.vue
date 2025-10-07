@@ -19,6 +19,10 @@ if (!force) {
 const hardware = getHardwareCatalogue(force.faction)
 const faction = factions.find((f) => f.key === force.faction)
 
+useHead({
+  title: `${force.name} | MACtory`,
+})
+
 const suit = ref('spades')
 
 //'spades', 'hearts', 'diamonds', 'clubs'
@@ -97,7 +101,7 @@ const validate = computed(() => {
 
   <div class="flex flex-col justify-center align-center page" v-if="force">
 
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 print:gap-4 print-layout">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 print:grid-cols-5 print:gap-4 print-layout">
 
       <!-- ENTRIES -->
       <UPageList class="col-span-3" data="page-list">
@@ -262,11 +266,21 @@ const validate = computed(() => {
   }
 
   @page {
-    size: A4;
+    size: A4 portrait;
     margin-top: 5mm; /* or whatever you want */
     margin-left: 5mm;
     margin-right: 5mm;
-    margin-bottom: 5mm;
+    margin-bottom: 10mm;
+
+    @bottom-center {
+      font-size: 3.2mm;
+      content: counter(page) " / " counter(pages);
+    }
+    @bottom-right {
+      font-size: 3.2mm;
+      content: "Created with MACtory at mactory.ravenbeak.dev";
+    }
+
   }
 
   .page {
