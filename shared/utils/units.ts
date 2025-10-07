@@ -18,6 +18,9 @@ export function calculateEntityCost(entry: Entry): number {
     if (entry.classification === 'Formation') {
         return calculateFormationCost(entry as Formation);
     }
+    if (entry.classification === 'Remote asset') {
+        return entry.cost || 0;
+    }
     return 0;
 }
 

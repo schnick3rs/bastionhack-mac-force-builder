@@ -14,6 +14,9 @@ const name = computed(() => {
   if (entry.classification === 'Formation') {
     return entry.unit.name;
   }
+  if (entry.classification === 'Remote asset') {
+    return entry.name;
+  }
 })
 
 const icon = computed(() => {
@@ -28,6 +31,9 @@ const icon = computed(() => {
       return 'i-game-icons-tank';
     }
   }
+  if (entry.classification === 'Remote asset') {
+    return 'i-game-icons-anti-aircraft-gun';
+  }
 })
 
 const description = computed(() => {
@@ -36,6 +42,9 @@ const description = computed(() => {
   }
   if (entry.classification === 'Formation') {
     return `${entry.unit.type} Formation`;
+  }
+  if (entry.classification === 'Remote asset') {
+    return entry.effect;
   }
 })
 
@@ -63,7 +72,7 @@ function remove(id: string) {
 
     <div class="w-full flex gap-1 justify-between items-center">
 
-      <div class="shrink-0 pr-2">
+      <div class="pr-2">
         <UAvatar :icon="icon"size="3xl"></UAvatar>
       </div>
 
@@ -72,7 +81,7 @@ function remove(id: string) {
           <span v-if="entry.classification === 'Formation'">{{entry.size}}x </span>
           {{ name }}
         </p>
-        <p class="text-sm text-gray-500 truncate dark:text-gray-400">
+        <p class="text-sm text-gray-500 truncate dark:text-gray-400 w-64">
           {{ description }}
         </p>
       </div>

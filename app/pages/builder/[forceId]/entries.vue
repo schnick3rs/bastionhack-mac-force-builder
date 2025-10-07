@@ -34,12 +34,29 @@
       selectEntry(id)
     }
   }
+
+  const remoteAssetModelOpen = ref(false)
+  const remoteAsset = reactive({
+    name: '',
+    cost: 1,
+    effect: '',
+  })
+
   function addRemoteAsset() {
-    const id = forcesStore.addNewEntry(forceId, 'RemoteAsset');
+    const entryTemplate = {
+      name: remoteAsset.name,
+      cost: remoteAsset.cost,
+      effect: remoteAsset.effect,
+    }
+    const id = forcesStore.addNewEntry(forceId, 'Remote Asset', entryTemplate);
+    remoteAsset.name = '';
+    remoteAsset.cost = 1;
+    remoteAsset.effect = '';
     console.info('New RemoteAsset added', id)
     if (id) {
       selectEntry(id)
     }
+    remoteAssetModelOpen.value = false;
   }
 
   function removeEntry(entryId: string) {
@@ -80,6 +97,7 @@
   <div class="font-xl">
     <span>Point {{cost}} / {{force.pointLimit}} pts</span>
     - <span class="text-sm">[{{force.entries.length}} entries]</span>
+    <span v-if="force.mods && force.mods.length > 0">{{ force.mods }}</span>
   </div>
 
 
@@ -87,7 +105,47 @@
     <UButton color="info" variant="outline" @click="addMac">Add MAC</UButton>
     <UButton color="info" variant="outline" @click="addVehicleFormation">Add Vehicle Formation</UButton>
     <UButton color="info" variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
-    <UTooltip text="Enable Remote Assets Variant Rule">
+
+    <UModal
+        v-if="force.mods?.includes('Remote Assets')"
+        v-model:open="remoteAssetModelOpen"
+        title="Add Remote Asset"
+        description="Add a remote asset to the force"
+    >
+      <UButton
+          color="info"
+          variant="outline"
+      >
+        Add Remote Asset
+      </UButton>
+
+      <template #body>
+        <div class="flex flex-col gap-2">
+
+          <UInput v-model="remoteAsset.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-2">
+            <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+              <span class="inline-flex bg-default px-1">Name</span>
+            </label>
+          </UInput>
+
+          <UInput v-model="remoteAsset.cost" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-2" type="number" min="1" max="5">
+            <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+              <span class="inline-flex bg-default px-1">Cost (pts)</span>
+            </label>
+          </UInput>
+
+          <UTextarea v-model="remoteAsset.effect" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-2" :rows="6" autoresize>
+            <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+              <span class="inline-flex bg-default px-1">effect</span>
+            </label>
+          </UTextarea>
+
+          <UButton @click="addRemoteAsset">Add Asset</UButton>
+        </div>
+      </template>
+    </UModal>
+
+    <UTooltip v-else text="Enable Remote Assets Variant Rule">
       <UButton color="neutral" variant="subtle" disabled @click="addRemoteAsset">Add Remote Asset</UButton>
     </UTooltip>
   </UFieldGroup>

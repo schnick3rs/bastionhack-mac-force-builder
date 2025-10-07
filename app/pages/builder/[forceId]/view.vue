@@ -202,7 +202,6 @@ function handlePrint() {
 
                 </div>
 
-
               </template>
 
 
@@ -223,6 +222,10 @@ function handlePrint() {
                   </template>
                 </ul>
 
+              </template>
+
+              <template v-if="entry.classification === 'Remote asset'">
+                <p>{{entry.effect}}</p>
               </template>
 
             </div>

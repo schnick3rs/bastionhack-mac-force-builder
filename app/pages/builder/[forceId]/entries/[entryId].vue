@@ -22,6 +22,7 @@
 
     <EntryMacEditor v-if="entry.classification === 'MAC'" :entry="entry" :factionKey="force?.faction" />
     <EntryFormationEditor v-if="entry.classification === 'Formation'" :entry="entry"  :factionKey="force?.faction" />
+    <EntryRemoteAssetEditor v-if="entry.classification === 'Remote asset'" :entry="entry"/>
 
   </UPageCard>
 

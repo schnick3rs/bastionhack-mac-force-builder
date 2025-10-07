@@ -1,5 +1,5 @@
 import {defineStore} from "pinia";
-import type {Auxiliary, Entry, Force, Formation, MAC, WeaponProfile,} from "~~/types/unit";
+import type {Auxiliary, Entry, Force, Formation, MAC, RemoteAsset, WeaponProfile,} from "~~/types/unit";
 import {parseWeaponString} from "#shared/utils/weapons";
 import {sortForceEntries} from "#shared/utils/forces";
 
@@ -157,12 +157,13 @@ export const useForcesStore = defineStore('forcesStore', {
                 faction: options.factionKey || undefined,
                 createdAt: Date.now(),
                 updatedAt: Date.now(),
+                mods: options.mods,
             }
             this.forces.push(force);
             return force;
         },
 
-        addNewEntry(forceId: string, variant: string) {
+        addNewEntry(forceId: string, variant: string, template?: any) {
             let force = this.forces.find((force) => force.id === forceId);
             if (!force) return; // ✅ safety
 
@@ -223,6 +224,17 @@ export const useForcesStore = defineStore('forcesStore', {
                         unit: infantry
                     }
                     force.entries.push(infantryFormation);
+                    break;
+
+                case 'Remote Asset':
+                    const remoteAsset: RemoteAsset = {
+                        classification: "Remote asset",
+                        id: id,
+                        name: template?.name || 'unidentified asset',
+                        cost: template?.cost || 0,
+                        effect: template?.effect || 'unknown effect',
+                    }
+                    force.entries.push(remoteAsset);
                     break;
             }
             force.entries = sortForceEntries(force.entries);

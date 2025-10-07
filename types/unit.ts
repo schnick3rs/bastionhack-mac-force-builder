@@ -62,6 +62,8 @@ export interface Formation {
 export interface RemoteAsset {
     id: string
     name: string
+    cost?: number
+    effect?: string
     classification: 'Remote asset'
 }
 
@@ -92,8 +94,10 @@ export interface Force {
     symbol?: string // an avatar style icon to be displayed
 
     // mods and variants
-    mods?: string[]
+    mods?: VariantRules[]
 }
+
+export type VariantRules = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilots' | 'Commanders'
 
 export interface FactionRule {
     name: string

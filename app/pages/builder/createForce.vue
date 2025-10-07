@@ -24,7 +24,10 @@ const state =  reactive({
   description: '',
   pointLimit: 50,
   faction: '',
+  mods: [],
 })
+
+const modRemoteAssets = ref(false)
 
 const faction = ref('')
 
@@ -54,6 +57,10 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   toast.add({ title: 'Success', description: 'A new force has ben created.', color: 'success' })
 
   let force = event.data;
+
+  if (modRemoteAssets.value) {
+    force.mods.push('Remote Assets')
+  }
 
   const createdForce = await forces.createNewForceList({...force, symbol, factionKey: faction.value})
 
@@ -139,21 +146,25 @@ function setPointLimit(pointLimit: number) {
 
         </div>
 
-        <div class="text-center">
-          <UButton type="submit" size="xl" class="w-1/2">Create Force</UButton>
+        <div>
+
+          <h2 class="font-bold text-xl mb-2">Enable Variant Rules</h2>
+
+          <UAlert
+              color="warning"
+              variant="subtle"
+              icon="i-material-symbols-light-settings-alert"
+              title="Usage Notes"
+              class="mb-4 light:text-amber-600"
+              description="This does not add the rules but allows for the user to add content from the Rulebook into their local storage for use"
+          ></UAlert>
+
+          <USwitch v-model="modRemoteAssets" size="xl" label="Remote Assets" description="Add off-board support effects" />
+
         </div>
 
-        <div class="hidden">
-
-          <h2>Activate Variant Rules</h2>
-
-          <USwitch size="xl" label="Perks and Flaws" description="MACs get benefits and drawbacks"/>
-
-          <USwitch size="xl" label="Remote Assets" description="Add off-board support effects" />
-
-          <USwitch size="xl" label="Pilots" description="Add Ace and Rookie pilots"/>
-
-
+        <div class="text-center">
+          <UButton type="submit" size="xl" class="w-1/2">Create Force</UButton>
         </div>
 
       </div>
