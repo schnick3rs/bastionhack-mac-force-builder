@@ -86,29 +86,26 @@ const validate = computed(() => {
 
 <template>
 
-  <div class="flex justify-center mb-4">
+  <div class="flex justify-center mb-4 print:hidden">
     <UFieldGroup size="xl">
       <UButton color="neutral" :variant="suit === 'clubs' ? 'solid' : 'outline'" icon="i-game-icons-clubs" @click="suit = 'clubs'" />
       <UButton color="neutral" :variant="suit === 'spades' ? 'solid' : 'outline'" icon="i-game-icons-spades" @click="suit = 'spades'" />
       <UButton color="error" :variant="suit === 'hearts' ? 'solid' : 'outline'" icon="i-game-icons-hearts" @click="suit = 'hearts'" />
       <UButton color="error" :variant="suit === 'diamonds' ? 'solid' : 'outline'" icon="i-game-icons-diamonds" @click="suit = 'diamonds'" />
     </UFieldGroup>
-
-    <UButton :to="`/builder/${force.id}/print`">Print</UButton>
   </div>
 
+  <div class="flex flex-col justify-center align-center page" v-if="force">
 
-  <div class="flex flex-col justify-center align-center" v-if="force">
-
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4 print-layout">
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 print-layout">
 
       <!-- ENTRIES -->
-      <UPageList class="col-span-2" data="page-list">
+      <UPageList class="col-span-3" data="page-list">
 
         <UPageCard
             v-for="(entry, index) in force.entries"
             orientation="vertical"
-            class="mb-3"
+            class="mb-3 page-unit-card"
             :ui="{ container: 'sm:p-2' }"
         >
           <div class="flex flex-row gap-2">
@@ -196,7 +193,7 @@ const validate = computed(() => {
       </UPageList>
 
       <!-- RULES -->
-      <div>
+      <div class="col-span-2">
 
         <h1 class="font-bold text-2xl">{{ force.name }}</h1>
 
@@ -258,3 +255,22 @@ const validate = computed(() => {
   </div>
 
 </template>
+
+<style scoped>
+@media print {
+
+  .page {
+    font-size: 3.6mm;
+    line-height: 1.2;
+  }
+
+  .page-xl {
+    font-size: 4.2mm;
+  }
+
+  .page-unit-card {
+    break-inside: avoid-page;
+  }
+}
+
+</style>

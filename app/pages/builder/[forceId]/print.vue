@@ -92,15 +92,15 @@ const validate = computed(() => {
 
   <div class="flex flex-col justify-center align-center" v-if="force">
 
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 pt-4" >
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 page" >
 
       <!-- ENTRIES -->
-      <UPageList class="col-span-2" data="page-list">
+      <UPageList class="col-span-3" data="page-list">
 
         <UPageCard
             v-for="(entry, index) in force.entries"
             orientation="vertical"
-            class="mb-3"
+            class="mb-3 page-unit-card"
             :ui="{ container: 'sm:p-2' }"
         >
           <div class="flex flex-row gap-2">
@@ -147,11 +147,7 @@ const validate = computed(() => {
                   </ul>
 
                   <div>
-                    <div class="flex flex-row gap-1">
-                      <h4 class="font-bold ">Notes</h4>
-                      <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.1); top: 12px; position: relative;"></div>
-                    </div>
-                    <UTextarea class="w-full" :rows="5" placeholder="Perks, Flaws, Pilot Skills, ...."></UTextarea>
+                    <UTextarea class="w-full" :rows="4" placeholder="Perks, Flaws, Pilot Skills, ...."></UTextarea>
                   </div>
 
                 </div>
@@ -188,7 +184,7 @@ const validate = computed(() => {
       </UPageList>
 
       <!-- RULES -->
-      <div style="font-size: 3.1mm">
+      <div class="col-span-2">
 
         <h1 class="font-bold text-2xl">{{ force.name }}</h1>
 
@@ -252,4 +248,16 @@ const validate = computed(() => {
 </template>
 
 <style scoped>
+.page {
+  font-size: 3.6mm;
+  line-height: 1.2;
+}
+
+.page-xl {
+  font-size: 4.2mm;
+}
+
+.page-unit-card {
+  break-inside: avoid-page;
+}
 </style>

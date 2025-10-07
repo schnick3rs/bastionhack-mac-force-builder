@@ -17,7 +17,7 @@ const items = computed<NavigationMenuItem[]>(() => [
 </script>
 
 <template>
-  <UHeader>
+  <UHeader class="print:hidden">
     <template #title>
       <NuxtImg src="mactory-square-800x800.jpg" class="w-8"></NuxtImg>
       MACtory
