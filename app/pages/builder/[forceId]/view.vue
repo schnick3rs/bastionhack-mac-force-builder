@@ -45,6 +45,13 @@ const indexToCard = [
   '1',
 ]
 
+const suitSwap = {
+  'spades': 'clubs',
+  'hearts': 'diamonds',
+  'diamonds': 'hearts',
+  'clubs': 'spades',
+}
+
 function groupBy<T extends Record<string, any>, K extends keyof T>(
     array: T[],
     key: K
@@ -139,7 +146,18 @@ function handlePrint() {
 
             <!-- SUIT CARD -->
             <div class="flex flex-col justify-top items-center w-16">
-              <UIcon :name="`i-game-icons-card-${ indexToCard[index] }-${ suit }`" class="size-16 shrink-0" :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"/>
+              <UIcon
+                  v-if="index < 13"
+                  :name="`i-game-icons-card-${ indexToCard[index] }-${ suit }`"
+                  class="size-16 shrink-0"
+                  :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"
+              />
+              <UIcon
+                  v-if="index > 12"
+                  :name="`i-game-icons-card-${ indexToCard[index-13] }-${ suitSwap[suit] }`"
+                  class="size-16 shrink-0"
+                  :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"
+              />
               <UIcon name="i-game-icons-square" class="size-12 text-gray-300" />
               <span class="text-sm italic text-gray-400">Division</span>
             </div>
