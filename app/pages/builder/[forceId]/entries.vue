@@ -78,9 +78,8 @@
   <em>{{ force.description }}</em>
 
   <div class="font-xl">
-    <span class="text-sm">[{{force.entries.length}} entries]</span>
-    Point {{cost}} / {{force.pointLimit}} pt
-    <UButton size="sm" color="info" variant="outline" icon="i-material-symbols-light-eye-tracking-outline" :to="`/builder/${force.id}/view`">Print</UButton>
+    <span>Point {{cost}} / {{force.pointLimit}} pts</span>
+    - <span class="text-sm">[{{force.entries.length}} entries]</span>
   </div>
 
 

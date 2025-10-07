@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import type { NavigationMenuItem } from '@nuxt/ui'
 
+const route = useRoute();
+const forceId = computed(() => route.params.forceId|| null)
 
 const items = computed<NavigationMenuItem[]>(() => [
   {
@@ -25,6 +27,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     <UNavigationMenu :items="items" />
 
     <template #right>
+      <UButton v-if="forceId" :to="`/builder/${forceId}/view`" color="neutral" variant="ghost" size="xl" icon="i-material-symbols-light-table-eye-outline"></UButton>
       <UColorModeButton />
     </template>
   </UHeader>

@@ -86,18 +86,41 @@ const validate = computed(() => {
   return validateForce(force)
 })
 
+function handlePrint() {
+  window.print()
+}
+
 </script>
 
 <template>
 
-  <div class="flex justify-center mb-4 print:hidden">
-    <UFieldGroup size="xl">
-      <UButton color="neutral" :variant="suit === 'clubs' ? 'solid' : 'outline'" icon="i-game-icons-clubs" @click="suit = 'clubs'" />
-      <UButton color="neutral" :variant="suit === 'spades' ? 'solid' : 'outline'" icon="i-game-icons-spades" @click="suit = 'spades'" />
-      <UButton color="error" :variant="suit === 'hearts' ? 'solid' : 'outline'" icon="i-game-icons-hearts" @click="suit = 'hearts'" />
-      <UButton color="error" :variant="suit === 'diamonds' ? 'solid' : 'outline'" icon="i-game-icons-diamonds" @click="suit = 'diamonds'" />
-    </UFieldGroup>
+  <div class="flex items-center mb-4 print:hidden justify-between">
+    <!-- Left -->
+    <div>
+      <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/entries`">
+        Back
+      </UButton>
+    </div>
+
+    <!-- Center -->
+    <div class="flex-1 flex justify-center">
+      <UFieldGroup size="xl">
+        <UButton color="neutral" :variant="suit === 'clubs' ? 'solid' : 'outline'" icon="i-game-icons-clubs" @click="suit = 'clubs'" />
+        <UButton color="neutral" :variant="suit === 'spades' ? 'solid' : 'outline'" icon="i-game-icons-spades" @click="suit = 'spades'" />
+        <UButton color="error" :variant="suit === 'hearts' ? 'solid' : 'outline'" icon="i-game-icons-hearts" @click="suit = 'hearts'" />
+        <UButton color="error" :variant="suit === 'diamonds' ? 'solid' : 'outline'" icon="i-game-icons-diamonds" @click="suit = 'diamonds'" />
+      </UFieldGroup>
+    </div>
+
+
+    <div>
+      <UButton size="xl" variant="outline" color="info" class="font-bold cursor-pointer" icon="i-material-symbols-light-print" @click="handlePrint">
+        Print
+      </UButton>
+    </div>
+
   </div>
+
 
   <div class="flex flex-col justify-center align-center page" v-if="force">
 
