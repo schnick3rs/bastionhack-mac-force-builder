@@ -134,10 +134,6 @@ export const useForcesStore = defineStore('forcesStore', {
 
     actions: {
 
-        async fetchAllForces() {
-            return this.forces;
-        },
-
         touchForce(forceId: string) {
             const force = this.forceById(forceId);
             if (force) {
@@ -161,6 +157,11 @@ export const useForcesStore = defineStore('forcesStore', {
             }
             this.forces.push(force);
             return force;
+        },
+
+        deleteForce(forceId: string) {
+            const index = this.forces.findIndex((force: Force) => force.id === forceId);
+            this.forces.splice(index, 1);
         },
 
         addNewEntry(forceId: string, variant: string, template?: any) {

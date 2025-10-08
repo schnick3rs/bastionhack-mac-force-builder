@@ -52,15 +52,32 @@ const columns: TableColumn<Force>[] = [
     header: 'Actions',
     cell: ({ row }) => {
       let force = row.original;
-      return h(UButton, {
-        color: 'info',
-        variant: 'outline',
-        size: 'sm',
-        to: `/builder/${force.id}/entries`,
-      }, { default: () => 'Edit' })
+      return h('div', { class: 'flex gap-2' }, [
+        h(UButton, {
+          icon: 'i-material-symbols-light-edit-outline',
+          color: 'info',
+          variant: 'ghost',
+          size: 'sm',
+          to: `/builder/${force.id}/entries`,
+        }, { default: () => 'Edit' }),
+        h(UButton, {
+          icon: 'i-material-symbols-light-cancel-outline',
+          color: 'error',
+          variant: 'ghost',
+          size: 'sm',
+          onClick: () => deleteForce(force)
+        }, { default: () => 'Delete' }),
+      ]);
     }
-  }
+  },
 ]
+
+const deleteForce = (force: force) => {
+  const forceName = force.name;
+  forcesStore.deleteForce(force.id)
+  const toast = useToast()
+  toast.add({ title: 'Deleted', description: `Force '${forceName}' was removed!`, color: 'error' });
+}
 
 const selectedRow = ref<TableRow<Force> | null>(null)
 function onHover(_e: Event, row: TableRow<Force> | null) {
