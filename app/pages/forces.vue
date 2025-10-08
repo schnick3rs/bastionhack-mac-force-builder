@@ -2,13 +2,14 @@
 import { h, resolveComponent } from 'vue'
 import type {TableColumn, TableRow} from '@nuxt/ui'
 import {useForcesStore} from "~/stores/forces";
-import type {Entry, Force} from "~~/types/unit";
+import type {Entry, Force, VariantRule} from "~~/types/unit";
 
 const forcesStore = useForcesStore()
 const forces = forcesStore.allForces;
 const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.updatedAt))
 
 const UButton = resolveComponent('UButton')
+const UBadge = resolveComponent('UBadge')
 const columns: TableColumn<Force>[] = [
   {
     accessorKey: 'name',
@@ -23,8 +24,31 @@ const columns: TableColumn<Force>[] = [
     },
   },
   {
+    accessorKey: 'mods',
+    header: 'Variant Rules',
+    cell: ({ row }) => {
+      let mods = row.getValue('mods') as VariantRule[];
+      if (!mods) return '-';
+      return h('div', { class: 'flex flex-col flex-wrap gap-2' },
+          mods.map(mod =>
+              h(UBadge, {
+                color: 'neutral',
+                variant: 'outline',
+                icon: 'i-game-icons-gear-hammer',
+              }, { default: () => mod })
+          )
+      );
+    },
+  },
+  {
     accessorKey: 'pts',
     header: 'Points',
+    meta: {
+      class: {
+        th: 'text-right',
+        td: 'text-right',
+      },
+    },
     cell: ({ row }) => {
       let force = row.original;
       const forceCost = calculateForceCost(force)
@@ -34,6 +58,12 @@ const columns: TableColumn<Force>[] = [
   {
     accessorKey: 'entries',
     header: '# Entries',
+    meta: {
+      class: {
+        th: 'text-right',
+        td: 'text-right',
+      },
+    },
     cell: ({ row }) => {
       let entries = row.getValue('entries') as Entry[];
       return entries.length;

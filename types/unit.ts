@@ -87,6 +87,8 @@ export interface RemoteAssetDefinition {
     effect: string,
 }
 
+export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilots' | 'Commanders'
+
 export interface Force {
 
     id: string
@@ -105,10 +107,9 @@ export interface Force {
     symbol?: string // an avatar style icon to be displayed
 
     // mods and variants
-    mods?: VariantRules[]
+    mods?: VariantRule[]
 }
 
-export type VariantRules = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilots' | 'Commanders'
 
 export interface FactionRule {
     name: string
