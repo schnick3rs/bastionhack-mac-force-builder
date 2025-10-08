@@ -5,8 +5,8 @@ import {useForcesStore} from "~/stores/forces";
 import type {Entry, Force} from "~~/types/unit";
 
 const forcesStore = useForcesStore()
-
-const sortedForces = computed(() => forcesStore.forces.toSorted((a, b) => b.updatedAt - a.updatedAt))
+const forces = forcesStore.allForces;
+const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.updatedAt))
 
 const UButton = resolveComponent('UButton')
 const columns: TableColumn<Force>[] = [
