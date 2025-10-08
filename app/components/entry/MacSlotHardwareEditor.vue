@@ -29,9 +29,10 @@ const hardwareModule = ref('')
   >
 
     <template #item-label="{ item }">
-
       {{ item.name }}
-
+      <template v-if="factionKey && item.origin === 'faction'">
+        <UAvatar :src="`/factions/${factionKey}-symbol.png`" class="size-4 mb-1"/>
+      </template>
       <div class="text-muted">
         {{ item.effect }}
       </div>
