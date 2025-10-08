@@ -119,7 +119,6 @@ function handlePrint() {
       </UFieldGroup>
     </div>
 
-
     <div>
       <UButton size="xl" variant="outline" color="info" class="font-bold cursor-pointer" icon="i-material-symbols-light-print" @click="handlePrint">
         Print
@@ -127,7 +126,6 @@ function handlePrint() {
     </div>
 
   </div>
-
 
   <div class="flex flex-col justify-center align-center page" v-if="force">
 
@@ -177,6 +175,7 @@ function handlePrint() {
                   </span>
               </div>
 
+              <!-- MAC Entry -->
               <template v-if="entry.classification === 'MAC'">
 
                 <div class="grid grid-cols-2 gap-2">
@@ -197,7 +196,12 @@ function handlePrint() {
                   </ul>
 
                   <div>
-                    <UTextarea class="w-full" :rows="4" placeholder="Perks, Flaws, Pilot Skills, ...."></UTextarea>
+                    <template v-if="force.mods && force.mods.includes('Perks & Flaws')">
+                      <div v-for="feat in entry.perks" ><p class="text-sm page-text-sm"><span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}</p></div>
+                      <div v-for="feat in entry.flaws" ><p class="text-sm page-text-sm"><span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}</p></div>
+                      <UTextarea class="w-full" :rows="2" placeholder="Pilot Skills, Notes, ...."></UTextarea>
+                    </template>
+                    <UTextarea v-else class="w-full" :rows="4" placeholder="Perks, Flaws, Pilot Skills, Notes, ...."></UTextarea>
                   </div>
 
                 </div>
@@ -330,6 +334,11 @@ function handlePrint() {
   .page {
     font-size: 3.6mm;
     line-height: 1.2;
+  }
+
+  .page-text-sm {
+    font-size: 3.2mm;
+    line-height: 1.1;
   }
 
   .page-headline {
