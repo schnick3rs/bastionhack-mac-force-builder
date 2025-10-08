@@ -63,6 +63,20 @@ function remove(id: string) {
   emit('removeEntry', id);
 }
 
+
+const mergedPerkFlaws = computed(() => {
+  const merged =  []
+  if (entry.classification === 'MAC' && entry.perks) {
+    if (entry.perks) {
+      merged.push(...entry.perks)
+    }
+    if (entry.flaws) {
+      merged.push(...entry.flaws)
+    }
+  }
+  return merged;
+})
+
 </script>
 
 <template>
@@ -82,8 +96,29 @@ function remove(id: string) {
           {{ name }}
         </p>
         <p class="text-sm text-gray-500 truncate dark:text-gray-400 w-64">
-          {{ description }}
+          <span>{{ description }}</span>
+
+          <template v-if="entry.classification === 'MAC' && entry.pilot">&nbsp;⸱&nbsp;
+            <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? 'Rookie Pilot' : entry.pilot.trick.effect">
+              <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+                {{ entry.pilot.name }}
+              </span>
+            </UTooltip>
+          </template>
         </p>
+        <div class="text-sngle-line-ellipsis text-sm text-gray-500 dark:text-gray-400 w-64 pt-1">
+          <template v-if="entry.classification === 'MAC' && mergedPerkFlaws">
+            <template v-for="(feat, index) in mergedPerkFlaws">
+              <UTooltip :delay-duration="0" :text="feat.effect" >
+              <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+                {{ feat.name }}
+              </span>
+              </UTooltip>
+              <span v-if="index < mergedPerkFlaws.length -1"> &nbsp;⸱&nbsp; </span>
+            </template>
+
+          </template>
+        </div>
       </div>
 
       <div class="font-semibold text-gray-900 dark:text-white">
@@ -112,6 +147,7 @@ function remove(id: string) {
           <h4 class="font-bold ">Modules</h4>
           <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.2); top: 12px; position: relative;"></div>
         </div>
+
         <ul class="flex flex-wrap gap-2">
           <template v-for="weapon in entry.modules.filter(m => m.type === 'Weapon').map(m => m.profile)">
             <li>{{ buildWeaponDisplayString(weapon) }}</li> ⸱

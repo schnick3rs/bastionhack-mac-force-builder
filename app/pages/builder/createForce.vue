@@ -29,7 +29,9 @@ const state =  reactive({
 
 const mods = reactive({
   remoteAssets: false,
-  perksFlaws: false
+  perksFlaws: false,
+  pilotTricks: false,
+  commandDrills: false,
 })
 
 
@@ -67,6 +69,12 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
   }
   if (mods.perksFlaws) {
     force.mods.push('Perks & Flaws')
+  }
+  if (mods.pilotTricks) {
+    force.mods.push('Pilot Tricks')
+  }
+  if (mods.perksFlaws) {
+    force.mods.push('Command Drills')
   }
 
   const createdForce = await forces.createNewForceList({...force, symbol, factionKey: faction.value})
@@ -168,19 +176,19 @@ function setPointLimit(pointLimit: number) {
 
           <USwitch v-model="mods.perksFlaws" class="mt-4" label="Perks & Flaws" description="Assign them to MAC for special capabilities" />
           <USwitch v-model="mods.remoteAssets" class="mt-4" label="Remote Assets" description="Add off-board support effects" />
+          <USwitch v-model="mods.pilotTricks" class="mt-4" label="Pilot Tricks" description="Add Ace Pilots" />
+          <USwitch v-model="mods.commandDrills" class="mt-4" label="Command Drills" description="Select a once per battle effect" />
 
         </div>
 
         <div class="text-center">
-          <UButton type="submit" size="xl" class="w-1/2" variant="subtle">Create Force</UButton>
+          <UButton type="submit" size="xl" class="w-1/2 mb-8" variant="subtle">Create Force</UButton>
         </div>
 
       </div>
 
-
-
-
     </UForm>
+
   </div>
 </template>
 

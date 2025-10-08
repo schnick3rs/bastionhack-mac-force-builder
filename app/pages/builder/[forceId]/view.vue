@@ -196,12 +196,31 @@ function handlePrint() {
                   </ul>
 
                   <div>
-                    <template v-if="force.mods && force.mods.includes('Perks & Flaws')">
-                      <div v-for="feat in entry.perks" ><p class="text-sm page-text-sm"><span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}</p></div>
-                      <div v-for="feat in entry.flaws" ><p class="text-sm page-text-sm"><span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}</p></div>
-                      <UTextarea class="w-full" :rows="2" placeholder="Pilot Skills, Notes, ...."></UTextarea>
+                    <template v-if="force.mods && force.mods.includes('Pilot Tricks')" >
+                      <div v-if="entry.pilot" class="pb-1">
+                        <p class="text-sm page-text-sm">
+                          <UIcon name="i-game-icons-samus-helmet" size="12" class="mr-1"></UIcon>
+                          <span class="font-bold">{{ entry.pilot.name }}:</span>
+                          <span v-if="entry.pilot.rookie">&nbsp;Rookie Pilot</span>
+                          <span v-else-if="entry.pilot.trick">&nbsp;{{ entry.pilot.trick.effect }}</span>
+                        </p>
+                      </div>
                     </template>
-                    <UTextarea v-else class="w-full" :rows="4" placeholder="Perks, Flaws, Pilot Skills, Notes, ...."></UTextarea>
+                    <template v-if="force.mods && force.mods.includes('Perks & Flaws')">
+                      <div v-for="feat in entry.perks" class="pb-1">
+                        <p class="text-sm page-text-sm">
+                          <UIcon name="i-game-icons-power-lightning" size="12" class="mr-1"></UIcon>
+                          <span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}
+                        </p>
+                      </div>
+                      <div v-for="feat in entry.flaws" class="pb-1">
+                        <p class="text-sm page-text-sm">
+                          <UIcon name="i-game-icons-power-lightning" size="12" class="mr-1"></UIcon>
+                          <span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}
+                        </p>
+                      </div>
+                    </template>
+                    <UTextarea class="w-full" :rows="3" placeholder="Perks, Flaws, Pilot Skills, Notes, ...."></UTextarea>
                   </div>
 
                 </div>

@@ -41,6 +41,12 @@ export interface Feat {
     effect: string
 }
 
+export interface Pilot {
+    name: string
+    trick: Feat
+    rookie?: boolean
+}
+
 export interface MAC {
     id: string
     name: string
@@ -49,7 +55,7 @@ export interface MAC {
     modules: ModuleConfig[]
     perks?: Feat[]
     flaws?: Feat[]
-    pilot?: Feat
+    pilot?: Pilot
     rookie?: null
 }
 
@@ -87,7 +93,7 @@ export interface RemoteAssetDefinition {
     effect: string,
 }
 
-export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilots' | 'Commanders'
+export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilot Tricks' | 'Commander Drills'
 
 export interface Force {
 
