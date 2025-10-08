@@ -176,7 +176,7 @@ function setPointLimit(pointLimit: number) {
 
           <USwitch v-model="mods.perksFlaws" class="mt-4" label="Perks & Flaws" description="Assign them to MAC for special capabilities" />
           <USwitch v-model="mods.remoteAssets" class="mt-4" label="Remote Assets" description="Add off-board support effects" />
-          <USwitch v-model="mods.pilotTricks" class="mt-4" label="Pilot Tricks" description="Add Ace Pilots" />
+          <USwitch v-model="mods.pilotTricks" class="mt-4" label="Pilot Tricks" description="Add Ace Pilots & Rookies" />
           <USwitch :disabled="true" v-model="mods.commandDrills" class="mt-4" label="Command Drills" description="Select a once per battle effect" />
 
         </div>
