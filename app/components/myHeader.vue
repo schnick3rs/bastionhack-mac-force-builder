@@ -21,7 +21,7 @@ const items = computed<NavigationMenuItem[]>(() => [
 <template>
   <UHeader class="print:hidden">
     <template #title>
-      <NuxtImg src="mactory-square-800x800.jpg" class="w-8"></NuxtImg>
+      <NuxtImg src="android-chrome-192x192.png" class="w-8"></NuxtImg>
       MACtory
     </template>
     <UNavigationMenu :items="items" />
