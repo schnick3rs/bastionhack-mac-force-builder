@@ -32,3 +32,6 @@ const items = computed<NavigationMenuItem[]>(() => [
     </template>
   </UHeader>
 </template>
+
+<style>
+</style>

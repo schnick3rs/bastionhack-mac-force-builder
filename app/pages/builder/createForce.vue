@@ -27,7 +27,11 @@ const state =  reactive({
   mods: [],
 })
 
-const modRemoteAssets = ref(false)
+const mods = reactive({
+  remoteAssets: false,
+  perksFlaws: false
+})
+
 
 const faction = ref('')
 
@@ -58,8 +62,11 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   let force = event.data;
 
-  if (modRemoteAssets.value) {
+  if (mods.remoteAssets) {
     force.mods.push('Remote Assets')
+  }
+  if (mods.perksFlaws) {
+    force.mods.push('Perks & Flaws')
   }
 
   const createdForce = await forces.createNewForceList({...force, symbol, factionKey: faction.value})
@@ -156,15 +163,16 @@ function setPointLimit(pointLimit: number) {
               icon="i-material-symbols-light-settings-alert"
               title="Usage Notes"
               class="mb-4 light:text-amber-600"
-              description="This does not add the rules but allows for the user to add content from the Rulebook into their local storage for use"
+              description="This does not add the rules but allows for the user to add content from the Rulebook into their local storage for use."
           ></UAlert>
 
-          <USwitch v-model="modRemoteAssets" size="xl" label="Remote Assets" description="Add off-board support effects" />
+          <USwitch v-model="mods.perksFlaws" class="mt-4" label="Perks & Flaws" description="Assign them to MAC for special capabilities" />
+          <USwitch v-model="mods.remoteAssets" class="mt-4" label="Remote Assets" description="Add off-board support effects" />
 
         </div>
 
         <div class="text-center">
-          <UButton type="submit" size="xl" class="w-1/2">Create Force</UButton>
+          <UButton type="submit" size="xl" class="w-1/2" variant="subtle">Create Force</UButton>
         </div>
 
       </div>

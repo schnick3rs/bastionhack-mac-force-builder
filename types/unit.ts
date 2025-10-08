@@ -33,6 +33,13 @@ export interface WeaponProfile {
     name: string,
 }
 
+export type FeatType = 'Perk' | 'Flaw' | 'Pilot Trick'
+
+export interface Feat {
+    name: string,
+    type: FeatType
+    effect: string
+}
 
 export interface MAC {
     id: string
@@ -40,6 +47,10 @@ export interface MAC {
     classification: 'MAC'
     class: number
     modules: ModuleConfig[]
+    perks?: Feat[]
+    flaws?: Feat[]
+    pilot?: Feat
+    rookie?: null
 }
 
 export type AuxiliaryType = 'Infantry' | 'Vehicle'

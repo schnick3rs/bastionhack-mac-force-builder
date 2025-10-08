@@ -96,10 +96,11 @@
 
   <div class="font-xl">
     <span>Point {{cost}} / {{force.pointLimit}} pts</span>
-    - <span class="text-sm">[{{force.entries.length}} entries]</span>
-    <span v-if="force.mods && force.mods.length > 0">{{ force.mods }}</span>
+    ⸱ <span>{{force.entries.length}} entries</span>
+    <template v-if="force.mods && force.mods.length > 0">
+      <UBadge icon="i-game-icons-gear-hammer" color="neutral" variant="outline" class="ml-2" v-for="mod in force.mods">{{  mod }}</UBadge>
+    </template>
   </div>
-
 
   <UFieldGroup class="py-4">
     <UButton color="info" variant="outline" @click="addMac">Add MAC</UButton>

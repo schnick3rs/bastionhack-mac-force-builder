@@ -1,14 +1,12 @@
 <script setup lang="ts">
-
-import {getHardwareCatalogue} from "#shared/utils/modules";
+import {useForcesStore} from "~/stores/forces";
 
 const { entry, factionKey } = defineProps<{ entry: MAC, factionKey: string | undefined }>()
 
-import type {MAC, ModuleConfig} from "~~/types/unit";
+import type {FeatType, MAC, ModuleConfig} from "~~/types/unit";
 import {calculateMacCost} from "#shared/utils/units";
 
 const cost = computed(() => calculateMacCost(entry))
-
 
 function setSlotModule(slot: number, module: ModuleConfig) {
   console.info('setSlotModule', slot, module, entry.modules)
@@ -16,10 +14,41 @@ function setSlotModule(slot: number, module: ModuleConfig) {
   entry.modules[index] = module;
 }
 
+const route = useRoute();
+const forceId: string = route.params.forceId as string
+const forceStore = useForcesStore();
+const force = computed(() => forceStore.forceById(forceId));
+
+const mods = computed(() => force.value?.mods)
+
+const perksFLawsModelOpen = ref(false)
+const perkFlaw = reactive({
+  name: '',
+  type: 'Perk',
+  effect: '',
+})
+const types = ['Perk', 'Flaw']
+
+function addPerkOrFlaw() {
+  const entryTemplate = {
+    name: perkFlaw.name,
+    type: perkFlaw.type as FeatType,
+    effect: perkFlaw.effect,
+  }
+  if (entryTemplate.type === 'Perk') {
+    if (!entry.perks) entry.perks = []
+    entry.perks.push(entryTemplate)
+  }
+  if (entryTemplate.type === 'Flaw') {
+    if (!entry.flaws) entry.flaws = []
+    entry.flaws.push(entryTemplate)
+  }
+  perksFLawsModelOpen.value = false;
+}
+
 </script>
 
 <template>
-
 
   <div class="flex gap-2 justify-between items-center font-bold">
     <UInput v-model="entry.name" class="" size="xl"></UInput>
@@ -29,6 +58,62 @@ function setSlotModule(slot: number, module: ModuleConfig) {
   <h3 >
     Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="3" ></UInput> MAC
   </h3>
+
+  <!-- VARIANT: Perks & Flaws -->
+  <template v-if="mods?.includes('Perks & Flaws')">
+    <div>
+
+      <span class="font-bold">Perks & Flaws: </span>
+
+      <UBadge v-for="perk in entry.perks" color="success" variant="subtle" class="ml-2">{{ perk.name }}</UBadge>
+      <UBadge v-for="flaw in entry.flaws" color="error" variant="subtle" class="ml-2">{{ flaw.name }}</UBadge>
+
+      <UModal
+          v-model:open="perksFLawsModelOpen"
+          title="Add Perk or Flaw"
+          description="See pg. 52-53 from the MAC attack Rulebook."
+      >
+        <UButton
+            color="info"
+            variant="outline"
+            size="sm"
+            class="ml-2"
+        >
+          + Add Perk or Flaw
+        </UButton>
+
+        <template #body>
+          <div class="flex flex-col gap-2">
+
+
+            <UInput v-model="perkFlaw.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4 w-full">
+              <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+                <span class="inline-flex bg-default px-1">Name</span>
+              </label>
+            </UInput>
+
+            <URadioGroup
+                v-model="perkFlaw.type"
+                orientation="horizontal"
+                default-value="Perk"
+                :items="types"
+                class="mb-4"
+            >
+            </URadioGroup>
+
+            <UTextarea v-model="perkFlaw.effect" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4" :rows="6" autoresize>
+              <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+                <span class="inline-flex bg-default px-1">Effect / Description</span>
+              </label>
+            </UTextarea>
+
+            <UButton @click="addPerkOrFlaw">Add Perk of Flaw</UButton>
+          </div>
+        </template>
+      </UModal>
+
+    </div>
+  </template>
 
   <h3 class="text-lg font-bold">Modules</h3>
 
