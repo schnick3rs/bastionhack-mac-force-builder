@@ -198,15 +198,14 @@ const danger = [
                       <div>
                         {{module.slot}} -
                         <template v-if="module.type === 'Weapon'">
-                          <template v-if="module.double">2x </template>
                           {{buildWeaponDisplayString(module.profile)}}
                         </template>
                         <template v-if="module.type === 'Hardware'">
-                          <span v-if="module.double">2x </span>
                           {{module.profile.name}}
                         </template>
                       </div>
                       <div class="flex flex-row gap-1">
+                        <span v-if="module.type !== 'Empty' && module.double">x2</span>
                         <UCheckbox color="warning" class="flex" style="border: 1px solid"></UCheckbox>
                         <UCheckbox color="error" class="flex" style="border: 1px solid"></UCheckbox>
                       </div>
