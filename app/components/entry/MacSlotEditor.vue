@@ -71,9 +71,12 @@ function addHardware() {
 </script>
 
 <template>
-  <div class="w-full flex gap-1 justify- items-center">
 
-    <div class="w-full flex gap-1 justify-between items-center">
+  <!-- complete card row -->
+  <div class="w-full flex flex-row gap-1 justify-between items-center">
+
+    <!-- non  button content -->
+    <div class="w-full flex flex-row gap-1 items-center">
 
       <div class="pr-2">
         <UAvatar :text="`${module.slot}`"></UAvatar>
@@ -125,16 +128,15 @@ function addHardware() {
         variant="outline"
         class="cursor-pointer w-fit"
         @click="removeModule()">
-
     </UButton>
 
     <template v-if="module.type === 'Empty'">
 
-      <UFieldGroup>
+      <UFieldGroup class="w-full justify-end">
         <UButton
             color="info"
             :variant="mode === 'Weapon' ? 'solid' : 'outline'"
-            class="flex-1 cursor-pointer"
+            class="cursor-pointer"
             @click="mode = 'Weapon'">
           + Weapon
         </UButton>
@@ -151,7 +153,6 @@ function addHardware() {
   </div>
 
   <div v-if="mode" class="flex flex-col gap-1">
-    <hr >
 
     <template v-if="mode === 'Weapon'">
       <EntryWeaponEditor :max="max" @add-weapon="addWeapon" :initialWeapon="newWeapon"></EntryWeaponEditor>

@@ -182,7 +182,7 @@ const danger = [
                   <UCheckbox
                         v-for="i in (entry.class + (force.faction === 'arksworn-order' ? 1 : 0))"
                         :color="danger[3 - (entry.class + (force.faction === 'arksworn-order' ? 1 : 0)) + i]"
-                        class="flex"
+                        class="flex "
                         style="border: 1px solid"
                     ></UCheckbox>
                 </template>
