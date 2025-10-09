@@ -100,7 +100,7 @@ const mergedPerkFlaws = computed(() => {
 
           <template v-if="entry.classification === 'MAC' && entry.pilot">&nbsp;⸱&nbsp;
             <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? 'Rookie Pilot' : entry.pilot.trick.effect">
-              <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+              <span class="underline decoration-dotted" style="text-underline-offset: 4px">
                 {{ entry.pilot.name }}
               </span>
             </UTooltip>
@@ -110,7 +110,7 @@ const mergedPerkFlaws = computed(() => {
           <template v-if="entry.classification === 'MAC' && mergedPerkFlaws">
             <template v-for="(feat, index) in mergedPerkFlaws">
               <UTooltip :delay-duration="0" :text="feat.effect" >
-              <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+              <span class="underline decoration-dotted" style="text-underline-offset: 4px">
                 {{ feat.name }}
               </span>
               </UTooltip>
@@ -158,7 +158,7 @@ const mergedPerkFlaws = computed(() => {
           <template v-for="(hardware, index) in reduceModules(entry.modules.filter(m => m.type === 'Hardware'))">
             <li>
               <span v-if="hardware.count > 1">{{hardware.count}}x </span>
-              <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
+              <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
             </li>
             <span v-if="index < convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile)).length -1"> ⸱ </span>
           </template>
@@ -181,7 +181,7 @@ const mergedPerkFlaws = computed(() => {
           <template v-for="(hardware, index) in convertToNiceware(entry.unit.hardware)">
             <li>
               <span v-if="hardware.count > 1">2x </span>
-              <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
+              <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
             </li>
             <span v-if="index < convertToNiceware(entry.unit.hardware).length -1"> ⸱ </span>
           </template>
