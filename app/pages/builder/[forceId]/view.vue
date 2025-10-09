@@ -256,7 +256,7 @@ const danger = [
                   <template v-for="(hardware, index) in convertToNiceware(entry.unit.hardware)">
                     <li>
                       <span v-if="hardware.count > 1">2x </span>
-                      <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>
+                      <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
                     </li>
                     <span v-if="index < convertToNiceware(entry.unit.hardware).length -1"> ⸱ </span>
                   </template>
