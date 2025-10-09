@@ -58,6 +58,11 @@ function tooltip(hardwareProfile: HardwareProfile) {
   return hw?.effect ?? ''
 }
 
+function tooltipByName(hardwareName: string) {
+  const hw = hardware.find((h) => h.name === hardwareName)
+  return hw?.effect ?? ''
+}
+
 function remove(id: string) {
   console.info('remove entry', id)
   emit('removeEntry', id);
@@ -158,7 +163,9 @@ const mergedPerkFlaws = computed(() => {
           <template v-for="(hardware, index) in reduceModules(entry.modules.filter(m => m.type === 'Hardware'))">
             <li>
               <span v-if="hardware.count > 1">{{hardware.count}}x </span>
-              <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
+              <UTooltip :delay-duration="0" :text="tooltip(hardware.profile)">
+                <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
+              </UTooltip>
             </li>
             <span v-if="index < convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile)).length -1"> ⸱ </span>
           </template>
@@ -181,7 +188,9 @@ const mergedPerkFlaws = computed(() => {
           <template v-for="(hardware, index) in convertToNiceware(entry.unit.hardware)">
             <li>
               <span v-if="hardware.count > 1">2x </span>
-              <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
+              <UTooltip :delay-duration="0" :text="tooltipByName(hardware.name)">
+                <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
+              </UTooltip>
             </li>
             <span v-if="index < convertToNiceware(entry.unit.hardware).length -1"> ⸱ </span>
           </template>
