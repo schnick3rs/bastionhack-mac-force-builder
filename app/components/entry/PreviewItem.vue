@@ -51,7 +51,7 @@ const description = computed(() => {
 const cost = computed(() => calculateEntityCost(entry))
 
 import hardware from "~~/server/data/hardwareRepository";
-import {convertToNiceware} from "#shared/utils/modules";
+import {reduceModules, convertToNiceware} from "#shared/utils/modules";
 
 function tooltip(hardwareProfile: HardwareProfile) {
   const hw = hardware.find((h) => h.name === hardwareProfile.name)
@@ -149,10 +149,13 @@ const mergedPerkFlaws = computed(() => {
         </div>
 
         <ul class="flex flex-wrap gap-2">
-          <template v-for="weapon in entry.modules.filter(m => m.type === 'Weapon').map(m => m.profile)">
-            <li>{{ buildWeaponDisplayString(weapon) }}</li> ⸱
+          <template v-for="redule in reduceModules(entry.modules.filter(m => m.type === 'Weapon')).filter(m => m.type === 'Weapon')">
+            <li>
+              <span v-if="redule.count > 1">{{redule.count}}x </span>
+              {{ buildWeaponDisplayString(redule.profile) }}
+            </li> ⸱
           </template>
-          <template v-for="(hardware, index) in convertToNiceware(entry.modules.filter(m => m.type === 'Hardware').map(m => m.profile))">
+          <template v-for="(hardware, index) in reduceModules(entry.modules.filter(m => m.type === 'Hardware'))">
             <li>
               <span v-if="hardware.count > 1">{{hardware.count}}x </span>
               <span style="text-decoration: underline dashed; text-underline-offset: 4px">{{ hardware.name }}</span>

@@ -1,6 +1,6 @@
 import hardware from "~~/server/data/hardwareRepository";
 import factions from "~~/server/data/factionRepository";
-import type {HardwareProfile} from "~~/types/unit";
+import type {HardwareProfile, ModuleConfig, WeaponProfile} from "~~/types/unit";
 
 export function getHardwareCatalogue(factionKey: string | undefined = undefined) {
 
@@ -36,4 +36,54 @@ export function convertToNiceware(modules: HardwareProfile[]) {
         }, {})
     )
     return niceware;
+}
+
+export function buildWeaponDisplayString(weapon: WeaponProfile) {
+    const subtype = `${weapon.subtype ? weapon.subtype[0] : ''}${weapon.expendable ? 'X' : ''}`
+    return `${weapon.range != "Brawl" ? weapon.range[0] : ''}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.name}`;
+}
+export type ReducedModule =
+    | { name: string; count: number; type: 'Hardware'; profile: HardwareProfile }
+    | { name: string; count: number; type: 'Weapon';  profile: WeaponProfile }
+
+export function reduceModules(modules: ModuleConfig[]): ReducedModule[] {
+    const map = new Map<string, ReducedModule>()
+
+    for (const mod of modules) {
+        if (mod.type === 'Empty') continue
+
+        let name: string
+        if (mod.type === 'Hardware') {
+            name = mod.profile.name
+        } else if (mod.type === 'Weapon') {
+            name = buildWeaponDisplayString(mod.profile)
+        } else {
+            continue
+        }
+
+        const count = mod.double ? 2 : 1
+
+        if (map.has(name)) {
+            map.get(name)!.count += count
+        } else {
+            if (mod.type === 'Hardware') {
+                map.set(name, {
+                    name,
+                    count,
+                    type: mod.type,
+                    profile: mod.profile,
+                })
+            } else {
+                map.set(name, {
+                    name,
+                    count,
+                    type: mod.type,
+                    profile: mod.profile,
+                })
+            }
+
+        }
+    }
+
+    return Array.from(map.values())
 }
