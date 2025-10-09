@@ -14,16 +14,16 @@ const subtypeDescription = (subtype: WeaponSubtype): string => subtypeHint[subty
 <template>
   <div>
     <UTooltip v-if="weapon.range" :delay-duration="0" :text="rangeDescription(weapon.range)">
-      <span class="pr-2" style="text-decoration: underline dashed; text-underline-offset: 2px">{{weapon.range}}</span>
+      <span class="pr-2 underline decoration-dotted underline-offset-3">{{weapon.range}}</span>
     </UTooltip>
     <UTooltip v-if="weapon.type" :delay-duration="0" :text="typeDescription(weapon.type)">
-      <span class="pr-2" style="text-decoration: underline dashed; text-underline-offset: 2px">{{weapon.type}}</span>
+      <span class="pr-2 underline decoration-dotted underline-offset-3">{{weapon.type}}</span>
     </UTooltip>
     <UTooltip v-if="weapon.subtype" :delay-duration="0" :text="subtypeDescription(weapon.subtype)">
-      <span class="pr-2" style="text-decoration: underline dashed; text-underline-offset: 2px">{{weapon.subtype}}</span>
+      <span class="pr-2 underline decoration-dotted underline-offset-3">{{weapon.subtype}}</span>
     </UTooltip>
     <UTooltip v-if="weapon.expendable" :delay-duration="0" :text="expendableDescription()">
-      <span style="text-decoration: underline dashed; text-underline-offset: 2px">Expendable</span>
+      <span class="pr-2 underline decoration-dotted underline-offset-3">Expendable</span>
     </UTooltip>
   </div>
 </template>

@@ -102,7 +102,7 @@ const columns: TableColumn<Force>[] = [
   },
 ]
 
-const deleteForce = (force: force) => {
+const deleteForce = (force: Force) => {
   const forceName = force.name;
   forcesStore.deleteForce(force.id)
   const toast = useToast()

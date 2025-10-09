@@ -19,6 +19,10 @@ export function getHardwareCatalogue(factionKey: string | undefined = undefined)
     return hardwareList;
 }
 
+export function getHardwareByName(name: string): HardwareProfile | undefined {
+    return hardware.find((h) => h.name === name);
+}
+
 export type Niceware = { name: string, count: number }
 
 export function convertToNiceware(modules: HardwareProfile[]) {

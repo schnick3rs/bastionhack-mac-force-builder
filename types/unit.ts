@@ -1,7 +1,7 @@
 
 export type ModuleConfig =
-    | { slot: number; type: 'Hardware'; double?: boolean; profile: HardwareProfile }
-    | { slot: number; type: 'Weapon';  double?: boolean; profile: WeaponProfile }
+    | { slot: number; type: 'Hardware'; double: boolean; profile: HardwareProfile }
+    | { slot: number; type: 'Weapon';  double: boolean; profile: WeaponProfile }
     | { slot: number; type: 'Empty' }
 
 export type Usability = 'MAC' | 'Infantry' | 'Vehicle' | 'All'
@@ -44,7 +44,7 @@ export interface Feat {
 export interface Pilot {
     name: string
     trick: Feat
-    rookie?: boolean
+    rookie: boolean
 }
 
 export interface MAC {
@@ -53,10 +53,9 @@ export interface MAC {
     classification: 'MAC'
     class: number
     modules: ModuleConfig[]
-    perks?: Feat[]
-    flaws?: Feat[]
+    perks: Feat[]
+    flaws: Feat[]
     pilot?: Pilot
-    rookie?: null
 }
 
 export type AuxiliaryType = 'Infantry' | 'Vehicle'
@@ -113,7 +112,7 @@ export interface Force {
     symbol?: string // an avatar style icon to be displayed
 
     // mods and variants
-    mods?: VariantRule[]
+    mods: VariantRule[]
 }
 
 

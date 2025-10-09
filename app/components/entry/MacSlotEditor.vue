@@ -2,12 +2,29 @@
 import WeaponProfileTooltips from "~/components/entry/WeaponProfileTooltips.vue";
 import type {ModuleConfig, WeaponProfile} from "~~/types/unit";
 import {getHardwareCatalogue} from "#shared/utils/modules";
+import {useForcesStore} from "~/stores/forces";
 
 const { clazz, module, factionKey } = defineProps<{ clazz: number, module: ModuleConfig, factionKey: string | undefined }>()
 
 const max = computed(() => {
   let slotOne = module.slot === 1 ? 1 : 0;
   return clazz + slotOne;
+})
+
+const forcesStore = useForcesStore();
+const route = useRoute();
+const forceId: string = route.params.forceId as string
+const force = computed(() => {
+  if (forceId) {
+    return forcesStore.forceById(forceId);
+  }
+  return undefined;
+})
+const modDoubleModules = computed(() => {
+  if (force) {
+    const mods = force.value?.mods || [];
+    return mods.includes('Double Modules');
+  }
 })
 
 const emit = defineEmits(['setModule'])
@@ -54,19 +71,30 @@ function addHardware() {
 </script>
 
 <template>
-
   <div class="w-full flex gap-1 justify- items-center">
 
-    <UUser :avatar="{ text: `${module.slot}` }" class="flex-1">
-      <template #name>
+    <div class="w-full flex gap-1 justify-between items-center">
+
+      <div class="pr-2">
+        <UAvatar :text="`${module.slot}`"></UAvatar>
+      </div>
+
+      <div class="flex-1">
+
         <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
         <span v-if="module.type === 'Hardware'">{{module.profile.name}}</span>
         <span v-if="module.type === 'Empty'">{{module.type}}</span>
-      </template>
-      <template #description>
-        <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
-      </template>
-    </UUser>
+
+        <p class="text-sm text-gray-600 truncate dark:text-gray-300">
+          <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
+        </p>
+
+        <span v-if="modDoubleModules && module.type !== 'Empty'">
+          <UCheckbox v-model="module.double"  class="pt-1" label="Double Module"></UCheckbox>
+        </span>
+      </div>
+
+    </div>
 
     <UButton
         v-if="module.type === 'Weapon'"

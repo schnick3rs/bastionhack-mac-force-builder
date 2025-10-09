@@ -97,6 +97,13 @@ function handlePrint() {
   window.print()
 }
 
+const danger = [
+    'success',
+    'warning',
+    'error',
+    'neutral',
+]
+
 </script>
 
 <template>
@@ -168,11 +175,17 @@ function handlePrint() {
                 ⸱ [{{ calculateEntityCost(entry)}}pts]
               </h2>
 
-              <div class="mb-2">
+              <div class="mb-2 flex flex-row gap-1">
                 {{ displayClassificaition(entry) }}
-                <span v-if="entry.classification === 'MAC'" class="flex-row">
-                    <UIcon v-for="i in (entry.class + (force.faction === 'arksworn-order' ? 1 : 0))" name="i-material-symbols-light-check-box-outline-blank" class=""></UIcon>
-                  </span>
+                <template v-if="entry.classification === 'MAC'">
+                  ⸱
+                  <UCheckbox
+                        v-for="i in (entry.class + (force.faction === 'arksworn-order' ? 1 : 0))"
+                        :color="danger[3 - (entry.class + (force.faction === 'arksworn-order' ? 1 : 0)) + i]"
+                        class="flex"
+                        style="border: 1px solid"
+                    ></UCheckbox>
+                </template>
               </div>
 
               <!-- MAC Entry -->
@@ -182,15 +195,20 @@ function handlePrint() {
 
                   <ul>
                     <li v-for="module in entry.modules" class="w-full flex flex-row justify-between items-center odd:bg-gray-100 dark:odd:bg-gray-800" >
-                      {{module.slot}} -
-                      <template v-if="module.type === 'Weapon'">
-                        {{buildWeaponDisplayString(module.profile)}}
-                      </template>
-                      <template v-if="module.type === 'Hardware'">
-                        {{module.profile.name}}
-                      </template>
                       <div>
-                        <UIcon v-for="i in 2" name="i-material-symbols-light-check-box-outline-blank"></UIcon>
+                        {{module.slot}} -
+                        <template v-if="module.type === 'Weapon'">
+                          <template v-if="module.double">2x </template>
+                          {{buildWeaponDisplayString(module.profile)}}
+                        </template>
+                        <template v-if="module.type === 'Hardware'">
+                          <span v-if="module.double">2x </span>
+                          {{module.profile.name}}
+                        </template>
+                      </div>
+                      <div class="flex flex-row gap-1">
+                        <UCheckbox color="warning" class="flex" style="border: 1px solid"></UCheckbox>
+                        <UCheckbox color="error" class="flex" style="border: 1px solid"></UCheckbox>
                       </div>
                     </li>
                   </ul>

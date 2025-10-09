@@ -1,4 +1,6 @@
 import type {Auxiliary, Entry, Force, Formation, MAC} from '~~/types/unit'
+import {buildWeaponCodeString} from "#shared/utils/weapons";
+import type {Niceware} from "#shared/utils/modules";
 
 // restrict to only valid MAC classes
 const classToCost: Record<MAC['class'], number> = {
@@ -115,3 +117,52 @@ export function getUsedForceHardware(force: Force) {
     let uniueModules = [...new Set(modules)];
     return uniueModules.sort((a, b) => a.localeCompare(b));
 }
+
+type ModuleCount = { name: string; count: number };
+
+
+export function macValidationIdenticalModuleConstraint(mac: MAC) {
+    const moduleNames: string[] = mac.modules
+        .map(module => {
+            if (module.type === 'Weapon') {
+                return buildWeaponCodeString(module.profile)
+            }
+            if (module.type === 'Hardware') {
+                return module.profile.name
+            }
+        })
+        .filter((m): m is string => m !== undefined);
+
+
+    const moduleCount = Object.values(
+        moduleNames.reduce<Record<string, { name: string; count: number }>>((acc, name) => {
+            acc[name] = acc[name]
+                ? { ...acc[name], count: acc[name].count + 1 }
+                : { name, count: 1 };
+            return acc;
+        }, {})
+    );
+
+    // return FALSE if the validation fails
+    return !moduleCount.some(m => m.count > 3);
+}
+
+/**
+ * 1. Macs can not have more than three of the same module (hardware of same name or weapon with identical code)
+ * 2. Weapons can not have a power higher than the MAC class
+ * 3. The Main gun (in slot 1) can have +1 power
+ * 4. can not have more than 2 melee weapons
+ * 5. melee weapons must be of the same type (code)
+ * @param mac
+ */
+export function validateMac(mac: MAC) {
+
+}
+
+const validityChecks = [
+    {
+        name: 'mac.modules.identical',
+        explenation: 'Macs can not have more than three of the same module (hardware of same name or weapon with identical code)',
+        check: macValidationIdenticalModuleConstraint,
+    }
+]

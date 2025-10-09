@@ -64,6 +64,11 @@ export function parseWeaponString(input: string): WeaponProfile | null {
     };
 }
 
+export function buildWeaponCodeString(weapon: WeaponProfile) {
+    const subtype = `${weapon.subtype ? weapon.subtype[0] : ''}${weapon.expendable ? 'X' : ''}`
+    return `${weapon.range != "Brawl" ? weapon.range[0] : ''}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype}`;
+}
+
 export function buildWeaponDisplayString(weapon: WeaponProfile) {
     const subtype = `${weapon.subtype ? weapon.subtype[0] : ''}${weapon.expendable ? 'X' : ''}`
     return `${weapon.range != "Brawl" ? weapon.range[0] : ''}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.name}`;

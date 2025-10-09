@@ -28,8 +28,9 @@ const state =  reactive({
 })
 
 const mods = reactive({
-  remoteAssets: false,
+  doubleModules: false,
   perksFlaws: false,
+  remoteAssets: false,
   pilotTricks: false,
   commandDrills: false,
 })
@@ -64,6 +65,9 @@ async function onSubmit(event: FormSubmitEvent<Schema>) {
 
   let force = event.data;
 
+  if (mods.doubleModules) {
+    force.mods.push('Double Modules')
+  }
   if (mods.remoteAssets) {
     force.mods.push('Remote Assets')
   }
@@ -174,6 +178,7 @@ function setPointLimit(pointLimit: number) {
               description="This does not add the rules but allows for the user to add content from the Rulebook into their local storage for use."
           ></UAlert>
 
+          <USwitch v-model="mods.doubleModules" class="mt-4" label="Double Modules" description="Cram some more into each MAC Slot (see pg.49)" />
           <USwitch v-model="mods.perksFlaws" class="mt-4" label="Perks & Flaws" description="Assign them to MAC for special capabilities" />
           <USwitch v-model="mods.remoteAssets" class="mt-4" label="Remote Assets" description="Add off-board support effects" />
           <USwitch v-model="mods.pilotTricks" class="mt-4" label="Pilot Tricks" description="Add Ace Pilots & Rookies" />

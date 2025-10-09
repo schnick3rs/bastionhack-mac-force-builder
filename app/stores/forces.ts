@@ -4,6 +4,7 @@ import {parseWeaponString} from "#shared/utils/weapons";
 import {sortForceEntries} from "#shared/utils/forces";
 
 import { uniqueUsernameGenerator as gen, nouns } from 'unique-username-generator';
+import {id} from "#ui/locale";
 
 const militaryAdjectives = [
     'Armoured',
@@ -103,14 +104,15 @@ export const useForcesStore = defineStore('forcesStore', {
         version: 1, // defines if the store must be migrated OR depleted
         forces: [] as Force[],
         hydrated: false,
+        isHydrating: true, // Start as true since hydration happens immediately
     }),
 
     persist: {
         storage: piniaPluginPersistedstate.localStorage(),
         afterHydrate: (ctx) => {
-            if (ctx.store.forces) {
-                ctx.store.hydrated = true;
-            }
+            console.info('Store afterHydrate triggered')
+            ctx.store.hydrated = true;
+            ctx.store.isHydrating = false;
         },
     },
 
@@ -121,7 +123,7 @@ export const useForcesStore = defineStore('forcesStore', {
         },
 
         forceById(state) {
-          return (id: string = ''): Force | undefined => state.forces.find((force) => force.id === id);
+          return (id: string): Force | undefined => state.forces.find((force) => force.id === id);
         },
 
         getEntry(state) {
@@ -133,6 +135,11 @@ export const useForcesStore = defineStore('forcesStore', {
     },
 
     actions: {
+
+        // Optional: manual check if you need to verify hydration
+        ensureHydrated() {
+            return this.hydrated;
+        },
 
         touchForce(forceId: string) {
             const force = this.forceById(forceId);
@@ -185,7 +192,10 @@ export const useForcesStore = defineStore('forcesStore', {
                             { slot: 4, type: 'Empty' },
                             { slot: 5, type: 'Empty' },
                             { slot: 6, type: 'Empty' },
-                        ]
+                        ],
+                        perks: [],
+                        flaws: [],
+                        pilot: undefined,
                     }
                     if (force.faction === 'first-regiment') {
                         mac.modules.unshift({ slot: 0, type: 'Empty' });
