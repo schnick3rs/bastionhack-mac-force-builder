@@ -1,4 +1,4 @@
-import type {Faction, FactionRule, HardwareModule} from "~~/types/unit";
+import type {Faction, FactionRule, Force, HardwareModule} from "~~/types/unit";
 import {createHardware} from "~~/server/data/hardwareRepository";
 
 const factions: Faction[] = [];
@@ -9,6 +9,8 @@ const create = (
   specialRule: FactionRule,
   specialModule: HardwareModule,
   sparks: string,
+  onAttach: Function = () => {console.info('so be implemented')},
+  onDetach: Function = () => {console.info('so be implemented')},
 ) => {
   return {
       key: name.toLowerCase()                // make lowercase
@@ -21,6 +23,8 @@ const create = (
       specialRule,
       specialModule,
       sparks: sparks.split(',').map(s => s.trim()),
+      onAttach,
+      onDetach,
   };
 };
 
@@ -44,7 +48,18 @@ factions.push(
         'Formerly HumanityFleet Forward Security',
         { name: '0-Mods', description: 'MACs take an extra piece of hardware in the 0 slot. This module takes a hit whenever another module is destroyed. This can lead to internal damage if the 0-module has already been destroyed.'},
         createHardware('Seeker', 'Gain 1 Heat to give all your attacks -1TN this turn.', ['MAC'], 'faction'),
-        'sleek, trophies, battlescars, horns'
+        'sleek, trophies, battlescars, horns',
+        (force: Force) => {
+            force.entries.filter(e => e.classification === 'MAC').forEach(entry => {
+                entry.modules.unshift({ slot: 0, type: 'Empty'});
+            })
+        },
+        (force: Force) => {
+            force.entries.filter(e => e.classification === 'MAC').forEach(entry => {
+                const index = entry.modules.findIndex(m => m.slot === 0);
+                entry.modules.splice(index, 1);
+            })
+        }
     ),
     create(
         'Arksworn Order',

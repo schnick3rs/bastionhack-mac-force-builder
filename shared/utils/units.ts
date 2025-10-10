@@ -38,12 +38,18 @@ export function calculateMacCost(mac: MAC): number {
         .filter(module => module.profile.name === 'Frame')
         .length;
 
+    const doubleFrameModuleCount = mac.modules
+        .filter(module => module.type === 'Hardware')
+        .filter(module => module.profile.name === 'Frame')
+        .filter(module => module.double)
+        .length;
+
     const doubleModuleCount = mac.modules
         .filter(module => module.type === 'Hardware' || module.type === 'Weapon')
         .filter(module => module.double === true)
         .length;
 
-    return baseCost - frameModuleCount + doubleModuleCount;
+    return baseCost - (frameModuleCount+doubleFrameModuleCount) + doubleModuleCount;
 }
 
 export function calculateFormationCost(formation: Formation): number {

@@ -5,15 +5,16 @@
 </script>
 
 <template>
-  <UApp>
-    <my-header />
 
-    <UMain>
-      <UContainer class="mt-8 print:mt-0">
-        <slot />
-      </UContainer>
-    </UMain>
+  <my-header />
 
-  </UApp>
+  <UMain>
+
+    <UContainer class="mt-8 print:mt-0">
+      <slot />
+    </UContainer>
+
+  </UMain>
+
 </template>
 

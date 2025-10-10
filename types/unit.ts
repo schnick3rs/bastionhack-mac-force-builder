@@ -92,7 +92,7 @@ export interface RemoteAssetDefinition {
     effect: string,
 }
 
-export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilot Tricks' | 'Commander Drills'
+export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilot Tricks' | 'Command Drills'
 
 export interface Force {
 
@@ -105,6 +105,8 @@ export interface Force {
 
     createdAt: number
     updatedAt: number
+
+    commandDrill?: Feat
 
     // flavour
     name: string
@@ -128,4 +130,6 @@ export interface Faction {
     specialRule: FactionRule
     specialModule: HardwareModule
     sparks: string[]
+    onAttach: Function
+    onDetach: Function
 }
