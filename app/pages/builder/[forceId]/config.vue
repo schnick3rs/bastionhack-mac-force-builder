@@ -30,11 +30,11 @@ function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
 </script>
 
 <template>
-  <div v-if="force" class="flex flex-col justify-center w-2/3 mx-auto">
+  <div v-if="force" class="flex flex-col justify-center w-full lg:w-3/4 mx-auto">
 
     <h1 class="text-2xl font-bold">Force Config</h1>
 
-    <UForm class="space-y-4 mt-8 grid grid-cols-2 gap-8">
+    <UForm class="space-y-4 mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
 
       <div class="space-y-8">
 
