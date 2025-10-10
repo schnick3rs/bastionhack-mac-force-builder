@@ -2,6 +2,7 @@
 import {useForcesStore} from "~/stores/forces";
 import type {Force, VariantRule} from "~~/types/unit";
 import variantRulesRepository, {type VariantRuleDefinition} from "~~/server/data/variantRulesRepository";
+import factionRepository from "~~/server/data/factionRepository";
 
 const forcesStore = useForcesStore();
 const route = useRoute();
@@ -14,6 +15,31 @@ const force = computed(() => {
 const pointValue = computed(() => force.value ? calculateForceCost(force.value) : '?')
 
 const mods = variantRulesRepository;
+
+const factions = factionRepository.map(faction => {
+  return {
+    ...faction,
+    avatar: { src: `/factions/${faction.key}-symbol.png` }
+  }
+});
+
+const oldFaction = ref('')
+
+function factionOpenEvent(event: boolean) {
+  if (event) {
+    oldFaction.value = force.value?.faction || '';
+  }
+}
+
+function changeFaction(value: any) {
+  console.log('changeFaction', oldFaction.value ,'->', value)
+
+  const before = factionRepository.find(f => f.key === oldFaction.value)
+  before?.onDetach(force.value)
+
+  const after = factionRepository.find(f => f.key === value)
+  after?.onAttach(force.value)
+}
 
 function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
   if (value) {
@@ -32,13 +58,11 @@ function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
 <template>
   <div v-if="force" class="flex flex-col justify-center w-full lg:w-3/4 mx-auto">
 
-    <h1 class="text-2xl font-bold">Force Config</h1>
 
     <UForm class="space-y-4 mt-8 grid grid-cols-1 md:grid-cols-2 gap-8">
 
       <div class="space-y-8">
 
-        <h2 class="font-bold text-xl mb-2">Flavour</h2>
 
         <UInput v-model="force.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="w-full">
           <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
@@ -54,7 +78,12 @@ function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
 
         <!-- POINT Limit -->
         <UFieldGroup  class="w-full">
-          <UBadge color="neutral" variant="subtle" class="w-20">{{pointValue}} / </UBadge>
+          <UBadge color="neutral" variant="subtle" class="w-32 justify-end">
+            <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+              <span class="bg-default px-1t">Current points</span>
+            </label>
+            {{pointValue}} /
+          </UBadge>
           <UInput v-model="force.pointLimit" placeholder="" :ui="{ base: 'peer' }" size="xl" type="number" min="0">
             <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
               <span class="bg-default px-1">Point Limit</span>
@@ -63,11 +92,41 @@ function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
         </UFieldGroup>
 
         <!-- FACTION -->
-        <UInput v-model="force.faction" placeholder="" :ui="{ base: 'peer' }" size="xl" class="w-full">
-          <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
-            <span class="inline-flex bg-default px-1">Faction</span>
-          </label>
-        </UInput>
+        <div>
+          <h3 class="font-bold">Faction</h3>
+          <USelect
+              v-model="force.faction"
+              :items="factions"
+              size="xl"
+              class="w-full"
+              placeholder="Unaligned"
+              valueKey="key"
+              labelKey="name"
+              @update:open="factionOpenEvent($event)"
+              @update:modelValue="changeFaction($event)"
+          >
+            <template #default="{ modelValue }">
+              <UAvatar v-if="modelValue" :src="`/factions/${modelValue}-symbol.png`" class="size-12 mr-2" />
+              <div class="flex flex-col text-left">
+                <span>{{ factions.find(f => f.key === modelValue)?.name }}</span>
+                <span class="text-neutral-400">{{ factions.find(f => f.key === modelValue)?.sparks.join(', ') }}</span>
+              </div>
+            </template>
+            <template #item-label="{ item }">
+              {{ item.name }}
+              <div class="text-muted">
+                {{ item.sparks.join(', ') }}
+              </div>
+            </template>
+          </USelect>
+          <UAlert
+              icon="i-game-icons-info"
+              color="info"
+              variant="subtle"
+              class="mt-2"
+              description="Changing the faction might affect existing builds."
+          ></UAlert>
+        </div>
 
       </div>
 
@@ -75,11 +134,11 @@ function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
         <h2 class="font-bold text-xl mb-2">Enable Variant Rules</h2>
 
         <UAlert
+            icon="i-game-icons-hazard-sign"
             color="warning"
             variant="subtle"
-            icon="i-material-symbols-light-settings-alert"
-            title="Usage Notes"
             class="mb-4 light:text-amber-600"
+            title="Usage Notes"
             description="Important! Disabling a prior selected Variant Rule will remove all related antries and configs from the force. This cannot be undone."
         ></UAlert>
 

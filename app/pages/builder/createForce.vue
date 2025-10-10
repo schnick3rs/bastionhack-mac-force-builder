@@ -133,24 +133,21 @@ function setPointLimit(pointLimit: number) {
           </label>
         </UInput>
 
-        <div>
-          <USelect
-              v-model="faction"
-              :items="factions"
-              :loading="status === 'pending'"
-              size="xl"
-              class="w-full"
-              placeholder="Unaligned"
-          >
-            <template #item-label="{ item }">
-              {{ item.label }}
-              <div class="text-muted">
-                {{ item.sparks.join(', ') }}
-              </div>
-            </template>
-          </USelect>
-          <em class="font-light text-sm">NOTE: Faction rules and modules are mostly not working atm</em>
-        </div>
+        <USelect
+            v-model="faction"
+            :items="factions"
+            :loading="status === 'pending'"
+            size="xl"
+            class="w-full"
+            placeholder="Unaligned"
+        >
+          <template #item-label="{ item }">
+            {{ item.label }}
+            <div class="text-muted">
+              {{ item.sparks.join(', ') }}
+            </div>
+          </template>
+        </USelect>
 
         <div>
 

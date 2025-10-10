@@ -27,6 +27,7 @@ const items = computed<NavigationMenuItem[]>(() => [
     <UNavigationMenu :items="items" />
 
     <template #right>
+      <UButton v-if="forceId" :to="`/builder/${forceId}/entries`" color="neutral" variant="ghost" size="xl" icon="i-material-symbols-light-build-circle-outline-sharp"></UButton>
       <UButton v-if="forceId" :to="`/builder/${forceId}/config`" color="neutral" variant="ghost" size="xl" icon="i-game-icons-pokecog"></UButton>
       <UButton v-if="forceId" :to="`/builder/${forceId}/view`" color="neutral" variant="ghost" size="xl" icon="i-material-symbols-light-table-eye-outline"></UButton>
       <UColorModeButton />
