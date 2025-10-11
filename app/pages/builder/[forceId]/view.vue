@@ -170,7 +170,7 @@ const danger = [
             <!-- ENTRY CARD -->
             <div class="flex-1 w-full">
 
-              <h2 class="font-bold text-xl">
+              <h2 class="font-bold text-xl page-xl">
                 {{ entry.name || `${entry.size}x ${entry.unit.name}` }}
                 ⸱ [{{ calculateEntityCost(entry)}}pts]
               </h2>
@@ -286,9 +286,13 @@ const danger = [
           <span v-if="force.faction"> ⸱ {{factionName(force.faction)}} Faction</span>
         </div>
 
+        <!-- Faction Rules -->
         <div v-if="faction">
           <div class="mt-4">
-            <h4 class="font-bold text-xl pb-1 under">Faction Special Rule</h4>
+            <div class="pb-1">
+              <span class="font-bold text-xl page-xl underline underline-offset-1">Faction Special Rule</span>
+              <span class="pl-2 font-normal text-sm">(see pg. 24 ff)</span>
+            </div>
             <p class="pb-2">
               <span class="font-bold">{{ faction.specialRule.name }}:</span>
               {{ faction.specialRule.description }}
@@ -296,8 +300,34 @@ const danger = [
           </div>
         </div>
 
+        <!-- Command Drills -->
+        <template v-if="force.mods && force.mods.includes('Command Drills')">
+          <div class="mt-4">
+            <div class="pb-1">
+              <span class="font-bold text-xl page-xl underline underline-offset-1">Command Drill</span>
+              <span class="pl-2 font-normal text-sm">(see pg. 57)</span>
+            </div>
+            <UAlert
+                v-if="force.commandDrill"
+                color="neutral"
+                variant="subtle"
+                icon="i-game-icons-star-medal"
+                :title="force.commandDrill.name"
+                :description="force.commandDrill.effect"
+                close
+                close-icon="i-material-symbols-light-check-box-outline-blank"
+                :ui="{ root: 'p-2' }"
+            >
+            </UAlert>
+          </div>
+        </template>
+
+        <!-- Hardware Rules -->
         <div class="mt-4" v-if="usedHardware && usedHardware.length > 0">
-          <h4 class="font-bold text-xl pb-1 under">Hardware Rules</h4>
+          <div class="pb-1">
+            <span class="font-bold text-xl page-xl underline underline-offset-1">Hardware Rules</span>
+            <span class="pl-2 font-normal text-sm">(see pg. 16-17)</span>
+          </div>
           <p v-for="item in usedHardware" class="pb-2">
             <span class="font-bold">
               {{ item.name }}
@@ -312,8 +342,10 @@ const danger = [
 
         <!-- Reminders -->
         <div class="mt-4">
-          <h4 class="font-bold text-xl under">Deployment Cheat Sheet</h4>
-          <p class="italic pb-2">see pg. 20</p>
+          <div class="pb-1">
+            <span class="font-bold text-xl page-xl underline underline-offset-1">Deployment Cheat Sheet</span>
+            <span class="pl-2 font-normal text-sm">(see pg. 20)</span>
+          </div>
           <ol class="list-decimal ml-4">
             <li>Split force into 3 divisions</li>
             <li>No division can contain more than <strong>{{Math.floor(force.entries.length / 2)}}</strong> units (MAC or Formations).</li>
@@ -324,7 +356,9 @@ const danger = [
 
         <!-- Validation -->
         <div class="mt-4" :class="{ 'print:hidden': validate.filter(v => v.valid).length > 0 }">
-          <h4 class="font-bold text-xl pb-1 under">Validation</h4>
+          <div class="pb-1">
+            <span class="font-bold text-xl page-xl underline underline-offset-1">Validation</span>
+          </div>
           <ul>
             <li v-for="v in validate" class="mb-2">
               <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" class=" print:hidden" :ui="{ root: 'p-2'}"></UAlert>
