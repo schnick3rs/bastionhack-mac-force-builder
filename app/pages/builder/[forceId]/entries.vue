@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import {useForcesStore} from "~/stores/forces";
-  import type {Force} from "~~/types/unit";
+  import type {Force, Feat} from "~~/types/unit";
   import {validateForce} from "#shared/utils/forces";
 
   const forcesStore = useForcesStore();
@@ -78,6 +78,21 @@
   const cost = computed(() => calculateForceCost(force));
 
   const validate = computed(() => validateForce(force))
+
+  const commandDrillOpen = ref(false)
+  const commandDrillTemplate = reactive({
+    name: '',
+    effect: '',
+  })
+  function setCommandDrill() {
+    const { name, effect } = commandDrillTemplate;
+    const drill: Feat = { name, effect, type: 'Command Drill' };
+    force.commandDrill = drill;
+    commandDrillOpen.value = false;
+  }
+  function clearCommandDrill() {
+    force.commandDrill = undefined;
+  }
 
 </script>
 
@@ -158,6 +173,84 @@
     <div>
 
       <UPageList>
+
+        <!-- Command Drills -->
+        <template v-if="force.mods.includes('Command Drills')">
+          <UPageCard
+              class="mb-3 bg-warning-100"
+              variant="subtle"
+              orientation="vertical"
+              :ui="{ container: 'sm:p-4' }"
+          >
+            <div class="w-full flex gap-1 justify-between items-center ">
+
+              <div class="pr-2">
+                <UAvatar icon="i-game-icons-star-medal" size="3xl"></UAvatar>
+              </div>
+
+              <div class="flex-1" v-if="force.commandDrill">
+                <p class=" font-medium text-gray-900 truncate dark:text-white">
+                  {{ force.commandDrill.name }}
+                </p>
+                <p
+                    class="text-sm text-gray-500 truncate dark:text-gray-400 w-64"
+                    :title="force.commandDrill.effect"
+                >
+                  {{ force.commandDrill.effect }}
+                </p>
+              </div>
+              <UModal
+                  v-model:open="commandDrillOpen"
+                  title="Select Command Drill"
+                  description="See pg. 57 from the MAC attack Rulebook."
+              >
+                <UButton
+                    :icon="force.commandDrill ? `i-material-symbols-light-sync` : ''"
+                    size="xl"
+                    color="info"
+                    variant="ghost"
+                    class="cursor-pointer w-fit"
+                    title="Select Command Drill"
+                    :label="force.commandDrill ? undefined : `Select Command Drill`"
+                >
+                </UButton>
+
+                <template #body>
+                  <div class="flex flex-col gap-2">
+
+                    <UInput v-model="commandDrillTemplate.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4 w-full">
+                      <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+                        <span class="inline-flex bg-default px-1">Name</span>
+                      </label>
+                    </UInput>
+
+                    <UTextarea v-model="commandDrillTemplate.effect" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4" :rows="6" autoresize>
+                      <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
+                        <span class="inline-flex bg-default px-1">Effect (Once per game for one turn)</span>
+                      </label>
+                    </UTextarea>
+
+                    <UButton @click="setCommandDrill">Set Command Drill</UButton>
+                  </div>
+                </template>
+              </UModal>
+
+              <UButton
+                  icon="i-material-symbols-light-cancel-outline"
+                  size="xl"
+                  color="error"
+                  variant="ghost"
+                  class="cursor-pointer w-fit"
+                  :disabled="force.commandDrill === undefined"
+                  title="Clear Command Drill"
+                  @click.stop="clearCommandDrill"
+              >
+              </UButton>
+
+            </div>
+          </UPageCard>
+        </template>
+
         <UPageCard
             class="mb-3"
             :ui="{ container: 'sm:p-4' }"
@@ -194,3 +287,14 @@
   </div>
 
 </template>
+
+<style scoped>
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 1em 0;
+  padding: 0;
+}
+</style>

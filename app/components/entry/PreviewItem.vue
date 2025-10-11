@@ -34,6 +34,7 @@ const icon = computed(() => {
   if (entry.classification === 'Remote asset') {
     return 'i-game-icons-anti-aircraft-gun';
   }
+  return 'i-game-icons-black-flag'
 })
 
 const description = computed(() => {
@@ -86,7 +87,6 @@ const mergedPerkFlaws = computed(() => {
 
 <template>
 
-
   <div class="flex flex-col items-center space-x-4 rtl:space-x-reverse">
 
     <div class="w-full flex gap-1 justify-between items-center">
@@ -111,7 +111,7 @@ const mergedPerkFlaws = computed(() => {
             </UTooltip>
           </template>
         </p>
-        <div class="text-sngle-line-ellipsis text-sm text-gray-500 dark:text-gray-400 w-64 pt-1">
+        <div class="text-sngle-line-ellipsis text-sm text-gray-500 dark:textarrow-gray-400 w-64 pt-1">
           <template v-if="entry.classification === 'MAC' && mergedPerkFlaws">
             <template v-for="(feat, index) in mergedPerkFlaws">
               <UTooltip :delay-duration="0" :text="feat.effect" >
@@ -130,17 +130,15 @@ const mergedPerkFlaws = computed(() => {
         {{cost}} pt
       </div>
 
-      <div>
-        <UButton
-            icon="i-material-symbols-light-cancel-outline"
-            size="xl"
-            color="error"
-            variant="ghost"
-            class="cursor-pointer w-fit"
-            @click.stop="remove(entry.id)"
-        >
-        </UButton>
-      </div>
+      <UButton
+          icon="i-material-symbols-light-cancel-outline"
+          size="xl"
+          color="error"
+          variant="ghost"
+          class="cursor-pointer w-fit"
+          @click.stop="remove(entry.id)"
+      >
+      </UButton>
 
     </div>
 

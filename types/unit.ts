@@ -33,7 +33,7 @@ export interface WeaponProfile {
     name: string,
 }
 
-export type FeatType = 'Perk' | 'Flaw' | 'Pilot Trick'
+export type FeatType = 'Perk' | 'Flaw' | 'Pilot Trick' | 'Command Drill'
 
 export interface Feat {
     name: string,
@@ -94,6 +94,13 @@ export interface RemoteAssetDefinition {
 
 export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilot Tricks' | 'Command Drills'
 
+/**
+ * Represents a Force entity with its associated properties and rules.
+ *
+ * This interface defines the structure for a Force, including its unique identifier, associated entries,
+ * point limit, faction, creation and update timestamps, command drill, and other descriptive or
+ * customization-oriented attributes.
+ */
 export interface Force {
 
     id: string
@@ -101,7 +108,7 @@ export interface Force {
     // essentials
     entries: Entry[]
     pointLimit: number
-    faction?: string
+    faction?: string // aka the faction key
 
     createdAt: number
     updatedAt: number
