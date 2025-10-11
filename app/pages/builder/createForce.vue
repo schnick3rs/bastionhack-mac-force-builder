@@ -4,6 +4,7 @@ import {useForcesStore} from "~/stores/forces";
 import type {Faction} from "~~/types/unit";
 
 import { uniqueUsernameGenerator as gen, adjectives, nouns } from 'unique-username-generator';
+import variantRulesRepository from "~~/server/data/variantRulesRepository";
 
 function randomForceName() {
   return `The ${gen({ dictionaries: [adjectives], style: 'capital'})} ${gen({ dictionaries: [nouns], style: 'capital'})} Force`;
@@ -27,13 +28,7 @@ const state =  reactive({
   mods: [],
 })
 
-const mods = reactive({
-  doubleModules: false,
-  perksFlaws: false,
-  remoteAssets: false,
-  pilotTricks: false,
-  commandDrills: false,
-})
+const mods = variantRulesRepository;
 
 
 const faction = ref('')
@@ -60,26 +55,11 @@ const { data: factions, status } = await useFetch('/api/factions', {
 
 const forces = useForcesStore()
 const toast = useToast()
+
 async function onSubmit(event: FormSubmitEvent<Schema>) {
   toast.add({ title: 'Success', description: 'A new force has ben created.', color: 'success' })
 
   let force = event.data;
-
-  if (mods.doubleModules) {
-    force.mods.push('Double Modules')
-  }
-  if (mods.remoteAssets) {
-    force.mods.push('Remote Assets')
-  }
-  if (mods.perksFlaws) {
-    force.mods.push('Perks & Flaws')
-  }
-  if (mods.pilotTricks) {
-    force.mods.push('Pilot Tricks')
-  }
-  if (mods.perksFlaws) {
-    force.mods.push('Command Drills')
-  }
 
   const createdForce = await forces.createNewForceList({...force, symbol, factionKey: faction.value})
 
@@ -107,7 +87,7 @@ function setPointLimit(pointLimit: number) {
         <UAvatar v-else :ui="{ 'root': 'size-24 text-6xl' }" :icon="symbol"></UAvatar>
       </div>
 
-      <div class="flex flex-col gap-8 w-92">
+      <div class="flex flex-col gap-8 w-96">
 
         <UInput v-model="state.name" placeholder="" :ui="{ base: 'peer' }" size="xl">
           <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
@@ -175,12 +155,18 @@ function setPointLimit(pointLimit: number) {
               description="This does not add the rules but allows for the user to add content from the Rulebook into their local storage for use."
           ></UAlert>
 
-          <USwitch v-model="mods.doubleModules" class="mt-4" label="Double Modules" description="Cram some more into each MAC Slot (see pg.49)" />
-          <USwitch v-model="mods.perksFlaws" class="mt-4" label="Perks & Flaws" description="Assign them to MAC for special capabilities" />
-          <USwitch v-model="mods.remoteAssets" class="mt-4" label="Remote Assets" description="Add off-board support effects" />
-          <USwitch v-model="mods.pilotTricks" class="mt-4" label="Pilot Tricks" description="Add Ace Pilots & Rookies" />
-          <USwitch :disabled="true" v-model="mods.commandDrills" class="mt-4" label="Command Drills" description="Select a once per battle effect" />
-
+          <UCheckboxGroup
+              v-model="state.mods"
+              class="mt-4"
+              :items="mods"
+              labelKey="name"
+              valueKey="name"
+              variant="card"
+          >
+            <template #description="{ item }">
+              {{item.hint}} (see pg. {{item.pages}})
+            </template>
+          </UCheckboxGroup>
         </div>
 
         <div class="text-center">

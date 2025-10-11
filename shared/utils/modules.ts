@@ -19,7 +19,7 @@ export function getHardwareCatalogue(factionKey: string | undefined = undefined)
     return hardwareList;
 }
 
-export function getHardwareByName(name: string): HardwareProfile | undefined {
+export function getHardwareByName(name: string):  HardwareModule | undefined {
     return hardware.find((h) => h.name === name);
 }
 

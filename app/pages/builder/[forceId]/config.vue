@@ -3,6 +3,7 @@ import {useForcesStore} from "~/stores/forces";
 import type {Force, VariantRule} from "~~/types/unit";
 import variantRulesRepository, {type VariantRuleDefinition} from "~~/server/data/variantRulesRepository";
 import factionRepository from "~~/server/data/factionRepository";
+import {getHardwareByName} from "#shared/utils/modules";
 
 const forcesStore = useForcesStore();
 const route = useRoute();
@@ -50,6 +51,20 @@ function changeVariantRule(value: boolean, mod: VariantRuleDefinition) {
     if (index === undefined) return;
     force.value?.mods.splice(index, 1);
     mod.onDetach(force.value)
+    force.value?.entries.forEach(entry => {
+      if (entry.classification === 'MAC') {
+        const factionSlots = entry.modules.filter(m => m.type === 'Hardware').filter(module => {
+          const hw = getHardwareByName(module.profile.name)
+          if (hw && hw.origin === 'faction') {
+            return true
+          }
+          return false
+        })
+        factionSlots.forEach(s => {
+
+        })
+      }
+    })
   }
 }
 
