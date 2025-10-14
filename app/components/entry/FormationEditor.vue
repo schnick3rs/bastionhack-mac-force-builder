@@ -119,7 +119,7 @@ function removeWeapon(index: number) {
       <UBadge color="neutral" variant="subtle" size="xl">
         <UTooltip :delay-duration="0" :text="hardwareTooltip(hardware)">
           <span v-if="hardware.count > 1">2x </span>
-          <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+          <span class="underline decoration-dotted" style="text-underline-offset: 4px">
             {{hardware.name}}
           </span>
         </UTooltip>

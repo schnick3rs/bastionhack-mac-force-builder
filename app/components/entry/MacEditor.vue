@@ -118,7 +118,7 @@ function removePilot() {
 
       <UBadge v-for="feat in mergedPerkFlaws" color="info" variant="subtle" class="ml-2">
         <UTooltip :delay-duration="0" :text="feat.effect">
-          <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+          <span class="underline decoration-dotted" style="text-underline-offset: 4px">
             {{ feat.name }}
           </span>
         </UTooltip>
@@ -185,7 +185,7 @@ function removePilot() {
 
       <UBadge v-if="entry.pilot" color="info" variant="subtle" class="ml-2">
         <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? 'Rookie Pilot' : entry.pilot.trick.effect">
-          <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+          <span class="underline decoration-dotted" style="text-underline-offset: 4px">
             {{ entry.pilot.name }}
           </span>
         </UTooltip>
