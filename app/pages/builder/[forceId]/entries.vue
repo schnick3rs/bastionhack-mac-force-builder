@@ -181,7 +181,7 @@
         <!-- Command Drills -->
         <template v-if="force.mods.includes('Command Drills')">
           <UPageCard
-              class="mb-3 bg-warning-100"
+              class="mb-3 bg-warning"
               variant="subtle"
               orientation="vertical"
               :ui="{ container: 'sm:p-4' }"
