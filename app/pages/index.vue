@@ -37,6 +37,7 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
       </template>
     </UCard>
 
+    <!-- Latest Forces Preview -->
     <UPageCard :ui="{ title: 'flex-row items-center justify-between' }">
 
       <template #title>
@@ -45,7 +46,7 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
         <UButton to="/forces" variant="ghost" class="flex-2 font-bold" color="info">View All</UButton>
       </template>
 
-      <UPageList divide>
+      <UPageList divide v-if="sortedForces">
         <UPageCard
             variant="ghost"
             v-for="force in sortedForces.slice(0, 3)"
@@ -68,7 +69,6 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
           </div>
 
         </UPageCard>
-
       </UPageList>
     </UPageCard>
 
@@ -89,5 +89,4 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
 </template>
 
 <style scoped>
-
 </style>
