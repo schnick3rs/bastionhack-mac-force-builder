@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import {useForcesStore} from "~/stores/forces";
-import type {Entry, Force, HardwareModule} from "~~/types/unit";
+import type {Entry, Force, Formation, HardwareModule, MAC} from "~~/types/unit";
 import {displayClassificaition, getUsedForceHardware} from "#shared/utils/units";
 import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
 import factions from "~~/server/data/factionRepository";
@@ -50,6 +50,19 @@ const suitSwap = {
   'hearts': 'diamonds',
   'diamonds': 'hearts',
   'clubs': 'spades',
+}
+
+const divisions = ['A', 'B', 'C']
+
+const toggleDivision = (entry: MAC | Formation ) => {
+  const currentDivision = entry.division;
+  if (entry.division === undefined) {
+    entry.division = 1;
+  } else if (entry.division === 3) {
+    entry.division = undefined;
+  } else {
+    entry.division++;
+  }
 }
 
 function groupBy<T extends Record<string, any>, K extends keyof T>(
@@ -163,8 +176,16 @@ const danger = [
                   class="size-16 shrink-0"
                   :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"
               />
-              <UIcon name="i-game-icons-square" class="size-12 text-gray-300" />
-              <span class="text-sm italic text-gray-400">Division</span>
+              <template v-if="entry.classification === 'MAC' || entry.classification === 'Formation'">
+                <div
+                    class="border border-gray-300 w-12 h-12 flex items-center justify-center text-4xl  cursor-pointer"
+                    @click="toggleDivision(entry)"
+                    :class="{ 'text-gray-300': !entry.division, 'text-gray-600': entry.division }"
+                >
+                  {{ entry.division ? divisions[entry.division-1] : '?' }}
+                </div>
+                <span class="text-sm italic text-gray-400">Division</span>
+              </template>
             </div>
 
             <!-- ENTRY CARD -->
