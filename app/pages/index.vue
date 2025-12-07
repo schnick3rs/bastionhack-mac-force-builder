@@ -82,6 +82,16 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
       </template>
     </UPageCard>
 
+    <UPageCard
+        title="Scenario Generator"
+        description='Assuming you have your forces, generate a random scenario'
+        to="/scenario-generator"
+    >
+      <template #footer>
+
+      </template>
+    </UPageCard>
+
 
 
   </UPageGrid>

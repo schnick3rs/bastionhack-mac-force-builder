@@ -1,6 +1,6 @@
 import hardware from "~~/server/data/hardwareRepository";
 import factions from "~~/server/data/factionRepository";
-import type {HardwareProfile, ModuleConfig, WeaponProfile} from "~~/types/unit";
+import type {HardwareModule, HardwareProfile, ModuleConfig, WeaponProfile} from "~~/types/unit";
 
 export function getHardwareCatalogue(factionKey: string | undefined = undefined) {
 
@@ -42,6 +42,7 @@ export function buildWeaponDisplayString(weapon: WeaponProfile) {
     const subtype = `${weapon.subtype ? weapon.subtype[0] : ''}${weapon.expendable ? 'X' : ''}`
     return `${weapon.range != "Brawl" ? weapon.range[0] : ''}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.name}`;
 }
+
 export type ReducedModule =
     | { name: string; count: number; type: 'Hardware'; profile: HardwareProfile }
     | { name: string; count: number; type: 'Weapon';  profile: WeaponProfile }
