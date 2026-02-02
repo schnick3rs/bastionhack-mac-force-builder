@@ -60,8 +60,11 @@ function addWeapon(event: WeaponProfile) {
   });
 }
 
+const initialWeapon = ref<WeaponProfile>();
+
 function removeWeapon(index: number) {
-  unit.weapons.splice(index, 1);
+  const oldWeapon = unit.weapons.splice(index, 1);
+  initialWeapon.value = oldWeapon[0]
 }
 
 </script>
@@ -87,10 +90,17 @@ function removeWeapon(index: number) {
   <h4 class="text-xl font-semibold">Weapons ({{unit.weapons.length}} of 2)</h4>
 
   <UPageList>
-    <UPageCard v-for="(weapon, index) in unit.weapons" :key="index" class="mb-2" orientation="horizontal">
+    <UPageCard
+        v-for="(weapon, index) in unit.weapons"
+        :key="index"
+        class="mb-2"
+        orientation="vertical"
+        :ui="{ container: 'p-2' }"
+    >
 
-      <div>
-        <UUser>
+      <div class="w-full flex gap-1 justify-between items-center">
+
+        <UUser :ui="{ wrapper: 'flex-1'}">
           <template #name>
             <span>{{buildWeaponDisplayString(weapon)}}</span>
           </template>
@@ -98,16 +108,43 @@ function removeWeapon(index: number) {
             <WeaponProfileTooltips :weapon="weapon" />
           </template>
         </UUser>
-      </div>
 
-      <UButton icon="i-material-symbols-light-cancel-outline" color="error" variant="outline" class="cursor-pointer w-fit" @click="removeWeapon(index)">
-        Remove
-      </UButton>
+        <div>
+
+          <UButton
+              icon="i-material-symbols-light-edit"
+              color="info"
+              variant="ghost"
+              class="cursor-pointer w-fit"
+              @click="removeWeapon(index)"
+              title="Remove Weapon from Unit"
+          >
+          </UButton>
+
+          <UButton
+              icon="i-material-symbols-light-cancel-outline"
+              color="error"
+              variant="ghost"
+              class="cursor-pointer w-fit"
+              @click="removeWeapon(index)"
+              title="Remove Weapon from Unit"
+          >
+          </UButton>
+        </div>
+      </div>
 
     </UPageCard>
   </UPageList>
 
-  <EntryWeaponEditor :max="calcMaxWeaponPower(entry)" @add-weapon="addWeapon" v-if="unit.weapons.length < 2"></EntryWeaponEditor>
+  <!-- edit an existing weapon -->
+
+  <!-- add a new eapon -->
+  <EntryWeaponEditor
+      v-if="unit.weapons.length < 2"
+      :initial-weapon="initialWeapon"
+      :max="calcMaxWeaponPower(entry)"
+      @add-weapon="addWeapon"
+  ></EntryWeaponEditor>
 
   <!-- HARDWARE -->
 
@@ -119,7 +156,7 @@ function removeWeapon(index: number) {
       <UBadge color="neutral" variant="subtle" size="xl">
         <UTooltip :delay-duration="0" :text="hardwareTooltip(hardware)">
           <span v-if="hardware.count > 1">2x </span>
-          <span style="text-decoration: underline dashed; text-underline-offset: 4px">
+          <span class="underline decoration-dotted" style="text-underline-offset: 4px">
             {{hardware.name}}
           </span>
         </UTooltip>

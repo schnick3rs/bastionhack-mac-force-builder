@@ -52,6 +52,7 @@ export interface MAC {
     name: string
     classification: 'MAC'
     class: number
+    division: 1 | 2 | 3 | undefined
     modules: ModuleConfig[]
     perks: Feat[]
     flaws: Feat[]
@@ -73,6 +74,7 @@ export interface Formation {
     size: number
     classification: 'Formation'
     unit: Auxiliary
+    division: 1 | 2 | 3 | undefined
 }
 
 export interface RemoteAsset {

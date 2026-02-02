@@ -87,11 +87,15 @@
   function setCommandDrill() {
     const { name, effect } = commandDrillTemplate;
     const drill: Feat = { name, effect, type: 'Command Drill' };
-    force.commandDrill = drill;
-    commandDrillOpen.value = false;
+    if (force) {
+      force.commandDrill = drill;
+      commandDrillOpen.value = false;
+    }
   }
   function clearCommandDrill() {
-    force.commandDrill = undefined;
+    if (force) {
+      force.commandDrill = undefined;
+    }
   }
 
 </script>
@@ -177,7 +181,7 @@
         <!-- Command Drills -->
         <template v-if="force.mods.includes('Command Drills')">
           <UPageCard
-              class="mb-3 bg-warning-100"
+              class="mb-3 bg-warning"
               variant="subtle"
               orientation="vertical"
               :ui="{ container: 'sm:p-4' }"
@@ -189,11 +193,11 @@
               </div>
 
               <div class="flex-1" v-if="force.commandDrill">
-                <p class=" font-medium text-gray-900 truncate dark:text-white">
+                <p class=" font-medium text-neutral-600">
                   {{ force.commandDrill.name }}
                 </p>
                 <p
-                    class="text-sm text-gray-500 truncate dark:text-gray-400 w-64"
+                    class="text-sm text-neutral-400 w-64"
                     :title="force.commandDrill.effect"
                 >
                   {{ force.commandDrill.effect }}

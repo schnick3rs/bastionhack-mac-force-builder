@@ -1,3 +1,4 @@
+import {buildWeaponDisplayString} from "#shared/utils/weapons";
 import hardware from "~~/server/data/hardwareRepository";
 import factions from "~~/server/data/factionRepository";
 import type {HardwareModule, HardwareProfile, ModuleConfig, WeaponProfile} from "~~/types/unit";
@@ -36,11 +37,6 @@ export function convertToNiceware(modules: HardwareProfile[]) {
         }, {})
     )
     return niceware;
-}
-
-export function buildWeaponDisplayString(weapon: WeaponProfile) {
-    const subtype = `${weapon.subtype ? weapon.subtype[0] : ''}${weapon.expendable ? 'X' : ''}`
-    return `${weapon.range != "Brawl" ? weapon.range[0] : ''}${weapon.type[0]}${weapon.power}${!!subtype ? '-' : ''}${subtype} ${weapon.name}`;
 }
 
 export type ReducedModule =
