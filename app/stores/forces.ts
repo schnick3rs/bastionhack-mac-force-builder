@@ -1,10 +1,8 @@
 import {defineStore} from "pinia";
 import type {Auxiliary, Entry, Force, Formation, MAC, RemoteAsset, WeaponProfile,} from "~~/types/unit";
-import {parseWeaponString} from "#shared/utils/weapons";
 import {sortForceEntries} from "#shared/utils/forces";
 
 import { uniqueUsernameGenerator as gen, nouns } from 'unique-username-generator';
-import {id} from "#ui/locale";
 
 const militaryAdjectives = [
     'Armoured',
@@ -108,12 +106,19 @@ export const useForcesStore = defineStore('forcesStore', {
     }),
 
     persist: {
+        key: 'forces',
         storage: piniaPluginPersistedstate.localStorage(),
+        beforeHydrate: (ctx) => {
+            console.info('Store beforeHydrate triggered', ctx.store.forces?.length)
+            ctx.store.isHydrating = true;
+            ctx.store.hydrated = false;
+        },
         afterHydrate: (ctx) => {
-            console.info('Store afterHydrate triggered')
+            console.info('Store afterHydrate triggered', ctx.store.forces?.length)
             ctx.store.hydrated = true;
             ctx.store.isHydrating = false;
         },
+        debug: true,
     },
 
     getters: {
@@ -196,6 +201,7 @@ export const useForcesStore = defineStore('forcesStore', {
                         perks: [],
                         flaws: [],
                         pilot: undefined,
+                        division: undefined,
                     }
                     if (force.faction === 'first-regiment') {
                         mac.modules.unshift({ slot: 0, type: 'Empty' });
@@ -212,10 +218,11 @@ export const useForcesStore = defineStore('forcesStore', {
                         hardware: [],
                     }
                     const vehicleFormation: Formation = {
-                        classification: "Formation",
+                        classification: 'Formation',
                         id: id,
                         size: 2,
-                        unit: vehicle
+                        unit: vehicle,
+                        division: undefined,
                     }
                     force.entries.push(vehicleFormation);
                     break;
@@ -232,7 +239,8 @@ export const useForcesStore = defineStore('forcesStore', {
                         classification: "Formation",
                         id: id,
                         size: 3,
-                        unit: infantry
+                        unit: infantry,
+                        division: undefined,
                     }
                     force.entries.push(infantryFormation);
                     break;

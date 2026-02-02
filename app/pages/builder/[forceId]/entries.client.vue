@@ -4,6 +4,7 @@
   import {validateForce} from "#shared/utils/forces";
 
   const forcesStore = useForcesStore();
+
   const route = useRoute();
   const forceId: string = route.params.forceId as string;
   const force: Force | undefined = forcesStore.forceById(forceId)
