@@ -1,4 +1,5 @@
 .idea
 .env
 .nuxt
+.output
 node_modules
