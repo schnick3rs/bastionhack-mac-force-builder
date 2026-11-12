@@ -74,9 +74,22 @@ function removeWeapon(index: number) {
     <span class="w-12 flex-none">{{cost}} pt</span>
   </div>
 
-  <h3>
-    Size <UInput v-model="entry.size" class="w-12 mx-2" type="number" min="1" :max="entry.unit.type === 'Infantry' ? 5 : 3" ></UInput> {{unit.type}} Formation
-  </h3>
+  <div class="flex items-center gap-2">
+    <span>Size</span>
+    <UFieldGroup>
+    <UButton
+        v-for="n in (entry.unit.type === 'Infantry' ? 5 : 3)"
+        :key="n"
+        color="info"
+        :variant="entry.size === n ? 'solid' : 'outline'"
+        class="cursor-pointer"
+        @click="entry.size = n"
+    >
+      {{ n }}
+    </UButton>
+    </UFieldGroup>
+    <span>{{unit.type}} Formation</span>
+  </div>
 
   <div>
     <h3 class="text-2xl font-bold">Modules</h3>

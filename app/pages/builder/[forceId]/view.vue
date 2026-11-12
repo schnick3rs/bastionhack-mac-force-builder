@@ -106,6 +106,29 @@ const validate = computed(() => {
   return validateForce(force)
 })
 
+// Always print (and preview) in the light theme, restoring the theme afterwards
+let hadDarkClass = false
+function forceLightTheme() {
+  const root = document.documentElement
+  hadDarkClass = root.classList.contains('dark')
+  root.classList.remove('dark')
+  root.classList.add('light')
+}
+function restoreTheme() {
+  const root = document.documentElement
+  root.classList.remove('light')
+  if (hadDarkClass) root.classList.add('dark')
+}
+
+onMounted(() => {
+  window.addEventListener('beforeprint', forceLightTheme)
+  window.addEventListener('afterprint', restoreTheme)
+})
+onBeforeUnmount(() => {
+  window.removeEventListener('beforeprint', forceLightTheme)
+  window.removeEventListener('afterprint', restoreTheme)
+})
+
 function handlePrint() {
   window.print()
 }

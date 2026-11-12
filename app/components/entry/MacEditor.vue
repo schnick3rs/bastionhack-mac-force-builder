@@ -124,9 +124,22 @@ function removePilot() {
     <span class="w-12 flex-none">{{cost}} pt</span>
   </div>
 
-  <h3 >
-    Class <UInput v-model="entry.class" class="w-12 mx-2" type="number" min="1" max="3" ></UInput> MAC
-  </h3>
+  <div class="flex items-center gap-2">
+    <span>Class</span>
+    <UFieldGroup>
+    <UButton
+        v-for="n in 3"
+        :key="n"
+        color="info"
+        :variant="entry.class === n ? 'solid' : 'outline'"
+        class="cursor-pointer"
+        @click="entry.class = n"
+    >
+      {{ n }}
+    </UButton>
+    </UFieldGroup>
+    <span>MAC</span>
+  </div>
 
   <!-- VARIANT: Perks & Flaws -->
   <template v-if="mods?.includes('Perks & Flaws')">
