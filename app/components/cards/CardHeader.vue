@@ -2,7 +2,7 @@
 import type {Activation} from "#shared/utils/cards";
 import {suitSymbol} from "#shared/utils/cards";
 
-defineProps<{ activation: Activation, title: string, sub: string, division?: number }>()
+defineProps<{ activation: Activation, title: string, sub: string, division?: number, noDivision?: boolean }>()
 
 // letters sit in the centre of three sectors: A top-right, B bottom, C top-left
 const letters = [
@@ -22,7 +22,7 @@ const letters = [
       <div class="c-title">{{ title }}</div>
       <div class="c-sub">{{ sub }}</div>
     </div>
-    <svg class="c-div" viewBox="0 0 24 24" width="24" height="24">
+    <svg v-if="!noDivision" class="c-div" viewBox="0 0 24 24" width="24" height="24">
       <circle cx="12" cy="12" r="11.3" fill="none" stroke="#1a1a1a" stroke-width="1.4"/>
       <line x1="12" y1="12" x2="12" y2="0.7" stroke="#1a1a1a" stroke-width="1.4"/>
       <line x1="12" y1="12" x2="21.8" y2="17.65" stroke="#1a1a1a" stroke-width="1.4"/>

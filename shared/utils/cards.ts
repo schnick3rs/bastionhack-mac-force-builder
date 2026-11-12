@@ -87,7 +87,16 @@ export interface ModuleCard {
     slots: number
 }
 
-export type Card = MacCard | FormationCard | ModuleCard
+export interface AssetCard {
+    kind: 'asset'
+    id: string
+    activation: Activation
+    title: string
+    sub: string
+    effect: string
+}
+
+export type Card = MacCard | FormationCard | ModuleCard | AssetCard
 
 export type SheetSlot =
     | { type: 'a7', card: MacCard | FormationCard }
@@ -247,6 +256,7 @@ export function buildCards(force: Force, suit: Suit) {
     const macs: MacCard[] = []
     const formations: FormationCard[] = []
     const moduleCards: ModuleCard[] = []
+    const assets: AssetCard[] = []
 
     force.entries.forEach((entry: Entry, index: number) => {
         const activation = activationFor(index, suit)
@@ -262,21 +272,30 @@ export function buildCards(force: Force, suit: Suit) {
             }
         } else if (entry.classification === 'Formation') {
             formations.push(buildFormationCard(entry, activation, faction, rules))
+        } else if (entry.classification === 'Remote asset') {
+            assets.push({
+                kind: 'asset',
+                id: entry.id,
+                activation,
+                title: entry.name,
+                sub: `Remote Asset${entry.cost ? ` · ${entry.cost} pts` : ''}`,
+                effect: entry.effect ?? '',
+            })
         }
     })
 
-    return {macs, formations, moduleCards, faction}
+    return {macs, formations, moduleCards, assets, faction}
 }
 
 export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
-    const {macs, formations, moduleCards} = buildCards(force, suit)
+    const {macs, formations, moduleCards, assets} = buildCards(force, suit)
 
     const slots: SheetSlot[] = [
         ...macs.map((card): SheetSlot => ({type: 'a7', card})),
         ...formations.filter(f => f.big).map((card): SheetSlot => ({type: 'a7', card})),
     ]
 
-    const small: Card[] = [...moduleCards, ...formations.filter(f => !f.big)]
+    const small: Card[] = [...moduleCards, ...formations.filter(f => !f.big), ...assets]
     for (let i = 0; i < small.length; i += 2) {
         slots.push({type: 'a8', cards: [small[i]!, small[i + 1]]})
     }
