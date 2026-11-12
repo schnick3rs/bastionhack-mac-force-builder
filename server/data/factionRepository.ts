@@ -33,7 +33,13 @@ factions.push(
         'Elder Circle',
         'Formerly HumanityFleet Mission Command',
         { name: 'Shock Dispersion', description: 'When one of your modules is damaged, lose 1 Heat. When one of your modules is destroyed, gain 1 Heat.'},
-        createHardware('Rampart', 'Roll 2+ to ignore each hit to this module when it is undamaged.', ['MAC'], 'faction'),
+        createHardware(
+    'Rampart',
+    'Roll 2+ to ignore each hit to this module when it is undamaged.',
+    ['MAC'],
+    'faction',
+    ['defense']
+  ),
         'ruthless,brutalist,mountainous,relentless',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -42,7 +48,13 @@ factions.push(
         'Grand Forge',
         'Formerly HumanityFleet HeavyWare Development',
         { name: 'Hammer Forged', description: 'All brawl attacks by you and against you roll +1AD.'},
-        createHardware('Extinguisher', 'In cooldown you may take a hit to this module to remove all Heat.', ['MAC'], 'faction'),
+        createHardware(
+    'Extinguisher',
+    'In cooldown you may take a hit to this module to remove all Heat.',
+    ['MAC'],
+    'faction',
+    ['utility', 'heat']
+  ),
         'industrial,smoke,loud,reinforced',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -51,7 +63,13 @@ factions.push(
         'First Regiment',
         'Formerly HumanityFleet Forward Security',
         { name: '0-Mods', description: 'MACs take an extra piece of hardware in the 0 slot. This module takes a hit whenever another module is destroyed. This can lead to internal damage if the 0-module has already been destroyed.'},
-        createHardware('Seeker', 'Gain 1 Heat to give all your attacks -1TN this turn.', ['MAC'], 'faction'),
+        createHardware(
+    'Seeker',
+    'Gain 1 Heat to give all your attacks -1TN this turn.',
+    ['MAC'],
+    'faction',
+    ['attack']
+  ),
         'sleek, trophies, battlescars, horns',
         (force: Force) => {
             console.info('[First Regiment] Running onAttach function. Adding 0 slot to MACs.')
@@ -73,7 +91,13 @@ factions.push(
         'Arksworn Order',
         'Formerly HumanityFleet Aeronaval Engineering',
         { name: 'Triple Hull', description: 'Your MACS treat their class as one higher for Heat generation, collisions, and internal damage capacity.'},
-        createHardware('Spire', 'Short ranged power 1 weapon that has no type but can fire in any direction and does not generate Heat. Its power can never be increased.', ['MAC'], 'faction'),
+        createHardware(
+    'Spire',
+    'Short ranged power 1 weapon that has no type but can fire in any direction and does not generate Heat. Its power can never be increased.',
+    ['MAC'],
+    'faction',
+    ['attack']
+  ),
         ' thrusters, baroque, naval, figureheads',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -82,7 +106,13 @@ factions.push(
         'Torchbearer Archive',
         'Formerly HumanityFleet Data Administration',
         { name: 'Adaptive Architecture', description: 'When a module is destroyed increase the power of the main gun on that MAC by 1, with no limit.'},
-        createHardware('Mindhive', 'When this unit activates, reveal the top card in the initiative deck then return it. You may then gain 1 Heat to shuffle the initiative deck.', ['All'], 'faction'),
+        createHardware(
+    'Mindhive',
+    'When this unit activates, reveal the top card in the initiative deck then return it. You may then gain 1 Heat to shuffle the initiative deck.',
+    ['All'],
+    'faction',
+    ['utility']
+  ),
         ' elegant, bright, intertwined, cruel',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -91,7 +121,13 @@ factions.push(
         'Dynapolis Foresight',
         'Formerly HumanityFleet Outlook Mobility',
         { name: 'Temporal Overclocking', description: 'Once per turn, a MAC can reroll any number of attack dice, keeping the new results. Each rerolled die showing 1-3 causes 1 Heat to the MAC.'},
-        createHardware('Halo', 'Destroy this module to ignore all hits from a single attack or other source.', ['All'], 'faction'),
+        createHardware(
+    'Halo',
+    'Destroy this module to ignore all hits from a single attack or other source.',
+    ['All'],
+    'faction',
+    ['defense']
+  ),
         'flashy, chrome, neon, photogenic',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -100,7 +136,13 @@ factions.push(
         'Vox Stellari',
         'Formerly HumanityFleet Comms Provider',
         { name: 'Harmonic Ratios', description: 'Your weapons with listed power equal to the current round number double their power for the duration of the round, before any other modifiers. ignoring power limits'},
-        createHardware('Converter', 'Before each weapon attack you may change the subtype to Rad or Thermal.', ['All'], 'faction'),
+        createHardware(
+    'Converter',
+    'Before each weapon attack you may change the subtype to Rad or Thermal.',
+    ['All'],
+    'faction',
+    ['attack']
+  ),
         'psychedelic, spheres, prisms, asymmetry',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -109,7 +151,13 @@ factions.push(
         'New Genesis',
         'Formerly HumanityFleet Terraforming Pioneers',
         { name: 'BioFusion', description: 'At the start of their move turn, MACs may rotate, move 3”, then rotate. When one of your modules is destroyed take an extra hit.'},
-        createHardware('Spine', 'When you collide cause an extra hit and take one less hit than normal.', ['All'], 'faction'),
+        createHardware(
+    'Spine',
+    'When you collide cause an extra hit and take one less hit than normal.',
+    ['All'],
+    'faction',
+    ['defense']
+  ),
         'unsettling, wires, chitin, bladders',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -118,7 +166,13 @@ factions.push(
         'Monolith Conclave',
         'Formerly HumanityFleet Civil Engineering Council',
         { name: 'Final Act', description: 'When a MAC is destroyed it causes hits equal to its class to all units in d6”. These hits are resolved before the meltdown phase ends.'},
-        createHardware('Crucible', 'Lose 2 Heat in cooldown. When this module is hit gain 1 Rad.', ['MAC'], 'faction'),
+        createHardware(
+    'Crucible',
+    'Lose 2 Heat in cooldown. When this module is hit gain 1 Rad.',
+    ['MAC'],
+    'faction',
+    ['utility', 'heat']
+  ),
         'unstable, banners, repurposed, crowns',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},
@@ -127,7 +181,13 @@ factions.push(
         'Skyless Cartel',
         'Formerly HumanityFleet Deep Mining Operation',
         { name: 'Umber Fields', description: 'When an attack fails to cause any hits to one of your MACs, increase its Motion by 1.'},
-        createHardware('V-Drill', '+3AD in brawl vs MACs. Attack rolls of 1 cause a hit to the wielder. Maximum 2 per unit.', ['All'], 'faction'),
+        createHardware(
+    'V-Drill',
+    '+3AD in brawl vs MACs. Attack rolls of 1 cause a hit to the wielder. Maximum 2 per unit.',
+    ['All'],
+    'faction',
+    ['attack']
+  ),
         'hunched, cutting, camouflage, sensors',
         (force: Force) => {console.info('so be implemented')},
         (force: Force) => {console.info('so be implemented')},

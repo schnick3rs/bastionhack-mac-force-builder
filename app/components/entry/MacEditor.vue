@@ -14,6 +14,27 @@ function setSlotModule(slot: number, module: ModuleConfig) {
   entry.modules[index] = module;
 }
 
+function sortGroup(m: ModuleConfig) {
+  if (m.type === 'Weapon') return m.profile.range === 'Brawl' ? 1 : 0
+  if (m.type === 'Hardware') return 2
+  return 3
+}
+
+function sortModules() {
+  const sorted = [...entry.modules].sort((a, b) => {
+    const g = sortGroup(a) - sortGroup(b)
+    if (g !== 0) return g
+    if (a.type === 'Weapon' && b.type === 'Weapon' && a.profile.range !== 'Brawl') {
+      const p = b.profile.power - a.profile.power
+      if (p !== 0) return p
+    }
+    const an = a.type === 'Empty' ? '' : a.profile.name
+    const bn = b.type === 'Empty' ? '' : b.profile.name
+    return an.localeCompare(bn)
+  })
+  entry.modules.splice(0, entry.modules.length, ...sorted.map((m, i) => ({ ...m, slot: i + 1 }) as ModuleConfig))
+}
+
 const route = useRoute();
 const forceId: string = route.params.forceId as string
 const forceStore = useForcesStore();
@@ -243,7 +264,19 @@ function removePilot() {
     </div>
   </template>
 
-  <h3 class="text-lg font-bold">Modules</h3>
+  <h3 class="text-lg font-bold flex items-center gap-2">
+    Modules
+    <UButton
+        color="neutral"
+        variant="outline"
+        size="xs"
+        icon="i-material-symbols-light-sort"
+        title="Sort modules: ranged weapons, brawl weapons, hardware, empty"
+        aria-label="Sort modules"
+        class="cursor-pointer"
+        @click="sortModules()"
+    />
+  </h3>
 
   <UPageList>
     <UPageCard
@@ -253,7 +286,7 @@ function removePilot() {
         :ui="{ container: 'sm:p-4' }"
     >
 
-      <EntryMacSlotEditor :clazz="entry.class" :module="module" :factionKey="factionKey" @setModule="setSlotModule(module.slot, $event)"></EntryMacSlotEditor>
+      <EntryMacSlotEditor :clazz="entry.class" :module="module" :previous="entry.modules[index - 1]" :factionKey="factionKey" @setModule="setSlotModule(module.slot, $event)"></EntryMacSlotEditor>
 
     </UPageCard>
 

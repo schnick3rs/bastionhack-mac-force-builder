@@ -8,12 +8,16 @@ export type Usability = 'MAC' | 'Infantry' | 'Vehicle' | 'All'
 
 export type Origin = 'common' | 'faction'
 
+export const hardwareTags = ['attack', 'mobility', 'defense', 'heat', 'utility'] as const
+export type HardwareTag = typeof hardwareTags[number]
+
 export interface HardwareModule {
     key: string,
     name: string,
     effect: string,
     usability: Usability[],
-    origin: Origin
+    origin: Origin,
+    tags: HardwareTag[]
 }
 
 export interface HardwareProfile {
