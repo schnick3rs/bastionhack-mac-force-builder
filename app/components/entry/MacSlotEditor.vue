@@ -89,94 +89,98 @@ watch(hardwareModalOpen, (open) => {
 <template>
 
   <!-- complete card row -->
-  <div class="w-full flex flex-row gap-1 justify-between items-center">
+  <div class="w-full flex flex-row gap-2 items-center">
 
-    <!-- non  button content -->
-    <div class="w-full flex flex-row gap-1 items-center">
+    <UAvatar :text="`${module.slot}`" size="md" class="shrink-0"></UAvatar>
 
-      <div class="pr-2">
-        <UAvatar :text="`${module.slot}`"></UAvatar>
-      </div>
+    <div class="flex-1 min-w-0">
 
-      <div class="flex-1">
+      <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
+      <span v-if="module.type === 'Hardware'">{{module.profile.name}}</span>
+      <span v-if="module.type === 'Empty'" class="text-muted">{{module.type}}</span>
 
-        <span v-if="module.type === 'Weapon'">{{buildWeaponDisplayString(module.profile)}}</span>
-        <span v-if="module.type === 'Hardware'">{{module.profile.name}}</span>
-        <span v-if="module.type === 'Empty'">{{module.type}}</span>
+      <p v-if="module.type === 'Weapon'" class="text-sm text-gray-600 truncate dark:text-gray-300">
+        <WeaponProfileTooltips :weapon="module.profile" />
+      </p>
 
-        <p class="text-sm text-gray-600 truncate dark:text-gray-300">
-          <WeaponProfileTooltips v-if="module.type === 'Weapon'" :weapon="module.profile" />
-        </p>
-
-        <span v-if="modDoubleModules && module.type !== 'Empty'">
-          <UCheckbox v-model="module.double"  class="pt-1" label="Double Module"></UCheckbox>
-        </span>
-      </div>
-
+      <span v-if="modDoubleModules && module.type !== 'Empty'">
+        <UCheckbox v-model="module.double"  class="pt-1" label="Double Module"></UCheckbox>
+      </span>
     </div>
 
-    <UButton
-        v-if="module.type === 'Weapon'"
-        color="info"
-        :variant="mode === 'Weapon' ? 'solid' : 'outline'"
-        icon="i-material-symbols-light-edit-square-outline"
-        class="cursor-pointer"
-        @click="editWeapon(module.profile)"
-    >
-      Weapon
-    </UButton>
-
-    <UButton
-        v-if="module.type === 'Hardware'"
-        color="info"
-        :variant="mode === 'Hardware' ? 'solid' : 'outline'"
-        icon="i-material-symbols-light-edit-square-outline"
-        class="cursor-pointer"
-        @click="editHardware(module.profile.name)"
-    >
-      Hardware
-    </UButton>
-
-    <UButton
-        v-if="module.type !== 'Empty'"
-        icon="i-material-symbols-light-cancel-outline"
-        color="error"
-        variant="outline"
-        class="cursor-pointer w-fit"
-        @click="removeModule()">
-    </UButton>
-
-    <template v-if="module.type === 'Empty'">
+    <!-- actions -->
+    <div class="flex items-center gap-1.5 shrink-0">
 
       <UButton
-          v-if="previous && previous.type !== 'Empty'"
-          color="neutral"
-          variant="outline"
+          v-if="module.type === 'Weapon'"
           size="sm"
-          icon="i-material-symbols-light-content-copy-outline"
-          title="Duplicate module above"
-          aria-label="Duplicate module above"
+          color="info"
+          :variant="mode === 'Weapon' ? 'solid' : 'outline'"
+          icon="i-material-symbols-light-edit-square-outline"
           class="cursor-pointer"
-          @click="duplicatePrevious()"
-      />
+          aria-label="Edit weapon"
+          @click="editWeapon(module.profile)"
+      >
+        <span class="hidden sm:inline">Weapon</span>
+      </UButton>
 
-      <UFieldGroup class="w-full justify-end">
+      <UButton
+          v-if="module.type === 'Hardware'"
+          size="sm"
+          color="info"
+          :variant="mode === 'Hardware' ? 'solid' : 'outline'"
+          icon="i-material-symbols-light-edit-square-outline"
+          class="cursor-pointer"
+          aria-label="Edit hardware"
+          @click="editHardware(module.profile.name)"
+      >
+        <span class="hidden sm:inline">Hardware</span>
+      </UButton>
+
+      <UButton
+          v-if="module.type !== 'Empty'"
+          size="sm"
+          icon="i-material-symbols-light-cancel-outline"
+          color="error"
+          variant="outline"
+          class="cursor-pointer"
+          aria-label="Remove module"
+          @click="removeModule()">
+      </UButton>
+
+      <template v-if="module.type === 'Empty'">
+
         <UButton
-            color="info"
-            :variant="mode === 'Weapon' ? 'solid' : 'outline'"
+            v-if="previous && previous.type !== 'Empty'"
+            color="neutral"
+            variant="outline"
+            size="sm"
+            icon="i-material-symbols-light-content-copy-outline"
+            title="Duplicate module above"
+            aria-label="Duplicate module above"
             class="cursor-pointer"
-            @click="mode = 'Weapon'">
-          + Weapon
-        </UButton>
-        <UButton
-            color="info"
-            :variant="mode === 'Hardware' ? 'solid' : 'outline'"
-            class="cursor-pointer"
-            @click="openHardwareModal()">
-          + Hardware
-        </UButton>
-      </UFieldGroup>
-    </template>
+            @click="duplicatePrevious()"
+        />
+
+        <UFieldGroup size="sm">
+          <UButton
+              color="info"
+              :variant="mode === 'Weapon' ? 'solid' : 'outline'"
+              class="cursor-pointer whitespace-nowrap"
+              @click="mode = 'Weapon'">
+            + Weapon
+          </UButton>
+          <UButton
+              color="info"
+              :variant="mode === 'Hardware' ? 'solid' : 'outline'"
+              class="cursor-pointer whitespace-nowrap"
+              @click="openHardwareModal()">
+            + Hardware
+          </UButton>
+        </UFieldGroup>
+      </template>
+
+    </div>
 
   </div>
 

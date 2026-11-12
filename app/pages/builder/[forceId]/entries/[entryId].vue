@@ -16,7 +16,7 @@
 
 <template>
 
-  <UPageCard v-if="entry" :key="entry.id" >
+  <UPageCard v-if="entry" :key="entry.id" :ui="{ container: 'p-3 sm:p-6' }">
 
     <div class="font-light font-mono text-sm"># {{entry.id}}</div>
 

@@ -198,7 +198,7 @@
                   {{ force.commandDrill.name }}
                 </p>
                 <p
-                    class="text-sm text-neutral-400 w-64"
+                    class="text-sm text-neutral-400 max-w-64"
                     :title="force.commandDrill.effect"
                 >
                   {{ force.commandDrill.effect }}

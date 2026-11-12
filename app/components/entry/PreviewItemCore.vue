@@ -18,7 +18,7 @@ const emit = defineEmits(['clickDelete'])
       <UAvatar :icon="icon"size="3xl"></UAvatar>
     </div>
 
-    <div class="flex-1">
+    <div class="flex-1 min-w-0">
       <p
           v-if="title"
          class=" font-medium text-gray-900 truncate dark:text-white"
@@ -27,7 +27,7 @@ const emit = defineEmits(['clickDelete'])
       </p>
       <p
           v-if="description"
-          class="text-sm text-gray-500 truncate dark:text-gray-400 w-64"
+          class="text-sm text-gray-500 truncate dark:text-gray-400 max-w-64"
       >
         <span>{{ description }}</span>
       </p>

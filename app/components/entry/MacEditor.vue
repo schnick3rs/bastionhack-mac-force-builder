@@ -296,7 +296,7 @@ function removePilot() {
         v-for="(module, index) in entry.modules"
         :key="module.slot" class="mb-2"
         orientation="vertical"
-        :ui="{ container: 'sm:p-4' }"
+        :ui="{ container: 'p-2.5 sm:p-3' }"
     >
 
       <EntryMacSlotEditor :clazz="entry.class" :module="module" :previous="entry.modules[index - 1]" :factionKey="factionKey" @setModule="setSlotModule(module.slot, $event)"></EntryMacSlotEditor>

@@ -87,7 +87,7 @@ const mergedPerkFlaws = computed(() => {
 
 <template>
 
-  <div class="flex flex-col items-center space-x-4 rtl:space-x-reverse">
+  <div class="flex flex-col items-center space-x-4 rtl:space-x-reverse min-w-0 max-w-full">
 
     <div class="w-full flex gap-1 justify-between items-center">
 
@@ -95,12 +95,12 @@ const mergedPerkFlaws = computed(() => {
         <UAvatar :icon="icon"size="3xl"></UAvatar>
       </div>
 
-      <div class="flex-1">
+      <div class="flex-1 min-w-0">
         <p class=" font-medium text-gray-900 truncate dark:text-white">
           <span v-if="entry.classification === 'Formation'">{{entry.size}}x </span>
           {{ name }}
         </p>
-        <p class="text-sm text-gray-500 truncate dark:text-gray-400 w-64">
+        <p class="text-sm text-gray-500 truncate dark:text-gray-400 max-w-64">
           <span>{{ description }}</span>
 
           <template v-if="entry.classification === 'MAC' && entry.pilot">&nbsp;⸱&nbsp;
@@ -111,7 +111,7 @@ const mergedPerkFlaws = computed(() => {
             </UTooltip>
           </template>
         </p>
-        <div class="text-sngle-line-ellipsis text-sm text-gray-500 dark:textarrow-gray-400 w-64 pt-1">
+        <div class="text-sngle-line-ellipsis text-sm text-gray-500 dark:textarrow-gray-400 max-w-64 pt-1">
           <template v-if="entry.classification === 'MAC' && mergedPerkFlaws">
             <template v-for="(feat, index) in mergedPerkFlaws">
               <UTooltip :delay-duration="0" :text="feat.effect" >
@@ -126,28 +126,30 @@ const mergedPerkFlaws = computed(() => {
         </div>
       </div>
 
-      <div class="font-semibold text-gray-900 dark:text-white">
-        {{cost}} pt
-      </div>
+      <!-- cost and delete, aligned to the right edge -->
+      <div class="flex items-center gap-1 ml-auto shrink-0 -mr-2">
+        <span class="font-semibold text-gray-900 dark:text-white whitespace-nowrap">
+          {{cost}} pt
+        </span>
 
-      <UButton
-          icon="i-material-symbols-light-cancel-outline"
-          size="xl"
-          color="error"
-          variant="ghost"
-          class="cursor-pointer w-fit"
-          @click.stop="remove(entry.id)"
-      >
-      </UButton>
+        <UButton
+            icon="i-material-symbols-light-cancel-outline"
+            size="xl"
+            color="error"
+            variant="ghost"
+            class="cursor-pointer w-fit"
+            @click.stop="remove(entry.id)"
+        >
+        </UButton>
+      </div>
 
     </div>
 
-    <div class="w-full">
+    <div class="w-full min-w-0">
 
       <template v-if="entry.classification === 'MAC'">
 
         <div class="flex flex-row gap-1 mt-2">
-          <h4 class="font-bold ">Modules</h4>
           <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.2); top: 12px; position: relative;"></div>
         </div>
 
@@ -174,7 +176,6 @@ const mergedPerkFlaws = computed(() => {
       <template v-if="entry.classification === 'Formation'">
 
         <div class="flex flex-row gap-1 mt-2">
-          <h4 class="font-bold ">Modules</h4>
           <div class="w-full border-b-1 ml-2" style="height: 1px; border-color: rgba(0,0,0, 0.1); top: 12px; position: relative;"></div>
         </div>
         <ul class="flex flex-wrap gap-2">
