@@ -25,16 +25,15 @@ const hardwareOptions = computed(() => {
       .filter((h) => !unit.hardware.map(h => h.name).includes(h.name))
 })
 
-const newModule = ref('');
+const hardwareModalOpen = ref(false);
 
-function addHardware() {
-  const h = hardware.find((h) => h.name === newModule.value);
+function addHardware(name: string) {
+  const h = hardware.find((h) => h.name === name);
   if (!h) return;
   unit.hardware.push({ name: h.name });
   unit.hardware.sort((a, b) => {
     return a.name.localeCompare(b.name)
   });
-  newModule.value = '';
 }
 
 function doubleHardware(hardwareName: string) {
@@ -44,7 +43,6 @@ function doubleHardware(hardwareName: string) {
   unit.hardware.sort((a, b) => {
     return a.name.localeCompare(b.name)
   });
-  newModule.value = '';
 }
 
 function removeHardware(name: string, index: number) {
@@ -166,33 +164,23 @@ function removeWeapon(index: number) {
       </UBadge>
 
     </template>
+    <UButton
+        color="info"
+        variant="outline"
+        size="xl"
+        class="cursor-pointer"
+        @click="hardwareModalOpen = true"
+    >
+      + Hardware
+    </UButton>
   </div>
 
-  <UFieldGroup oientation="horizontal">
-
-    <UBadge color="neutral" variant="subtle">Select to add Hardware</UBadge>
-
-    <USelectMenu
-        v-if="hardwareOptions"
-        :items="hardwareOptions"
-        value-key="name"
-        label-key="name"
-        class="flex-1"
-        v-model="newModule"
-        @change="addHardware"
-    >
-      <template #item-label="{ item }">
-        {{ item.name }}
-        <template v-if="factionKey && item.origin === 'faction'">
-          <UAvatar :src="`/factions/${factionKey}-symbol.png`" class="size-4 mb-1"/>
-        </template>
-        <div class="text-muted">
-          {{ item.effect }}
-        </div>
-      </template>
-    </USelectMenu>
-
-  </UFieldGroup>
+  <EntryHardwareSelectModal
+      v-model:open="hardwareModalOpen"
+      :items="hardwareOptions"
+      :factionKey="factionKey"
+      @select="addHardware"
+  />
 
 </template>
 
