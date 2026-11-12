@@ -134,6 +134,14 @@ export interface Force {
 export interface FactionRule {
     name: string
     description: string
+    /** Card variant of the rule, `{class}` is replaced by the MAC class */
+    cardText?: string
+    /** The rule also applies to auxiliary formations (printed on their cards) */
+    appliesToAuxiliary?: boolean
+    /** MACs get an extra module in slot 0 and the rule is printed beneath it */
+    zeroSlot?: boolean
+    /** Extra internal damage boxes on every MAC */
+    internalBonus?: number
 }
 
 export interface Faction {

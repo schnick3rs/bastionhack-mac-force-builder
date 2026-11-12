@@ -162,7 +162,10 @@ const danger = [
       </UFieldGroup>
     </div>
 
-    <div>
+    <div class="flex gap-2">
+      <UButton size="xl" variant="outline" color="info" class="font-bold" icon="i-game-icons-card-ace-spades" :to="`/builder/${force.id}/cards`">
+        Cards
+      </UButton>
       <UButton size="xl" variant="outline" color="info" class="font-bold cursor-pointer" icon="i-material-symbols-light-print" @click="handlePrint">
         Print
       </UButton>

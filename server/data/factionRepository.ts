@@ -47,7 +47,7 @@ factions.push(
     create(
         'Grand Forge',
         'Formerly HumanityFleet HeavyWare Development',
-        { name: 'Hammer Forged', description: 'All brawl attacks by you and against you roll +1AD.'},
+        { name: 'Hammer Forged', description: 'All brawl attacks by you and against you roll +1AD.', appliesToAuxiliary: true},
         createHardware(
     'Extinguisher',
     'In cooldown you may take a hit to this module to remove all Heat.',
@@ -62,7 +62,7 @@ factions.push(
     create(
         'First Regiment',
         'Formerly HumanityFleet Forward Security',
-        { name: '0-Mods', description: 'MACs take an extra piece of hardware in the 0 slot. This module takes a hit whenever another module is destroyed. This can lead to internal damage if the 0-module has already been destroyed.'},
+        { name: '0-Mods', description: 'MACs take an extra piece of hardware in the 0 slot. This module takes a hit whenever another module is destroyed. This can lead to internal damage if the 0-module has already been destroyed.', zeroSlot: true, cardText: 'This module takes a hit whenever another module is destroyed.'},
         createHardware(
     'Seeker',
     'Gain 1 Heat to give all your attacks -1TN this turn.',
@@ -90,7 +90,7 @@ factions.push(
     create(
         'Arksworn Order',
         'Formerly HumanityFleet Aeronaval Engineering',
-        { name: 'Triple Hull', description: 'Your MACS treat their class as one higher for Heat generation, collisions, and internal damage capacity.'},
+        { name: 'Triple Hull', description: 'Your MACS treat their class as one higher for Heat generation, collisions, and internal damage capacity.', internalBonus: 1},
         createHardware(
     'Spire',
     'Short ranged power 1 weapon that has no type but can fire in any direction and does not generate Heat. Its power can never be increased.',
@@ -165,7 +165,7 @@ factions.push(
     create(
         'Monolith Conclave',
         'Formerly HumanityFleet Civil Engineering Council',
-        { name: 'Final Act', description: 'When a MAC is destroyed it causes hits equal to its class to all units in d6”. These hits are resolved before the meltdown phase ends.'},
+        { name: 'Final Act', description: 'When a MAC is destroyed it causes hits equal to its class to all units in d6”. These hits are resolved before the meltdown phase ends.', cardText: 'When this unit is destroyed, it causes {class} hits to all units within d6”.'},
         createHardware(
     'Crucible',
     'Lose 2 Heat in cooldown. When this module is hit gain 1 Rad.',
