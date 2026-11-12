@@ -13,7 +13,7 @@ defineProps<{ card: FormationCard }>()
     </div>
     <div class="c-helper" :class="{ 'c-helper-small': card.helper.length > 20 }">{{ card.helper }}</div>
 
-    <div class="c-weapons">
+    <div v-if="card.weapons.length" class="c-weapons">
       <div v-for="(w, i) in card.weapons" :key="i" class="c-wname">
         {{ w.name }} <CardsCardUsed v-if="w.used" />
       </div>

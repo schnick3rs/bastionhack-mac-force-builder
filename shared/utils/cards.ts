@@ -29,6 +29,7 @@ export interface MacRow {
     slots: number[]       // more than one slot = identical adjacent hardware, merged
     name: string
     rule?: string
+    fullRule?: string     // untruncated rule (e.g. the Carrier text), used by the game view
     weapon: boolean
     used: boolean
     full: boolean         // render rule over the full card width
@@ -138,7 +139,7 @@ function moduleToRow(m: ModuleConfig, rules: Map<string, string>): MacRow {
     }
     if (m.type === 'Hardware') {
         const rule = macRule(m.profile.name, rules)
-        return {slots: [m.slot], name: m.profile.name, rule, weapon: false, used: false, full: false, empty: false}
+        return {slots: [m.slot], name: m.profile.name, rule, fullRule: rules.get(m.profile.name), weapon: false, used: false, full: false, empty: false}
     }
     return {slots: [m.slot], name: 'Empty', weapon: false, used: false, full: false, empty: true}
 }
@@ -239,7 +240,7 @@ function buildFormationCard(f: Formation, activation: Activation, faction: Facti
 // Sheets
 // ---------------------------------------------------------------------------------------------
 
-export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
+export function buildCards(force: Force, suit: Suit) {
     const faction = factions.find(f => f.key === force.faction)
     const rules = new Map(getHardwareCatalogue(force.faction).map(h => [h.name, h.effect]))
 
@@ -264,6 +265,12 @@ export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
         }
     })
 
+    return {macs, formations, moduleCards, faction}
+}
+
+export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
+    const {macs, formations, moduleCards} = buildCards(force, suit)
+
     const slots: SheetSlot[] = [
         ...macs.map((card): SheetSlot => ({type: 'a7', card})),
         ...formations.filter(f => f.big).map((card): SheetSlot => ({type: 'a7', card})),
@@ -284,3 +291,4 @@ export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
     }
     return sheets
 }
+

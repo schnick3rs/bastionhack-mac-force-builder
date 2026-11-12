@@ -16,6 +16,8 @@ if (!force) {
 
 useHead({
   title: `${force.name} | Cards | MACtory`,
+  // lives in the head so it is removed again when leaving this page
+  style: [{ key: 'print-page', innerHTML: '@page { size: A4 landscape; margin: 0; }' }],
   link: [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
@@ -36,7 +38,7 @@ const sheets = computed(() => buildSheets(force, suit.value))
 
     <!-- screen only toolbar -->
     <div class="print:hidden flex items-center justify-between gap-4 p-4 flex-wrap">
-      <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/view`">
+      <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/print`">
         Back
       </UButton>
 
@@ -55,7 +57,7 @@ const sheets = computed(() => buildSheets(force, suit.value))
       </div>
     </div>
 
-    <div class="sheets flex flex-col gap-6 p-4 overflow-x-auto print:p-0 print:gap-0 items-start">
+    <div class="sheets flex flex-col gap-6 p-4 overflow-x-auto print:overflow-visible print:p-0 print:gap-0 items-start">
       <div v-for="(sheet, n) in sheets" :key="n" class="sheet shadow-lg">
         <template v-for="(slot, i) in sheet" :key="i">
           <div v-if="slot.type === 'a7'" class="slot">
@@ -76,10 +78,3 @@ const sheets = computed(() => buildSheets(force, suit.value))
 
   </div>
 </template>
-
-<style>
-@page {
-  size: A4 landscape;
-  margin: 0;
-}
-</style>

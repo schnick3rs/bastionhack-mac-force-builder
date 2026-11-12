@@ -1,14 +1,17 @@
 <script setup lang="ts">
 import {useForcesStore} from "~/stores/forces";
-import type {Entry, Force, Formation, HardwareModule, MAC} from "~~/types/unit";
-import {displayClassificaition, getUsedForceHardware} from "#shared/utils/units";
-import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
+import {usePlayStore} from "~/stores/play";
+import type {Force, HardwareModule} from "~~/types/unit";
+import {calculateForceCost, getUsedForceHardware} from "#shared/utils/units";
+import {getHardwareCatalogue} from "#shared/utils/modules";
 import factions from "~~/server/data/factionRepository";
-import {buildWeaponDisplayString} from "#shared/utils/weapons";
 import {factionName} from "#shared/utils/factions";
 import {validateForce} from "#shared/utils/forces";
+import type {Suit} from "#shared/utils/cards";
+import {buildCards} from "#shared/utils/cards";
 
 const forcesStore = useForcesStore();
+const play = usePlayStore();
 const route = useRoute();
 const forceId: string = route.params.forceId as string;
 const force: Force | undefined = forcesStore.forceById(forceId)
@@ -23,137 +26,64 @@ useHead({
   title: `${force.name} | MACtory`,
 })
 
-const suit = ref('spades')
+const suit = ref<Suit>('spades')
+const cards = computed(() => buildCards(force, suit.value))
+const mods = computed(() => force.mods ?? [])
 
-//'spades', 'hearts', 'diamonds', 'clubs'
-const suitOptions = ['spades', 'hearts', 'diamonds', 'clubs']
+const macEntries = computed(() => new Map(force.entries.map(e => [e.id, e])))
+const remoteAssets = computed(() => force.entries.filter(e => e.classification === 'Remote asset'))
 
-const indexToCard = [
-  'ace',
-  'king',
-  'queen',
-  'jack',
-  '10',
-  '9',
-  '8',
-  '7',
-  '6',
-  '5',
-  '4',
-  '3',
-  '2',
-  '1',
-]
-
-const suitSwap = {
-  'spades': 'clubs',
-  'hearts': 'diamonds',
-  'diamonds': 'hearts',
-  'clubs': 'spades',
+// division lives on the entry itself
+function getDivision(id: string): number | undefined {
+  return (macEntries.value.get(id) as { division?: number } | undefined)?.division
+}
+function setDivision(id: string, value: number | undefined) {
+  const e = macEntries.value.get(id) as { division?: number } | undefined
+  if (e) e.division = value
 }
 
-const divisions = ['A', 'B', 'C']
-
-const toggleDivision = (entry: MAC | Formation ) => {
-  const currentDivision = entry.division;
-  if (entry.division === undefined) {
-    entry.division = 1;
-  } else if (entry.division === 3) {
-    entry.division = undefined;
-  } else {
-    entry.division++;
-  }
-}
-
-function groupBy<T extends Record<string, any>, K extends keyof T>(
-    array: T[],
-    key: K
-): Record<string, T[]> {
-  return array.reduce((acc, obj) => {
-    const groupKey = String(obj[key])
-    if (!acc[groupKey]) acc[groupKey] = []
-    acc[groupKey].push(obj)
-    return acc
-  }, {} as Record<string, T[]>)
-}
-
-const classified = computed(() => {
-  return groupBy(force.entries, 'classification')
-})
-
-const usedHardwareStrings = computed((): string[] => {
-  return getUsedForceHardware(force)
-})
+const usedHardwareStrings = computed((): string[] => getUsedForceHardware(force))
 
 const usedHardware = computed((): HardwareModule[] => {
-  const modules = usedHardwareStrings.value.map(name => hardware.find(h => h.name === name)).filter(h => h !== undefined);
-  return modules;
+  return usedHardwareStrings.value
+      .map(name => hardware.find(h => h.name === name))
+      .filter(h => h !== undefined);
 })
 
-const totalUnitCount = computed(() => {
-  return force.entries.reduce((acc, entry) => {
-    if (entry.classification === 'MAC') {
-      return acc + 1
-    }
-    if (entry.classification === 'Formation') {
-      return acc + entry.size
-    }
-    return acc
-  }, 0)
-})
+const validate = computed(() => validateForce(force))
 
-const validate = computed(() => {
-  return validateForce(force)
-})
-
-// Always print (and preview) in the light theme, restoring the theme afterwards
-let hadDarkClass = false
-function forceLightTheme() {
-  const root = document.documentElement
-  hadDarkClass = root.classList.contains('dark')
-  root.classList.remove('dark')
-  root.classList.add('light')
-}
-function restoreTheme() {
-  const root = document.documentElement
-  root.classList.remove('light')
-  if (hadDarkClass) root.classList.add('dark')
-}
+// Where rules are shown: in the sidebar (default) or directly in the entry cards
+type RulesMode = 'sidebar' | 'cards'
+const rulesModeItems = [
+  { label: 'Rules in sidebar', value: 'sidebar' },
+  { label: 'Rules in cards', value: 'cards' },
+]
+const rulesMode = ref<RulesMode>('sidebar')
+const rulesInCards = computed(() => rulesMode.value === 'cards')
 
 onMounted(() => {
-  window.addEventListener('beforeprint', forceLightTheme)
-  window.addEventListener('afterprint', restoreTheme)
+  const stored = localStorage.getItem('viewRulesMode')
+  if (stored === 'sidebar' || stored === 'cards') rulesMode.value = stored
 })
-onBeforeUnmount(() => {
-  window.removeEventListener('beforeprint', forceLightTheme)
-  window.removeEventListener('afterprint', restoreTheme)
-})
+watch(rulesMode, (value) => localStorage.setItem('viewRulesMode', value))
 
-function handlePrint() {
-  window.print()
+function resetMarks() {
+  if (window.confirm('Clear all damage, loss and used marks for this force?')) {
+    play.reset(force!.id)
+  }
 }
-
-const danger = [
-    'success',
-    'warning',
-    'error',
-    'neutral',
-]
-
 </script>
 
 <template>
 
-  <div class="flex items-center mb-4 print:hidden justify-between">
-    <!-- Left -->
-    <div>
-      <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/entries`">
-        Back
-      </UButton>
-    </div>
+  <!-- toolbar -->
+  <div class="flex items-center mb-6  justify-between gap-2 flex-wrap">
+    <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/entries`">
+      Back
+    </UButton>
 
-    <!-- Center -->
-    <div class="flex-1 flex justify-center">
+    <div class="flex-1 flex justify-center gap-2 flex-wrap">
+      <USelect v-model="rulesMode" :items="rulesModeItems" value-key="value" size="xl" class="w-48" />
       <UFieldGroup size="xl">
         <UButton color="neutral" :variant="suit === 'clubs' ? 'solid' : 'outline'" icon="i-game-icons-clubs" @click="suit = 'clubs'" />
         <UButton color="neutral" :variant="suit === 'spades' ? 'solid' : 'outline'" icon="i-game-icons-spades" @click="suit = 'spades'" />
@@ -163,219 +93,117 @@ const danger = [
     </div>
 
     <div class="flex gap-2">
+      <UButton size="xl" variant="outline" color="error" class="cursor-pointer" icon="i-material-symbols-light-restart-alt" @click="resetMarks">
+        Reset
+      </UButton>
       <UButton size="xl" variant="outline" color="info" class="font-bold" icon="i-game-icons-card-ace-spades" :to="`/builder/${force.id}/cards`">
         Cards
       </UButton>
-      <UButton size="xl" variant="outline" color="info" class="font-bold cursor-pointer" icon="i-material-symbols-light-print" @click="handlePrint">
+      <UButton size="xl" variant="outline" color="info" class="font-bold" icon="i-material-symbols-light-print" :to="`/builder/${force.id}/print`">
         Print
       </UButton>
     </div>
-
   </div>
 
-  <div class="flex flex-col justify-center align-center page" v-if="force">
+  <div class="page pb-12" v-if="force">
 
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-8 pt-4 print:grid-cols-5 print:gap-4 print-layout">
+    <!-- title -->
+    <div class="flex items-baseline justify-between gap-4 flex-wrap mb-6">
+      <h1 class="text-3xl font-bold">{{ force.name }}</h1>
+      <span class="text-sm text-muted">
+        {{ calculateForceCost(force) }} pt ⸱ {{ force.entries.length }} entries
+        <template v-if="force.faction"> ⸱ {{ factionName(force.faction) }} Faction</template>
+      </span>
+    </div>
+
+    <div class="grid gap-8" :class="rulesInCards ? 'grid-cols-1' : 'grid-cols-1 lg:grid-cols-5'">
 
       <!-- ENTRIES -->
-      <UPageList class="col-span-3" data="page-list">
+      <div :class="rulesInCards ? '' : 'lg:col-span-3'">
 
-        <UPageCard
-            v-for="(entry, index) in force.entries"
-            orientation="vertical"
-            class="mb-3 print:break-inside-avoid"
-            :ui="{ container: 'sm:p-2' }"
-        >
-          <div class="flex flex-row gap-2">
-
-            <!-- SUIT CARD -->
-            <div class="flex flex-col justify-top items-center w-16">
-              <UIcon
-                  v-if="index < 13"
-                  :name="`i-game-icons-card-${ indexToCard[index] }-${ suit }`"
-                  class="size-16 shrink-0"
-                  :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"
-              />
-              <UIcon
-                  v-if="index > 12"
-                  :name="`i-game-icons-card-${ indexToCard[index-13] }-${ suitSwap[suit] }`"
-                  class="size-16 shrink-0"
-                  :class="{ 'bg-error': ['hearts', 'diamonds'].includes(suit) }"
-              />
-              <template v-if="entry.classification === 'MAC' || entry.classification === 'Formation'">
-                <div
-                    class="border border-gray-300 w-12 h-12 flex items-center justify-center text-4xl  cursor-pointer"
-                    @click="toggleDivision(entry)"
-                    :class="{ 'text-gray-300': !entry.division, 'text-gray-600': entry.division }"
-                >
-                  {{ entry.division ? divisions[entry.division-1] : '?' }}
-                </div>
-                <span class="text-sm italic text-gray-400">Division</span>
-              </template>
-            </div>
-
-            <!-- ENTRY CARD -->
-            <div class="flex-1 w-full">
-
-              <h2 class="font-bold text-xl page-xl">
-                {{ entry.name || `${entry.size}x ${entry.unit.name}` }}
-                ⸱ [{{ calculateEntityCost(entry)}}pts]
-              </h2>
-
-              <div class="mb-2 flex flex-row gap-1">
-                {{ displayClassificaition(entry) }}
-                <template v-if="entry.classification === 'MAC'">
-                  ⸱
-                  <UCheckbox
-                        v-for="i in (entry.class + (force.faction === 'arksworn-order' ? 1 : 0))"
-                        :color="danger[3 - (entry.class + (force.faction === 'arksworn-order' ? 1 : 0)) + i]"
-                        class="flex "
-                        style="border: 1px solid"
-                    ></UCheckbox>
-                </template>
-              </div>
-
-              <!-- MAC Entry -->
-              <template v-if="entry.classification === 'MAC'">
-
-                <div class="grid grid-cols-2 gap-2">
-
-                  <ul>
-                    <li v-for="module in entry.modules" class="w-full flex flex-row justify-between items-center odd:bg-gray-100 dark:odd:bg-gray-800" >
-                      <div>
-                        {{module.slot}} -
-                        <template v-if="module.type === 'Weapon'">
-                          {{buildWeaponDisplayString(module.profile)}}
-                        </template>
-                        <template v-if="module.type === 'Hardware'">
-                          {{module.profile.name}}
-                        </template>
-                      </div>
-                      <div class="flex flex-row gap-1">
-                        <span v-if="module.type !== 'Empty' && module.double">x2</span>
-                        <UCheckbox color="warning" class="flex" style="border: 1px solid"></UCheckbox>
-                        <UCheckbox color="error" class="flex" style="border: 1px solid"></UCheckbox>
-                      </div>
-                    </li>
-                  </ul>
-
-                  <div>
-                    <template v-if="force.mods && force.mods.includes('Pilot Tricks')" >
-                      <div v-if="entry.pilot" class="pb-1">
-                        <p class="text-sm page-text-sm">
-                          <UIcon name="i-game-icons-samus-helmet" size="12" class="mr-1"></UIcon>
-                          <span class="font-bold">{{ entry.pilot.name }}:</span>
-                          <span v-if="entry.pilot.rookie">&nbsp;Rookie Pilot</span>
-                          <span v-else-if="entry.pilot.trick">&nbsp;{{ entry.pilot.trick.effect }}</span>
-                        </p>
-                      </div>
-                    </template>
-                    <template v-if="force.mods && force.mods.includes('Perks & Flaws')">
-                      <div v-for="feat in entry.perks" class="pb-1">
-                        <p class="text-sm page-text-sm">
-                          <UIcon name="i-game-icons-power-lightning" size="12" class="mr-1"></UIcon>
-                          <span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}
-                        </p>
-                      </div>
-                      <div v-for="feat in entry.flaws" class="pb-1">
-                        <p class="text-sm page-text-sm">
-                          <UIcon name="i-game-icons-power-lightning" size="12" class="mr-1"></UIcon>
-                          <span class="font-bold">{{ feat.name }}:</span> {{ feat.effect }}
-                        </p>
-                      </div>
-                    </template>
-                    <UTextarea class="w-full" :rows="3" placeholder="Perks, Flaws, Pilot Skills, Notes, ...."></UTextarea>
-                  </div>
-
-                </div>
-
-              </template>
-
-
-              <template v-if="entry.classification === 'Formation'">
-
-                <ul class="flex flex-wrap gap-2">
-                  <template v-for="(weapon, index) in entry.unit.weapons">
-                    <li>{{ buildWeaponDisplayString(weapon) }}</li>
-                    <span v-if="index < (entry.unit.weapons.length + convertToNiceware(entry.unit.hardware).length) -1"> ⸱ </span>
-                  </template>
-
-                  <template v-for="(hardware, index) in convertToNiceware(entry.unit.hardware)">
-                    <li>
-                      <span v-if="hardware.count > 1">2x </span>
-                      <span class="underline decoration-dotted" style="text-underline-offset: 4px">{{ hardware.name }}</span>
-                    </li>
-                    <span v-if="index < convertToNiceware(entry.unit.hardware).length -1"> ⸱ </span>
-                  </template>
-                </ul>
-
-              </template>
-
-              <template v-if="entry.classification === 'Remote asset'">
-                <p>{{entry.effect}}</p>
-              </template>
-
-            </div>
-
-          </div>
-
-        </UPageCard>
-
-      </UPageList>
-
-      <!-- RULES -->
-      <div class="col-span-2">
-
-        <h1 class="font-bold text-2xl page-headline" >{{ force.name }}</h1>
-
-        <div>
-          {{calculateForceCost(force)}}pt ⸱ {{force.entries.length}} entries
-          <span v-if="force.faction"> ⸱ {{factionName(force.faction)}} Faction</span>
-        </div>
-
-        <!-- Faction Rules -->
-        <div v-if="faction">
-          <div class="mt-4">
-            <div class="pb-1">
-              <span class="font-bold text-xl page-xl underline underline-offset-1">Faction Special Rule</span>
-              <span class="pl-2 font-normal text-sm">(see pg. 24 ff)</span>
-            </div>
-            <p class="pb-2">
-              <span class="font-bold">{{ faction.specialRule.name }}:</span>
-              {{ faction.specialRule.description }}
-            </p>
-          </div>
-        </div>
-
-        <!-- Command Drills -->
-        <template v-if="force.mods && force.mods.includes('Command Drills')">
-          <div class="mt-4">
-            <div class="pb-1">
-              <span class="font-bold text-xl page-xl underline underline-offset-1">Command Drill</span>
-              <span class="pl-2 font-normal text-sm">(see pg. 57)</span>
-            </div>
-            <UAlert
-                v-if="force.commandDrill"
-                color="neutral"
-                variant="subtle"
-                icon="i-game-icons-star-medal"
-                :title="force.commandDrill.name"
-                :description="force.commandDrill.effect"
-                close
-                close-icon="i-material-symbols-light-check-box-outline-blank"
-                :ui="{ root: 'p-2' }"
-            >
-            </UAlert>
+        <template v-if="cards.macs.length">
+          <h2 class="text-[11px] uppercase tracking-wider text-muted mb-2">MACs</h2>
+          <div class="grid grid-cols-1 gap-4 mb-8" :class="rulesInCards ? 'lg:grid-cols-2' : ''">
+            <PlayMacCard
+                v-for="card in cards.macs"
+                :key="card.id"
+                :card="card"
+                :entry="macEntries.get(card.id) as any"
+                :force-id="force.id"
+                :show-rules="rulesInCards"
+                :mods="mods"
+                :division="getDivision(card.id)"
+                @update:division="setDivision(card.id, $event)"
+            />
           </div>
         </template>
 
-        <!-- Hardware Rules -->
-        <div class="mt-4" v-if="usedHardware && usedHardware.length > 0">
+        <template v-if="cards.formations.length">
+          <h2 class="text-[11px] uppercase tracking-wider text-muted mb-2">Auxiliary formations</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start mb-8" :class="rulesInCards ? 'xl:grid-cols-3' : ''">
+            <PlayFormationCard
+                v-for="card in cards.formations"
+                :key="card.id"
+                :card="card"
+                :force-id="force.id"
+                :show-rules="rulesInCards"
+                :division="getDivision(card.id)"
+                @update:division="setDivision(card.id, $event)"
+            />
+          </div>
+        </template>
+
+        <template v-if="remoteAssets.length">
+          <h2 class="text-[11px] uppercase tracking-wider text-muted mb-2">Remote assets</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <div v-for="asset in remoteAssets" :key="asset.id" class="rounded-xl border border-default bg-elevated/40 p-4 ">
+              <div class="font-bold">{{ asset.name }}<span v-if="'cost' in asset && asset.cost" class="text-muted font-normal"> ⸱ {{ asset.cost }} pts</span></div>
+              <p v-if="'effect' in asset" class="text-sm text-muted">{{ asset.effect }}</p>
+            </div>
+          </div>
+        </template>
+
+      </div>
+
+      <!-- RULES / REMINDERS (sidebar, or below the cards when rules are in the cards) -->
+      <div :class="rulesInCards ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-start' : 'lg:col-span-2'">
+
+        <!-- Faction Rules -->
+        <div v-if="faction && !rulesInCards" class="mb-4">
           <div class="pb-1">
-            <span class="font-bold text-xl page-xl underline underline-offset-1">Hardware Rules</span>
+            <span class="font-bold text-xl underline underline-offset-1">Faction Special Rule</span>
+            <span class="pl-2 font-normal text-sm">(see pg. 24 ff)</span>
+          </div>
+          <p class="pb-2">
+            <span class="font-bold">{{ faction.specialRule.name }}:</span>
+            {{ faction.specialRule.description }}
+          </p>
+        </div>
+
+        <!-- Command Drills -->
+        <div v-if="mods.includes('Command Drills')" class="mb-4">
+          <div class="pb-1">
+            <span class="font-bold text-xl underline underline-offset-1">Command Drill</span>
+            <span class="pl-2 font-normal text-sm">(see pg. 57)</span>
+          </div>
+          <UAlert
+              v-if="force.commandDrill"
+              color="neutral"
+              variant="subtle"
+              icon="i-game-icons-star-medal"
+              :title="force.commandDrill.name"
+              :description="force.commandDrill.effect"
+              :ui="{ root: 'p-2' }"
+          />
+        </div>
+
+        <!-- Hardware Rules -->
+        <div v-if="!rulesInCards && usedHardware.length > 0" class="mb-4">
+          <div class="pb-1">
+            <span class="font-bold text-xl underline underline-offset-1">Hardware Rules</span>
             <span class="pl-2 font-normal text-sm">(see pg. 16-17)</span>
           </div>
-          <p v-for="item in usedHardware" class="pb-2">
+          <p v-for="item in usedHardware" :key="item.name" class="pb-2">
             <span class="font-bold">
               {{ item.name }}
               <template v-if="faction && item.origin === 'faction'">
@@ -384,31 +212,30 @@ const danger = [
             </span>
             {{ item.effect }}
           </p>
-
         </div>
 
         <!-- Reminders -->
-        <div class="mt-4">
+        <div class="mb-4">
           <div class="pb-1">
-            <span class="font-bold text-xl page-xl underline underline-offset-1">Deployment Cheat Sheet</span>
+            <span class="font-bold text-xl underline underline-offset-1">Deployment Cheat Sheet</span>
             <span class="pl-2 font-normal text-sm">(see pg. 20)</span>
           </div>
           <ol class="list-decimal ml-4">
             <li>Split force into 3 divisions</li>
-            <li>No division can contain more than <strong>{{Math.floor(force.entries.length / 2)}}</strong> units (MAC or Formations).</li>
+            <li>No division can contain more than <strong>{{ Math.floor(force.entries.length / 2) }}</strong> units (MAC or Formations).</li>
             <li>Each division must contain 1 MAC</li>
             <li>A MAC within Division A must be specified as your commander</li>
           </ol>
         </div>
 
         <!-- Validation -->
-        <div class="mt-4" :class="{ 'print:hidden': validate.filter(v => v.valid).length > 0 }">
+        <div class="mb-4">
           <div class="pb-1">
-            <span class="font-bold text-xl page-xl underline underline-offset-1">Validation</span>
+            <span class="font-bold text-xl underline underline-offset-1">Validation</span>
           </div>
           <ul>
-            <li v-for="v in validate" class="mb-2">
-              <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" class=" print:hidden" :ui="{ root: 'p-2'}"></UAlert>
+            <li v-for="v in validate" :key="v.message" class="mb-2">
+              <UAlert v-if="v.valid" icon="i-material-symbols-light-check-circle-outline" color="success" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
               <UAlert v-else icon="i-material-symbols-light-error-outline" color="error" variant="soft" :title="v.message" :ui="{ root: 'p-2'}"></UAlert>
             </li>
           </ul>
@@ -421,59 +248,3 @@ const danger = [
   </div>
 
 </template>
-
-<style scoped>
-
-@media print {
-
-  body {
-    zoom: 1.0;
-  }
-
-  @page {
-    size: A4 portrait;
-    margin-top: 5mm; /* or whatever you want */
-    margin-left: 5mm;
-    margin-right: 5mm;
-    margin-bottom: 10mm;
-
-    @bottom-center {
-      font-size: 3.2mm;
-      content: counter(page) " / " counter(pages);
-    }
-    @bottom-right {
-      font-size: 3.2mm;
-      content: "Created with MACtory at mactory.ravenbeak.dev";
-    }
-
-  }
-
-  .page {
-    font-size: 3.6mm;
-    line-height: 1.2;
-  }
-
-  .page-text-sm {
-    font-size: 3.2mm;
-    line-height: 1.1;
-  }
-
-  .page-headline {
-    font-family: serif !important;
-    background-color: black;
-    color: white;
-    border-radius: 2mm 0 0 2mm;
-    padding-left: 3mm;
-    font-size: 4.5mm;
-  }
-
-  .page-xl {
-    font-size: 4.2mm;
-  }
-
-  .card {
-    margin-top: 1rem; /* extra spacing from top */
-  }
-}
-
-</style>
