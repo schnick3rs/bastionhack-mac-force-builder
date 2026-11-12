@@ -15,6 +15,11 @@ const division = defineModel<number | undefined>('division', { required: true })
 const play = usePlayStore()
 const base = computed(() => `${props.forceId}|${props.card.id}`)
 
+// all internal damage boxes ticked off: the MAC is gone, fold away modules and rules (can be reopened)
+const destroyed = computed(() => props.card.internalBoxes > 0 && play.get(`${base.value}|internal`) >= props.card.internalBoxes)
+const expanded = ref(false)
+watch(destroyed, () => { expanded.value = false })
+
 const slotKey = (slot: number) => `${base.value}|dmg|${slot}`
 const usedKey = (row: MacRow) => `${base.value}|used|${row.slots[0]}`
 const isDouble = (slot: number) => {
@@ -52,7 +57,20 @@ const hasExtras = computed(() =>
     <div class="flex items-center gap-3 px-4 py-2.5 border-y border-default bg-elevated/60">
       <span class="text-[11px] uppercase tracking-wider text-muted">Internal damage</span>
       <PlayBoxes :mark-key="`${base}|internal`" :count="card.internalBoxes" />
+      <UButton
+          v-if="destroyed"
+          size="xs"
+          color="neutral"
+          variant="ghost"
+          class="ml-auto cursor-pointer"
+          :trailing-icon="expanded ? 'i-material-symbols-light-keyboard-arrow-up' : 'i-material-symbols-light-keyboard-arrow-down'"
+          @click="expanded = !expanded"
+      >
+        Destroyed
+      </UButton>
     </div>
+
+    <div v-if="!destroyed || expanded" :class="{ 'opacity-60': destroyed }">
 
     <div class="p-4 flex flex-col gap-3">
 
@@ -121,6 +139,8 @@ const hasExtras = computed(() =>
 
     <div class="mx-4 mb-4 print:hidden">
       <UTextarea class="w-full" :rows="2" placeholder="Notes: perks, flaws, pilot skills, ..." />
+    </div>
+
     </div>
   </div>
 </template>

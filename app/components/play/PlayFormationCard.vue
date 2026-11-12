@@ -4,7 +4,15 @@ import type {FormationCard} from "#shared/utils/cards";
 const props = defineProps<{ card: FormationCard, forceId: string, showRules: boolean }>()
 const division = defineModel<number | undefined>('division', { required: true })
 
+import {usePlayStore} from "~/stores/play";
+
+const play = usePlayStore()
 const base = computed(() => `${props.forceId}|${props.card.id}`)
+
+// all losses ticked off: the formation is gone, fold away weapons and rules (can be reopened)
+const destroyed = computed(() => props.card.solid > 0 && play.get(`${base.value}|losses`) >= props.card.solid)
+const expanded = ref(false)
+watch(destroyed, () => { expanded.value = false })
 const sub = computed(() => props.card.sub.replace('Class 0 ', ''))
 </script>
 
@@ -23,9 +31,20 @@ const sub = computed(() => props.card.sub.replace('Class 0 ', ''))
     <div class="flex items-center gap-3 px-3 py-2.5 border-y border-default bg-elevated/60">
       <span class="text-[11px] uppercase tracking-wider text-muted">Losses</span>
       <PlayBoxes :mark-key="`${base}|losses`" :count="card.solid" />
+      <UButton
+          v-if="destroyed"
+          size="xs"
+          color="neutral"
+          variant="ghost"
+          class="ml-auto cursor-pointer"
+          :trailing-icon="expanded ? 'i-material-symbols-light-keyboard-arrow-up' : 'i-material-symbols-light-keyboard-arrow-down'"
+          @click="expanded = !expanded"
+      >
+        Destroyed
+      </UButton>
     </div>
 
-    <div class="p-3 flex flex-col gap-2">
+    <div v-if="!destroyed || expanded" class="p-3 flex flex-col gap-2" :class="{ 'opacity-60': destroyed }">
       <div v-if="showRules" class="text-xs text-muted">{{ card.helper }}</div>
 
       <div v-for="(w, i) in card.weapons" :key="i" class="flex items-center justify-between gap-2">
