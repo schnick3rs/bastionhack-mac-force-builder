@@ -1,6 +1,6 @@
 <script setup lang="ts">
   import {useForcesStore} from "~/stores/forces";
-  import type {Force, Feat} from "~~/types/unit";
+  import type {Force, Feat, RemoteAssetDefinition} from "~~/types/unit";
   import {validateForce} from "#shared/utils/forces";
 
   const forcesStore = useForcesStore();
@@ -58,6 +58,23 @@
       selectEntry(id)
     }
     remoteAssetModelOpen.value = false;
+  }
+
+  // the catalogue picker is still work in progress and only offered locally
+  const isLocalhost = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
+
+  // pick a ready-made asset from the catalogue
+  const remoteAssetPickerOpen = ref(false)
+
+  function pickRemoteAsset(asset: RemoteAssetDefinition) {
+    const id = forcesStore.addNewEntry(forceId, 'Remote Asset', {
+      name: asset.name,
+      cost: asset.cost,
+      effect: asset.effect,
+    });
+    if (id) {
+      selectEntry(id)
+    }
   }
 
   function removeEntry(entryId: string) {
@@ -137,7 +154,7 @@
           color="info"
           variant="outline"
       >
-        Add Remote Asset
+        {{ isLocalhost ? 'Custom Remote Asset' : 'Add Remote Asset' }}
       </UButton>
 
       <template #body>
@@ -168,9 +185,10 @@
       </template>
     </UModal>
 
-    <UTooltip v-else text="Enable Remote Assets Variant Rule">
-      <UButton color="neutral" variant="subtle" disabled @click="addRemoteAsset">Add Remote Asset</UButton>
-    </UTooltip>
+    <template v-if="isLocalhost && force.mods?.includes('Remote Assets')">
+      <UButton color="info" variant="outline" @click="remoteAssetPickerOpen = true">Add Remote Asset</UButton>
+      <EntryRemoteAssetSelectModal v-model:open="remoteAssetPickerOpen" @select="pickRemoteAsset" />
+    </template>
   </UFieldGroup>
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4" >

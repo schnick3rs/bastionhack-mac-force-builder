@@ -91,11 +91,15 @@ export interface RemoteAsset {
 
 export type Entry = MAC | Formation | RemoteAsset
 
+export const remoteAssetTags = ['attack', 'control', 'heat', 'support'] as const
+export type RemoteAssetTag = typeof remoteAssetTags[number]
+
 export interface RemoteAssetDefinition {
     key: string, // aka slug
     name: string,
     cost: number,
     effect: string,
+    tags: RemoteAssetTag[],
 }
 
 export type VariantRule = 'Double Modules' | 'Critical Hits' | 'Hired Macs' | 'Perks & Flaws' | 'Remote Assets' | 'Pilot Tricks' | 'Command Drills'
