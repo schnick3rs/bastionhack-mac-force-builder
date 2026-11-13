@@ -156,6 +156,16 @@ export const useForcesStore = defineStore('forcesStore', {
             }
         },
 
+        /** Add ready-made entries (e.g. example units of a faction) to a force, returns the id of the first one. */
+        addEntries(forceId: string, entries: Entry[]) {
+            const force = this.forces.find((force) => force.id === forceId);
+            if (!force) return;
+            force.entries.push(...entries);
+            force.entries = sortForceEntries(force.entries);
+            this.touchForce(force.id)
+            return entries[0]?.id;
+        },
+
         async createNewForceList(options: any) {
             const force = {
                 id: `force-${crypto.randomUUID()}`,

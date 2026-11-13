@@ -2,6 +2,7 @@
   import {useForcesStore} from "~/stores/forces";
   import type {Force, Feat, RemoteAssetDefinition} from "~~/types/unit";
   import {validateForce} from "#shared/utils/forces";
+  import {getExampleUnits} from "#shared/utils/examples";
 
   const forcesStore = useForcesStore();
 
@@ -59,6 +60,15 @@
     }
     remoteAssetModelOpen.value = false;
   }
+
+  // example units of the faction, added one by one from a dropdown
+  const exampleItems = computed(() => getExampleUnits(force!.faction).map(unit => ({
+    label: `${unit.name} · ${unit.type}`,
+    onSelect: () => {
+      const id = forcesStore.addEntries(forceId, [unit.build()])
+      if (id) selectEntry(id)
+    },
+  })))
 
   // the catalogue picker is still work in progress and only offered locally
   const isLocalhost = ['localhost', '127.0.0.1', '[::1]'].includes(window.location.hostname)
@@ -189,7 +199,22 @@
       <UButton color="info" variant="outline" @click="remoteAssetPickerOpen = true">Add Remote Asset</UButton>
       <EntryRemoteAssetSelectModal v-model:open="remoteAssetPickerOpen" @select="pickRemoteAsset" />
     </template>
+
+
+
+    <UDropdownMenu v-if="exampleItems.length" :items="exampleItems" >
+      <UButton
+          color="neutral"
+          variant="subtle"
+          icon="i-material-symbols-light-playlist-add"
+          trailing-icon="i-material-symbols-light-keyboard-arrow-down"
+          class="cursor-pointer"
+      >
+        Add example unit
+      </UButton>
+    </UDropdownMenu>
   </UFieldGroup>
+
 
   <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4" >
 
