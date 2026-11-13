@@ -96,6 +96,14 @@
 /* page */
 @media print {
   html, body, #__nuxt { background: #fff !important; margin: 0 !important; padding: 0 !important; }
+  /* the default layout wraps the page in <main> and a container (padding, max-width, min-height) */
+  main:has(.cards-root), div:has(> .cards-root) {
+    margin: 0 !important;
+    padding: 0 !important;
+    max-width: none !important;
+    width: auto !important;
+    min-height: 0 !important;
+  }
   .cards-root .sheets { gap: 0 !important; padding: 0 !important; }
   /* 794px is a hair taller than 210mm, which would spill onto an extra page */
   .cards-root .sheet { box-shadow: none !important; margin: 0 !important; width: 1122px; height: 793px; overflow: hidden; }

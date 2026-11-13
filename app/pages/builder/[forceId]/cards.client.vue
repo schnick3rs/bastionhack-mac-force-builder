@@ -4,7 +4,6 @@ import {useForcesStore} from "~/stores/forces";
 import type {Suit} from "#shared/utils/cards";
 import {buildSheets} from "#shared/utils/cards";
 
-definePageMeta({ layout: 'cards' })
 
 const forcesStore = useForcesStore();
 const route = useRoute();
@@ -38,7 +37,7 @@ const sheets = computed(() => buildSheets(force, suit.value))
 
     <!-- screen only toolbar -->
     <div class="print:hidden flex items-center justify-between gap-4 p-4 flex-wrap">
-      <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/print`">
+      <UButton size="xl" variant="subtle" color="info" class="font-bold" icon="i-material-symbols-light-chevron-left-rounded" :to="`/builder/${force.id}/view`">
         Back
       </UButton>
 
