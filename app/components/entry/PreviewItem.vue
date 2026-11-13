@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type {Entry, HardwareProfile, MAC} from "~~/types/unit";
+import {rookieTrick} from "~~/server/data/pilotTrickRepository";
 import {calculateEntityCost} from "#shared/utils/units";
 import {buildWeaponDisplayString} from "#shared/utils/weapons";
 
@@ -104,7 +105,7 @@ const mergedPerkFlaws = computed(() => {
           <span>{{ description }}</span>
 
           <template v-if="entry.classification === 'MAC' && entry.pilot">&nbsp;⸱&nbsp;
-            <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? 'Rookie Pilot' : entry.pilot.trick.effect">
+            <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? rookieTrick.effect : entry.pilot.trick.effect">
               <span class="underline decoration-dotted" style="text-underline-offset: 4px">
                 {{ entry.pilot.name }}
               </span>

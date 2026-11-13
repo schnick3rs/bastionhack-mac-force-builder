@@ -11,7 +11,6 @@ const style = new Style(definition as any)
 // monochrome look in warm ink on paper, the seed (pilot name) picks the face
 const ink = ['2f2a24']
 const avatarOptions = {
-  backgroundColor: ['f1ece4'],
   scale: 1.15,
   skinColor: ['fffdf9'],
   hairColor: ink,

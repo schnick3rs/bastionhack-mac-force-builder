@@ -2,6 +2,7 @@
 import type {MAC} from "~~/types/unit";
 import type {MacCard, MacRow} from "#shared/utils/cards";
 import {usePlayStore} from "~/stores/play";
+import {rookieTrick} from "~~/server/data/pilotTrickRepository";
 
 const props = defineProps<{
   card: MacCard
@@ -122,7 +123,7 @@ const hasExtras = computed(() =>
       <p v-if="mods.includes('Pilot Tricks') && entry.pilot">
         <UIcon name="i-game-icons-samus-helmet" class="mr-1" />
         <b>{{ entry.pilot.name }}:</b>
-        <template v-if="entry.pilot.rookie"> Rookie Pilot</template>
+        <template v-if="entry.pilot.rookie"> {{ rookieTrick.effect }}</template>
         <template v-else-if="entry.pilot.trick"> {{ entry.pilot.trick.effect }}</template>
       </p>
       <template v-if="mods.includes('Perks & Flaws')">

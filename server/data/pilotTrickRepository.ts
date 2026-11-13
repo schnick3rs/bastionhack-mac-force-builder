@@ -18,4 +18,14 @@ export const pilotTricks: Feat[] = [
     trick('Stalk', 'If you end your move turn out of line of sight of all enemies you may move an extra 3” in any direction and rotate.'),
 ]
 
+/**
+ * Rookie pilots: inexperienced pilots can be noted as Rookies. It works like a trick,
+ * a Rookie has this instead of one of the tricks above.
+ */
+export const rookieTrick: Feat = trick(
+    'Rookie',
+    'Any time you roll a 6 that would benefit you, reroll it. Each die can only be rerolled once in this way. ' +
+    'If you score another 6 on a die rerolled this way then remove Rookie status from this pilot.',
+)
+
 export default pilotTricks

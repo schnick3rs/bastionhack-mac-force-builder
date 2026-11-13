@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import {useForcesStore} from "~/stores/forces";
 import type {Entry, Force, Formation, HardwareModule, MAC} from "~~/types/unit";
+import {rookieTrick} from "~~/server/data/pilotTrickRepository";
 import {displayClassificaition, getUsedForceHardware} from "#shared/utils/units";
 import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
 import factions from "~~/server/data/factionRepository";
@@ -279,7 +280,7 @@ const danger = [
                         <p class="text-sm page-text-sm">
                           <UIcon name="i-game-icons-samus-helmet" size="12" class="mr-1"></UIcon>
                           <span class="font-bold">{{ entry.pilot.name }}:</span>
-                          <span v-if="entry.pilot.rookie">&nbsp;Rookie Pilot</span>
+                          <span v-if="entry.pilot.rookie">&nbsp;{{ rookieTrick.effect }}</span>
                           <span v-else-if="entry.pilot.trick">&nbsp;{{ entry.pilot.trick.effect }}</span>
                         </p>
                       </div>

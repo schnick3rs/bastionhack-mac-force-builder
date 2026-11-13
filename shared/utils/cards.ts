@@ -1,5 +1,6 @@
 import type {Entry, Faction, Force, Formation, MAC, ModuleConfig} from "~~/types/unit";
 import factions from "~~/server/data/factionRepository";
+import {rookieTrick} from "~~/server/data/pilotTrickRepository";
 import {convertToNiceware, getHardwareCatalogue} from "#shared/utils/modules";
 import {buildWeaponDisplayString} from "#shared/utils/weapons";
 import {calculateFormationCost, calculateMacCost} from "#shared/utils/units";
@@ -125,9 +126,6 @@ export type SheetSlot =
     | { type: 'empty' }
 
 const SLOTS_PER_SHEET = 8
-
-const ROOKIE_RULE = 'Any time you roll a 6 that would benefit you, reroll it. Each die can only be rerolled once in this way. ' +
-    'If you score another 6 on a die rerolled this way, remove Rookie status from this pilot.'
 
 const CARRIER_RULE = 'Keep up to 2 infantry AUs off the board, noted as being inside this carrier. ' +
     'On their move activation they may deploy from their carrier unit. ' +
@@ -296,7 +294,7 @@ export function buildCards(force: Force, suit: Suit) {
                     id: `${entry.id}-pilot`,
                     name: entry.pilot.name,
                     trick: rookie ? 'Rookie' : entry.pilot.trick?.name ?? '',
-                    text: rookie ? ROOKIE_RULE : entry.pilot.trick?.effect ?? '',
+                    text: rookie ? rookieTrick.effect : entry.pilot.trick?.effect ?? '',
                     rookie,
                     seed: entry.pilot.name || entry.id,
                 })

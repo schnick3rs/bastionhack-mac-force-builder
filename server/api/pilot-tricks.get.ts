@@ -1,5 +1,5 @@
-import pilotTricks from "~~/server/data/pilotTrickRepository";
+import pilotTricks, {rookieTrick} from "~~/server/data/pilotTrickRepository";
 
 export default defineEventHandler(async () => {
-    return pilotTricks;
+    return { tricks: pilotTricks, rookie: rookieTrick };
 });

@@ -4,7 +4,7 @@ import {useForcesStore} from "~/stores/forces";
 const { entry, factionKey } = defineProps<{ entry: MAC, factionKey: string | undefined }>()
 
 import type {Feat, FeatType, MAC, ModuleConfig} from "~~/types/unit";
-import {pilotTricks} from "~~/server/data/pilotTrickRepository";
+import {pilotTricks, rookieTrick} from "~~/server/data/pilotTrickRepository";
 import {calculateMacCost} from "#shared/utils/units";
 
 const cost = computed(() => calculateMacCost(entry))
@@ -254,7 +254,7 @@ function removePilot() {
       </span>
 
       <UBadge v-if="entry.pilot" color="info" variant="subtle" class="ml-2">
-        <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? 'Rookie Pilot' : entry.pilot.trick.effect">
+        <UTooltip :delay-duration="0" :text="entry.pilot.rookie ? rookieTrick.effect : entry.pilot.trick.effect">
           <span class="underline decoration-dotted" style="text-underline-offset: 4px">
             {{ entry.pilot.name }}
           </span>
@@ -292,6 +292,9 @@ function removePilot() {
                 description="A greenhorn pilot that needs to learn"
                 class="mb-4 w-full"
             ></UCheckbox>
+            <p v-if="pilotTemplate.rookie" class="text-sm text-muted mb-4">
+              <b>{{ rookieTrick.name }}:</b> {{ rookieTrick.effect }}
+            </p>
 
             <!-- localhost: pick the trick from the catalogue -->
             <template v-if="isLocalhost">
