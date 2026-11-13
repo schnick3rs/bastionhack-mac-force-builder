@@ -59,8 +59,6 @@ const columns: { key: SortKey, label: string }[] = [
       <h1 class="text-3xl font-bold">Arsenal</h1>
       <p class="text-sm text-muted">
         A reference of the notable weapons and the weapons used in the example forces of the factions.
-        Weapons are written as range, type, power and subtype, e.g. <code>LB2-TX</code> is a long burst weapon with power 2,
-        thermal and expendable.
       </p>
     </div>
 
