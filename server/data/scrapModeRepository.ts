@@ -73,12 +73,4 @@ export const scrapWeaponSubtype = ['X', 'X+', 'T', 'T', 'J', 'R']
 /** Second subtype after an expendable "2": expendable again means no second subtype. */
 export const scrapWeaponSecondSubtype = ['', '', 'T', 'T', 'J', 'R']
 
-const namePrefix = ['Laser', 'Auto', 'Flare', 'Fusion', 'Heat', 'Rad', 'Shock']
-const nameSuffix = ['Cannon', 'Carbine', 'Rifle', 'Launcher', 'Hammer', 'Repeater', 'Flak', 'Bombs', 'Missiles', 'Pod']
-
-export function randomScrapWeaponName(): string {
-    const pick = (list: string[]) => list[Math.floor(Math.random() * list.length)]!
-    return `${pick(namePrefix)}${pick(nameSuffix)}`
-}
-
 export default scrapChassisTable;

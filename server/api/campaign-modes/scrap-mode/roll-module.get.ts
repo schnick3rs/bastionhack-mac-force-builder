@@ -1,7 +1,6 @@
 import {
     civilianHardwareTable,
     militaryHardwareTable,
-    randomScrapWeaponName,
     scrapWeaponPower,
     scrapWeaponRange,
     scrapWeaponSecondSubtype,
@@ -9,6 +8,7 @@ import {
     scrapWeaponType,
 } from "~~/server/data/scrapModeRepository";
 import {parseExampleWeapon} from "#shared/utils/examples";
+import {generateWeaponName} from "#shared/utils/weaponNames";
 import {buildWeaponDisplayString, rangeMap, subtypeMap, typeMap} from "#shared/utils/weapons";
 import type {WeaponProfile, WeaponSubtype} from "~~/types/unit";
 
@@ -90,7 +90,13 @@ export default defineEventHandler((event) => {
         // the model holds a single subtype, a second one is listed separately in `extraSubtypes`
         subtype: subtypes[0],
         expendable,
-        name: randomScrapWeaponName(),
+        name: generateWeaponName({
+            range: rangeMap[scrapWeaponRange[rolls.range - 1]!]!,
+            type: typeMap[scrapWeaponType[rolls.type - 1]!]!,
+            subtypes,
+            expendable,
+            power: scrapWeaponPower[rolls.power - 1]!,
+        }),
     }
     const option: RolledModule = {type: 'Weapon', label: buildWeaponDisplayString(profile), profile}
 

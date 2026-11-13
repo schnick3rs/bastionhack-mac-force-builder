@@ -94,6 +94,13 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
     </UPageCard>
 
 
+    <UPageCard
+        title="Arsenal"
+        description='All notable weapons and the weapons of the example forces, as a reference.'
+        icon="i-game-icons-missile-pod"
+        to="/arsenal"
+    />
+
     <!-- local only: scrap mode roll demo -->
     <UPageCard
         v-if="isLocalhost"

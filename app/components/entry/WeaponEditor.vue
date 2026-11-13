@@ -28,17 +28,21 @@ const weaponTypeItems = [
 const weaponSubtypes = [
   { label: 'None', value: '-', hint: 'Just damage'},
   { label: 'Thermal', value: 'T', hint: 'Ignore Cover, cause heat'},
-  { label: 'Jolt', value: 'J', hint: 'Jot deals ffamage on movement'},
+  { label: 'Jolt', value: 'J', hint: 'Jot deals damage on movement'},
   { label: 'Rad', value: 'R', hint: 'Deal damage then half Rad'},
 ]
 
-import { uniqueUsernameGenerator as gen } from 'unique-username-generator';
+import {generateWeaponName} from "#shared/utils/weaponNames";
 
-const prefix = ['Laser', 'Auto', 'Flare', 'Fusion', 'Heat', 'Rad', 'Shock'];
-const suffix = ['Cannon', 'Carbine', 'Rifle', 'Launcher', 'Hammer', 'Repeater', 'Flak', 'Bombs', 'Missiles', 'Pod'];
-
-function randomWeaponName() {
-  return `${gen({dictionaries: [prefix], style: 'capital'})}${gen({dictionaries: [suffix], style: 'capital'})}`;
+// a name that fits the weapon, based on range, type, subtype and expendable
+function randomWeaponName(w?: { range: string, type: string, subtype: string, expendable: boolean, power?: number }) {
+  return generateWeaponName({
+    range: rangeMap[w?.range ?? 'S'] ?? 'Short',
+    type: typeMap[w?.type ?? 'B'] ?? 'Burst',
+    subtypes: [w?.subtype ? subtypeMap[w.subtype] : undefined],
+    expendable: !!w?.expendable,
+    power: w?.power ? Number(w.power) : undefined,
+  })
 }
 
 const weapon = reactive({
@@ -75,13 +79,21 @@ function defaultName() {
 const nameCustomized = ref(false);
 
 function regenerateName() {
-  randomName = randomWeaponName();
+  randomName = randomWeaponName(weapon);
   weapon.name = defaultName();
   nameCustomized.value = false;
 }
 
+// the generated name follows range, type, power, subtype and expendable
+let lastShape = `${weapon.range}|${weapon.type}|${weapon.power}|${weapon.subtype}|${weapon.expendable}`
+
 watch(() => [weapon.range, weapon.type, weapon.power, weapon.subtype, weapon.expendable], () => {
   if (props.initialWeapon || nameCustomized.value) return;
+  const shape = `${weapon.range}|${weapon.type}|${weapon.power}|${weapon.subtype}|${weapon.expendable}`
+  if (shape !== lastShape) {
+    lastShape = shape
+    randomName = randomWeaponName(weapon)
+  }
   const range = rangeMap[weapon.range] ?? 'Brawl';
   const type = typeMap[weapon.type] ?? 'Burst';
   const subtype = subtypeMap[weapon.subtype];
