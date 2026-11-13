@@ -155,7 +155,7 @@
     <UButton color="info" variant="outline" @click="addInfantryFormation">Add Infantry Formation</UButton>
 
     <UModal
-        v-if="force.mods?.includes('Remote Assets')"
+        v-if="!isLocalhost && force.mods?.includes('Remote Assets')"
         v-model:open="remoteAssetModelOpen"
         title="Add Remote Asset"
         description="See pg. 54-55 from the MAC attack Rulebook."
@@ -164,7 +164,7 @@
           color="info"
           variant="outline"
       >
-        {{ isLocalhost ? 'Custom Remote Asset' : 'Add Remote Asset' }}
+        Add Remote Asset
       </UButton>
 
       <template #body>
@@ -199,8 +199,6 @@
       <UButton color="info" variant="outline" @click="remoteAssetPickerOpen = true">Add Remote Asset</UButton>
       <EntryRemoteAssetSelectModal v-model:open="remoteAssetPickerOpen" @select="pickRemoteAsset" />
     </template>
-
-
 
     <UDropdownMenu v-if="exampleItems.length" :items="exampleItems" >
       <UButton
