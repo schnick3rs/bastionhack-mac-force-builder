@@ -32,12 +32,19 @@ export default defineNuxtConfig({
                 { rel: 'icon', type: 'image/x-icon', sizes: '32x32', href: '/favicon-32x32.png' },
                 { rel: 'icon', type: 'image/x-icon', sizes: '16x16', href: '/favicon-16x16.png' },
                 { rel: 'apple-touch-icon', sizes: '180x180', href: '/apple-touch-icon.png' },
+                { rel: 'manifest', href: '/manifest.webmanifest' },
                 { rel: 'shortcut icon', type: 'image/x-icon', sizes: '192x192', href: '/android-chrome-192x192.png' },
                 { rel: 'shortcut icon', type: 'image/x-icon', sizes: '512x512', href: '/android-chrome-512x512.png' },
             ],
             meta: [
 
                 { name: 'robots', content: 'index,follow' },
+
+                // installable web app
+                { name: 'theme-color', content: '#0b1220' },
+                { name: 'mobile-web-app-capable', content: 'yes' },
+                { name: 'apple-mobile-web-app-capable', content: 'yes' },
+                { name: 'apple-mobile-web-app-title', content: 'MACtory' },
 
                 { name: 'description', content: metaDescription },
                 { name: 'keywords', content: 'MAC Attack,Boardgame,Tabletop Game,Battle Tech,Mechs,List Builder' },
