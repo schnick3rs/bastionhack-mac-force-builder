@@ -48,6 +48,8 @@ export interface MacCard {
     zeroRow?: MacRow
     zeroRule?: FactionBox
     rows: MacRow[]
+    /** perks and flaws (Perks & Flaws variant) */
+    feats: FactionBox[]
     faction?: FactionBox
 }
 
@@ -171,7 +173,7 @@ function buildMacRows(modules: ModuleConfig[], rules: Map<string, string>): MacR
     return rows
 }
 
-function buildMacCard(mac: MAC, activation: Activation, faction: Faction | undefined, rules: Map<string, string>): MacCard {
+function buildMacCard(mac: MAC, activation: Activation, faction: Faction | undefined, rules: Map<string, string>, withFeats: boolean): MacCard {
     const zero = mac.modules.filter(m => m.slot === 0)
     const regular = mac.modules.filter(m => m.slot !== 0)
     const zeroRule = faction?.specialRule.zeroSlot ? factionBox(faction, mac.class) : undefined
@@ -188,6 +190,7 @@ function buildMacCard(mac: MAC, activation: Activation, faction: Faction | undef
         zeroRow: zero.length ? buildMacRows(zero, rules)[0] : undefined,
         zeroRule: zero.length ? zeroRule : undefined,
         rows: buildMacRows(regular, rules),
+        feats: withFeats ? [...(mac.perks ?? []), ...(mac.flaws ?? [])].map(f => ({name: f.name, text: f.effect})) : [],
         faction: zeroRule ? undefined : factionBox(faction, mac.class),
     }
 }
@@ -261,7 +264,7 @@ export function buildCards(force: Force, suit: Suit) {
     force.entries.forEach((entry: Entry, index: number) => {
         const activation = activationFor(index, suit)
         if (entry.classification === 'MAC') {
-            macs.push(buildMacCard(entry, activation, faction, rules))
+            macs.push(buildMacCard(entry, activation, faction, rules, !!force.mods?.includes('Perks & Flaws')))
             // long rules (Carrier) are printed on a separate module card
             const carriers = entry.modules.filter(m => m.type === 'Hardware' && m.profile.name === 'Carrier').length
             if (carriers) {

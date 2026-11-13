@@ -4,6 +4,7 @@ import {factionName} from "#shared/utils/factions";
 
 const forcesStore = useForcesStore();
 const forces = forcesStore.allForces;
+const isLocalhost = useIsLocalhost()
 
 const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.updatedAt))
 
@@ -93,6 +94,14 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
     </UPageCard>
 
 
+    <!-- local only: scrap mode roll demo -->
+    <UPageCard
+        v-if="isLocalhost"
+        title="Scrap Mode (local demo)"
+        description='Roll random chassis and modules for the Scrap Mode campaign.'
+        icon="i-material-symbols-light-casino-outline"
+        to="/demo/scrap-mode"
+    />
 
   </UPageGrid>
 

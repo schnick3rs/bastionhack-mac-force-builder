@@ -75,6 +75,17 @@
 .c-rule-full { margin: 1px 0 2px; }
 .c-hr { border: 0; border-top: 1px solid #1a1a1a; margin: 2px 0; }
 
+/* compact: rule text -0.5px, tighter gaps; tight: smaller slot tiles (text never goes below 9.5px) */
+.card.compact { gap: 4px; }
+.card.compact .c-rows { gap: 2px; }
+.card.compact .c-rule { font-size: 10px; line-height: 1.15; }
+.card.compact .c-faction { font-size: 10px; line-height: 1.15; padding: 4px 8px; }
+.card.compact .c-bottom { gap: 4px; }
+.card.tight { padding: 10px; }
+.card.tight .c-slot { width: 22px; height: 22px; font-size: 13px; }
+.card.tight .c-row { gap: 5px; }
+.card.tight .c-bracket::before { top: 11px; bottom: 11px; }
+
 /* used box */
 .c-used { display: inline-flex; align-items: center; gap: 3px; margin-left: 4px; }
 .c-used-label { font-size: 8px; letter-spacing: .04em; color: #444; }
@@ -82,6 +93,7 @@
 /* faction box */
 .c-faction { background: #f2f2f2; border-radius: 4px; padding: 6px 8px; font-size: 10.5px; line-height: 1.2; }
 .c-push { margin-top: auto; }
+.c-bottom { margin-top: auto; display: flex; flex-direction: column; gap: 6px; }
 
 /* formations */
 .c-wname { font-weight: 600; font-size: 11.5px; line-height: 1.3; }

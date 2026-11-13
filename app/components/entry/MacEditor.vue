@@ -53,6 +53,21 @@ const mergedPerkFlaws = computed(() => {
   return merged;
 })
 
+const isLocalhost = useIsLocalhost()
+const featPickerOpen = ref(false)
+const featPickerType = ref<FeatType>('Perk')
+
+function openFeatPicker(type: FeatType) {
+  featPickerType.value = type
+  featPickerOpen.value = true
+}
+
+// pick a ready-made perk or flaw from the catalogue (skips ones the MAC already has)
+function pickFeat(feat: Feat) {
+  const list = feat.type === 'Perk' ? (entry.perks ??= []) : (entry.flaws ??= [])
+  if (!list.some(f => f.name === feat.name)) list.push(feat)
+}
+
 const perksFLawsModelOpen = ref(false)
 const perkFlaw = reactive({
   name: '',
@@ -159,7 +174,9 @@ function removePilot() {
         <UIcon size="20" name="i-material-symbols-light-cancel-outline" color="error" class="cursor-pointer bg-error" @click="removeFeat(feat.type, feat.name)"></UIcon>
       </UBadge>
 
+      <!-- custom perks and flaws are only offered where the catalogue picker is not available -->
       <UModal
+          v-if="!isLocalhost"
           v-model:open="perksFLawsModelOpen"
           title="Add Perk or Flaw"
           description="See pg. 52-53 from the MAC attack Rulebook."
@@ -202,6 +219,16 @@ function removePilot() {
           </div>
         </template>
       </UModal>
+
+      <template v-if="isLocalhost">
+        <UButton color="success" variant="outline" size="sm" class="ml-2" @click="openFeatPicker('Perk')">
+          + Perk
+        </UButton>
+        <UButton color="error" variant="outline" size="sm" class="ml-2" @click="openFeatPicker('Flaw')">
+          + Flaw
+        </UButton>
+        <EntryFeatSelectModal v-model:open="featPickerOpen" :type="featPickerType" @select="pickFeat" />
+      </template>
 
     </div>
   </template>
