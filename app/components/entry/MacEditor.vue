@@ -4,6 +4,7 @@ import {useForcesStore} from "~/stores/forces";
 const { entry, factionKey } = defineProps<{ entry: MAC, factionKey: string | undefined }>()
 
 import type {Feat, FeatType, MAC, ModuleConfig} from "~~/types/unit";
+import {pilotTricks} from "~~/server/data/pilotTrickRepository";
 import {calculateMacCost} from "#shared/utils/units";
 
 const cost = computed(() => calculateMacCost(entry))
@@ -121,8 +122,16 @@ const pilotTemplate = reactive({
     effect: '',
   }
 })
+// pick a pilot trick from the catalogue (localhost)
+const trickPickerOpen = ref(false)
+function pickTrick(feat: Feat) {
+  pilotTemplate.trick.name = feat.name
+  pilotTemplate.trick.effect = feat.effect
+}
+
 function addPilot() {
-  entry.pilot = pilotTemplate;
+  // a copy, so the next pilot does not share the object with this one
+  entry.pilot = JSON.parse(JSON.stringify(pilotTemplate));
   pilotModelOpen.value = false;
 }
 
@@ -284,6 +293,20 @@ function removePilot() {
                 class="mb-4 w-full"
             ></UCheckbox>
 
+            <!-- localhost: pick the trick from the catalogue -->
+            <template v-if="isLocalhost">
+              <div class="mb-4">
+                <UButton color="info" variant="outline" :disabled="pilotTemplate.rookie" @click="trickPickerOpen = true">
+                  {{ pilotTemplate.trick.name ? 'Change Pilot Trick' : 'Pick Pilot Trick' }}
+                </UButton>
+                <p v-if="pilotTemplate.trick.name && !pilotTemplate.rookie" class="text-sm mt-2">
+                  <b>{{ pilotTemplate.trick.name }}:</b> {{ pilotTemplate.trick.effect }}
+                </p>
+              </div>
+              <EntryFeatSelectModal v-model:open="trickPickerOpen" :items="pilotTricks" title="Select Pilot Trick" @select="pickTrick" />
+            </template>
+
+            <template v-else>
             <UInput v-model="pilotTemplate.trick.name" placeholder="" :ui="{ base: 'peer' }" size="xl" class="mb-4 w-full" :disabled="pilotTemplate.rookie">
               <label class="pointer-events-none absolute left-0 -top-2.5 text-highlighted text-xs font-medium px-1.5 transition-all peer-focus:-top-2.5 peer-focus:text-highlighted peer-focus:text-xs peer-focus:font-medium peer-placeholder-shown:text-sm peer-placeholder-shown:text-dimmed peer-placeholder-shown:top-2.5 peer-placeholder-shown:font-normal">
                 <span class="inline-flex bg-default px-1">Pilot Trick Name</span>
@@ -295,6 +318,8 @@ function removePilot() {
                 <span class="inline-flex bg-default px-1">Pilot Trick Effect</span>
               </label>
             </UTextarea>
+
+            </template>
 
             <UButton @click="addPilot">Add Ace Pilot</UButton>
           </div>

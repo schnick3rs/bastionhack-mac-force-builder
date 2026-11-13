@@ -3,7 +3,13 @@ import type {Feat, FeatType} from "~~/types/unit";
 import {flaws, perks} from "~~/server/data/perkFlawRepository";
 
 const open = defineModel<boolean>('open', { default: false })
-const props = defineProps<{ type?: FeatType }>()
+const props = defineProps<{
+  /** only perks or only flaws */
+  type?: FeatType
+  /** a custom list (e.g. pilot tricks) instead of perks and flaws */
+  items?: Feat[]
+  title?: string
+}>()
 const emit = defineEmits<{ select: [feat: Feat] }>()
 
 const filters: FeatType[] = ['Perk', 'Flaw']
@@ -16,6 +22,7 @@ function toggle(type: FeatType) {
 }
 
 const filtered = computed(() => {
+  if (props.items) return props.items
   // a fixed type (only perks or only flaws) wins over the filter chips
   if (props.type) return props.type === 'Perk' ? perks : flaws
   const all = [...perks, ...flaws]
@@ -32,12 +39,12 @@ function select(feat: Feat) {
 <template>
   <UModal
       v-model:open="open"
-      :title="type ? `Select ${type}` : 'Select Perk or Flaw'"
+      :title="title ?? (type ? `Select ${type}` : 'Select Perk or Flaw')"
       description="See pg. 52-53 from the MAC attack Rulebook."
       :ui="{ content: 'max-sm:inset-0 max-sm:top-0 max-sm:left-0 max-sm:translate-x-0 max-sm:translate-y-0 max-sm:max-w-none max-sm:w-full max-sm:h-dvh max-sm:max-h-none max-sm:rounded-none sm:h-[80vh] sm:max-h-[80vh] flex flex-col', body: 'flex-1 min-h-0 overflow-y-auto' }"
   >
     <template #body>
-      <div v-if="!type" class="flex flex-wrap gap-1 pb-3">
+      <div v-if="!type && !items" class="flex flex-wrap gap-1 pb-3">
         <UButton
             v-for="t in filters"
             :key="t"
@@ -59,7 +66,7 @@ function select(feat: Feat) {
           >
             <span class="font-medium flex items-center gap-1">
               {{ feat.name }}
-              <UBadge size="sm" :color="feat.type === 'Perk' ? 'success' : 'error'" variant="subtle" class="font-normal">{{ feat.type }}</UBadge>
+              <UBadge size="sm" :color="feat.type === 'Perk' ? 'success' : feat.type === 'Flaw' ? 'error' : 'info'" variant="subtle" class="font-normal">{{ feat.type }}</UBadge>
             </span>
             <span class="text-sm text-muted">{{ feat.effect }}</span>
           </button>

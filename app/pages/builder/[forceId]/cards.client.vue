@@ -68,6 +68,7 @@ const sheets = computed(() => buildSheets(force, suit.value))
               <CardsCardModule v-if="c && c.kind === 'module'" :card="c" />
               <CardsCardFormation v-else-if="c && c.kind === 'formation'" :card="c" />
               <CardsCardAsset v-else-if="c && c.kind === 'asset'" :card="c" />
+              <CardsCardPilotPair v-else-if="c && c.kind === 'pilots'" :card="c" />
               <div v-else class="card a8 empty"></div>
             </template>
           </div>

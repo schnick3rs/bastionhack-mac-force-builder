@@ -103,6 +103,14 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
         to="/demo/scrap-mode"
     />
 
+    <UPageCard
+        v-if="isLocalhost"
+        title="Tech Tree (local demo)"
+        description='Toggle techs and see the resulting access.'
+        icon="i-material-symbols-light-account-tree-outline"
+        to="/demo/tech-tree"
+    />
+
   </UPageGrid>
 
 </template>

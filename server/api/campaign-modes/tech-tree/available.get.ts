@@ -10,7 +10,7 @@ const withLabel = (u: Unlock) => ({ ...u, label: describeUnlock(u) })
  *
  * Basic techs can always be chosen, an advanced tech only if it is connected to a tech the force already unlocked.
  * `unlocks` lists everything the force gained (starting access plus the unlocked techs), `access` merges it
- * (highest MAC class and weapon power, allowed ranges, types, subtypes, units and hardware).
+ * (highest MAC class, units, weapons with max power, ranges, types and subtypes, hardware and rules).
  */
 export default defineEventHandler((event) => {
     const query = getQuery(event)

@@ -98,7 +98,26 @@ export interface AssetCard {
     effect: string
 }
 
-export type Card = MacCard | FormationCard | ModuleCard | AssetCard
+export interface PilotCard {
+    kind: 'pilot'
+    id: string
+    name: string
+    /** "Jink" or "Rookie" */
+    trick: string
+    text: string
+    rookie: boolean
+    /** seed of the placeholder portrait */
+    seed: string
+}
+
+/** Two half-height pilot cards share one A8L card. */
+export interface PilotPair {
+    kind: 'pilots'
+    id: string
+    cards: [PilotCard, PilotCard | undefined]
+}
+
+export type Card = MacCard | FormationCard | ModuleCard | AssetCard | PilotPair
 
 export type SheetSlot =
     | { type: 'a7', card: MacCard | FormationCard }
@@ -106,6 +125,9 @@ export type SheetSlot =
     | { type: 'empty' }
 
 const SLOTS_PER_SHEET = 8
+
+const ROOKIE_RULE = 'Any time you roll a 6 that would benefit you, reroll it. Each die can only be rerolled once in this way. ' +
+    'If you score another 6 on a die rerolled this way, remove Rookie status from this pilot.'
 
 const CARRIER_RULE = 'Keep up to 2 infantry AUs off the board, noted as being inside this carrier. ' +
     'On their move activation they may deploy from their carrier unit. ' +
@@ -260,11 +282,25 @@ export function buildCards(force: Force, suit: Suit) {
     const formations: FormationCard[] = []
     const moduleCards: ModuleCard[] = []
     const assets: AssetCard[] = []
+    const pilots: PilotCard[] = []
+    const withPilots = !!force.mods?.includes('Pilot Tricks')
 
     force.entries.forEach((entry: Entry, index: number) => {
         const activation = activationFor(index, suit)
         if (entry.classification === 'MAC') {
             macs.push(buildMacCard(entry, activation, faction, rules, !!force.mods?.includes('Perks & Flaws')))
+            if (withPilots && entry.pilot) {
+                const rookie = !!entry.pilot.rookie
+                pilots.push({
+                    kind: 'pilot',
+                    id: `${entry.id}-pilot`,
+                    name: entry.pilot.name,
+                    trick: rookie ? 'Rookie' : entry.pilot.trick?.name ?? '',
+                    text: rookie ? ROOKIE_RULE : entry.pilot.trick?.effect ?? '',
+                    rookie,
+                    seed: entry.pilot.name || entry.id,
+                })
+            }
             // long rules (Carrier) are printed on a separate module card
             const carriers = entry.modules.filter(m => m.type === 'Hardware' && m.profile.name === 'Carrier').length
             if (carriers) {
@@ -287,18 +323,23 @@ export function buildCards(force: Force, suit: Suit) {
         }
     })
 
-    return {macs, formations, moduleCards, assets, faction}
+    const pilotPairs: PilotPair[] = []
+    for (let i = 0; i < pilots.length; i += 2) {
+        pilotPairs.push({kind: 'pilots', id: pilots[i]!.id, cards: [pilots[i]!, pilots[i + 1]]})
+    }
+
+    return {macs, formations, moduleCards, assets, pilots: pilotPairs, faction}
 }
 
 export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
-    const {macs, formations, moduleCards, assets} = buildCards(force, suit)
+    const {macs, formations, moduleCards, assets, pilots} = buildCards(force, suit)
 
     const slots: SheetSlot[] = [
         ...macs.map((card): SheetSlot => ({type: 'a7', card})),
         ...formations.filter(f => f.big).map((card): SheetSlot => ({type: 'a7', card})),
     ]
 
-    const small: Card[] = [...moduleCards, ...formations.filter(f => !f.big), ...assets]
+    const small: Card[] = [...moduleCards, ...formations.filter(f => !f.big), ...assets, ...pilots]
     for (let i = 0; i < small.length; i += 2) {
         slots.push({type: 'a8', cards: [small[i]!, small[i + 1]]})
     }

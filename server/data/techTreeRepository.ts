@@ -11,20 +11,24 @@ import type {WeaponRange, WeaponSubtype, WeaponType} from "~~/types/unit";
 export type TechTier = 'basic' | 'advanced'
 export type UnitType = 'Infantry' | 'Vehicle'
 
+/** The weapon properties a tech can unlock. */
+export type WeaponProperty = 'range' | 'type' | 'subtype' | 'power'
+
 /**
- * Something a force gains access to.
- * `mac` and `weapon.power` hold the highest allowed value, the highest one a force has wins.
+ * Something a force gains access to, sorted by `category`. Weapons add a second property:
+ * `{ category: 'weapon', property: 'range', value: 'Short' }`.
+ * `mac` and the weapon `power` hold the highest allowed value, the highest one a force has wins.
  * `restriction` limits a hardware module to one kind of auxiliary unit (e.g. vehicle armour).
  */
 export type Unlock =
-    | { type: 'hardware', value: string, restriction?: UnitType }
-    | { type: 'mac', value: 1 | 2 | 3 }
-    | { type: 'unit', value: UnitType }
-    | { type: 'weapon.range', value: WeaponRange }
-    | { type: 'weapon.type', value: WeaponType }
-    | { type: 'weapon.subtype', value: WeaponSubtype | 'Expendable' }
-    | { type: 'weapon.power', value: number }
-    | { type: 'rule', value: string }
+    | { category: 'hardware', value: string, restriction?: UnitType }
+    | { category: 'mac', value: 1 | 2 | 3 }
+    | { category: 'unit', value: UnitType }
+    | { category: 'weapon', property: 'range', value: WeaponRange }
+    | { category: 'weapon', property: 'type', value: WeaponType }
+    | { category: 'weapon', property: 'subtype', value: WeaponSubtype | 'Expendable' }
+    | { category: 'weapon', property: 'power', value: number }
+    | { category: 'rule', value: string }
 
 export interface Tech {
     key: string
@@ -33,80 +37,90 @@ export interface Tech {
     unlocks: Unlock[]
 }
 
-const hw = (...names: string[]): Unlock[] => names.map(value => ({ type: 'hardware', value }))
+const hw = (...names: string[]): Unlock[] => names.map(value => ({ category: 'hardware', value }))
 
 export const startingAccess: Unlock[] = [
-    { type: 'mac', value: 1 },
-    { type: 'mac', value: 2 },
-    { type: 'weapon.power', value: 2 },
-    { type: 'weapon.range', value: 'Short' },
-    { type: 'weapon.range', value: 'Long' },
-    { type: 'weapon.type', value: 'Burst' },
-    { type: 'weapon.type', value: 'Piercing' },
-    { type: 'weapon.subtype', value: 'Expendable' },
+    { category: 'mac', value: 1 },
+    { category: 'mac', value: 2 },
+    { category: 'weapon', property: 'power', value: 2 },
+    { category: 'weapon', property: 'range', value: 'Short' },
+    { category: 'weapon', property: 'range', value: 'Long' },
+    { category: 'weapon', property: 'type', value: 'Burst' },
+    { category: 'weapon', property: 'type', value: 'Piercing' },
+    { category: 'weapon', property: 'subtype', value: 'Expendable' },
     ...hw('Frame', 'Plate', 'Radiator', 'Servo'),
-    { type: 'unit', value: 'Infantry' },
-    { type: 'unit', value: 'Vehicle' },
-    { type: 'hardware', value: 'Armour', restriction: 'Vehicle' },
+    { category: 'unit', value: 'Infantry' },
+    { category: 'unit', value: 'Vehicle' },
+    { category: 'hardware', value: 'Armour', restriction: 'Vehicle' },
 ]
 
-/** Readable text of an unlock, e.g. "Armour (Vehicle only)" or "Weapons up to power 3". */
+/** Readable text of an unlock, e.g. "Armour (Vehicle only)" or "Power 3 weapons". */
 export function describeUnlock(u: Unlock): string {
-    switch (u.type) {
+    switch (u.category) {
         case 'hardware': return u.restriction ? `${u.value} (${u.restriction} only)` : u.value
         case 'mac': return `Class ${u.value} MACs`
         case 'unit': return `${u.value} AUs`
-        case 'weapon.range': return u.value === 'Brawl' ? 'Brawl weapons' : `${u.value} range`
-        case 'weapon.type': return `${u.value} type`
-        case 'weapon.subtype': return `${u.value} subtype`
-        case 'weapon.power': return `Power ${u.value} weapons`
         case 'rule': return u.value
+        case 'weapon':
+            switch (u.property) {
+                case 'range': return u.value === 'Brawl' ? 'Brawl weapons' : `${u.value} range`
+                case 'type': return `${u.value} type`
+                case 'subtype': return `${u.value} subtype`
+                case 'power': return `Power ${u.value} weapons`
+            }
     }
 }
 
 /** What a force has access to, merged from a list of unlocks. */
 export function summarizeAccess(unlocks: Unlock[]) {
-    const access = {
-        maxMacClass: 0,
-        maxWeaponPower: 0,
-        units: new Set<UnitType>(),
-        weaponRanges: new Set<WeaponRange>(),
-        weaponTypes: new Set<WeaponType>(),
-        weaponSubtypes: new Set<string>(),
-        rules: new Set<string>(),
-        // hardware name -> units it may be used by, null = no restriction
-        hardware: new Map<string, Set<UnitType> | null>(),
-    }
+    let maxMacClass = 0
+    let maxPower = 0
+    const units = new Set<UnitType>()
+    const ranges = new Set<WeaponRange>()
+    const types = new Set<WeaponType>()
+    const subtypes = new Set<string>()
+    const rules = new Set<string>()
+    // hardware name -> units it may be used by, null = no restriction
+    const hardware = new Map<string, Set<UnitType> | null>()
+
     for (const u of unlocks) {
-        switch (u.type) {
-            case 'mac': access.maxMacClass = Math.max(access.maxMacClass, u.value); break
-            case 'weapon.power': access.maxWeaponPower = Math.max(access.maxWeaponPower, u.value); break
-            case 'unit': access.units.add(u.value); break
-            case 'weapon.range': access.weaponRanges.add(u.value); break
-            case 'weapon.type': access.weaponTypes.add(u.value); break
-            case 'weapon.subtype': access.weaponSubtypes.add(u.value); break
-            case 'rule': access.rules.add(u.value); break
-            case 'hardware': {
+        switch (u.category) {
+            case 'mac': maxMacClass = Math.max(maxMacClass, u.value); break
+            case 'unit': units.add(u.value); break
+            case 'rule': rules.add(u.value); break
+            case 'weapon':
+                if (u.property === 'power') maxPower = Math.max(maxPower, u.value)
+                else if (u.property === 'range') ranges.add(u.value)
+                else if (u.property === 'type') types.add(u.value)
+                else subtypes.add(u.value)
+                break
+            case 'hardware':
                 if (!u.restriction) {
-                    access.hardware.set(u.value, null)
-                } else if (access.hardware.get(u.value) !== null) {
-                    const set = access.hardware.get(u.value) ?? new Set<UnitType>()
+                    hardware.set(u.value, null)
+                } else if (hardware.get(u.value) !== null) {
+                    const set = hardware.get(u.value) ?? new Set<UnitType>()
                     set.add(u.restriction)
-                    access.hardware.set(u.value, set)
+                    hardware.set(u.value, set)
                 }
                 break
-            }
         }
     }
+
     return {
-        maxMacClass: access.maxMacClass,
-        maxWeaponPower: access.maxWeaponPower,
-        units: [...access.units],
-        weaponRanges: [...access.weaponRanges],
-        weaponTypes: [...access.weaponTypes],
-        weaponSubtypes: [...access.weaponSubtypes],
-        rules: [...access.rules],
-        hardware: [...access.hardware.entries()].map(([name, units]) => ({ name, usableBy: units ? [...units] : null })),
+        maxMacClass,
+        units: [...units],
+        weapons: {
+            maxPower,
+            ranges: [...ranges],
+            types: [...types],
+            subtypes: [...subtypes],
+        },
+        rules: [...rules],
+        // usable by both kinds of auxiliary unit is the same as no restriction
+        hardware: [...hardware.entries()].map(([name, usableBy]) => ({
+            name,
+            usableBy: usableBy && usableBy.size < 2 ? [...usableBy] : null,
+        })),
     }
 }
 
@@ -117,26 +131,26 @@ const tech = (tier: TechTier, name: string, unlocks: Unlock[]): Tech => ({ key: 
 export const techs: Tech[] = [
     // basic tech, in the order of the book
     tech('basic', 'Thermal Osmosis', hw('Catalyst', 'Conductor', 'Emitter')),
-    tech('basic', 'Hypertracking', [{ type: 'weapon.type', value: 'Multi' }, ...hw('Shield')]),
-    tech('basic', 'Active Fibres', [{ type: 'weapon.range', value: 'Brawl' }, ...hw('Mesh', 'Rotor')]),
-    tech('basic', 'Two-State Metals', [{ type: 'weapon.subtype', value: 'Thermal' }, ...hw('Coolant')]),
-    tech('basic', 'Grav-Regulation', [{ type: 'hardware', value: 'Armour', restriction: 'Infantry' }, ...hw('Tether', 'Aerodrive')]),
-    tech('basic', 'Force Expansion', [{ type: 'weapon.range', value: 'Arc' }, ...hw('Amplifier')]),
+    tech('basic', 'Hypertracking', [{ category: 'weapon', property: 'type', value: 'Multi' }, ...hw('Shield')]),
+    tech('basic', 'Active Fibres', [{ category: 'weapon', property: 'range', value: 'Brawl' }, ...hw('Mesh', 'Rotor')]),
+    tech('basic', 'Two-State Metals', [{ category: 'weapon', property: 'subtype', value: 'Thermal' }, ...hw('Coolant')]),
+    tech('basic', 'Grav-Regulation', [{ category: 'hardware', value: 'Armour', restriction: 'Infantry' }, ...hw('Tether', 'Aerodrive')]),
+    tech('basic', 'Force Expansion', [{ category: 'weapon', property: 'range', value: 'Arc' }, ...hw('Amplifier')]),
     tech('basic', 'Inertia Bypass', hw('Booster', 'Gravlock', 'Gyro')),
-    tech('basic', 'Neural Mapping', [{ type: 'weapon.type', value: 'Guided' }, ...hw('Disruptor')]),
+    tech('basic', 'Neural Mapping', [{ category: 'weapon', property: 'type', value: 'Guided' }, ...hw('Disruptor')]),
     tech('basic', 'Compressed Fuels', hw('Hoverfoil', 'Intake', 'Jet')),
 
     // advanced tech
     tech('advanced', 'Heat Matrix', hw('Hotstepper', 'Casing', 'Vent')),
-    tech('advanced', 'Overkill Doctrine', [{ type: 'weapon.power', value: 4 }]),
-    tech('advanced', 'Supercatalysts', [{ type: 'weapon.subtype', value: 'Radiation' }, ...hw('Prism')]),
+    tech('advanced', 'Overkill Doctrine', [{ category: 'weapon', property: 'power', value: 4 }]),
+    tech('advanced', 'Supercatalysts', [{ category: 'weapon', property: 'subtype', value: 'Radiation' }, ...hw('Prism')]),
     tech('advanced', 'Drive Enhancement', hw('Carrier', 'Dozer', 'Transport')),
     tech('advanced', 'Stabilised Quantum Matter', hw('Cloak', 'Reflector')),
     tech('advanced', 'Final-Gen AI', hw('ECM', 'Guardian', 'Precog')),
-    tech('advanced', 'Reactive Magnetics', [{ type: 'weapon.subtype', value: 'Jolt' }, ...hw('Hooks')]),
-    tech('advanced', 'Macro Munitions', [{ type: 'weapon.power', value: 3 }]),
-    tech('advanced', 'Branch Interfacing', [{ type: 'rule', value: 'Double Modules' }]),
-    tech('advanced', 'Tri-Core Fusion', [{ type: 'mac', value: 3 }]),
+    tech('advanced', 'Reactive Magnetics', [{ category: 'weapon', property: 'subtype', value: 'Jolt' }, ...hw('Hooks')]),
+    tech('advanced', 'Macro Munitions', [{ category: 'weapon', property: 'power', value: 3 }]),
+    tech('advanced', 'Branch Interfacing', [{ category: 'rule', value: 'Double Modules' }]),
+    tech('advanced', 'Tri-Core Fusion', [{ category: 'mac', value: 3 }]),
 ]
 
 /**

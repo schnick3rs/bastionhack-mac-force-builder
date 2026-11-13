@@ -86,6 +86,20 @@
 .card.tight .c-row { gap: 5px; }
 .card.tight .c-bracket::before { top: 11px; bottom: 11px; }
 
+/* pilot card: half AUX size (two per A8L card), portrait on the left */
+.card.half { height: 99.25px; }
+.c-pair { width: 280px; height: 198.5px; display: flex; flex-direction: column; }
+.card.pilot { flex-direction: row; gap: 0; padding: 0; }
+.c-portrait { width: 84px; flex: none; border-right: 2px solid #1a1a1a; overflow: hidden; background: #fff; }
+.c-portrait img { display: block; width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; }
+.c-pilot-body { flex: 1; min-width: 0; padding: 8px 10px; display: flex; flex-direction: column; gap: 4px; }
+.c-pilot-name { font-family: 'Chakra Petch', sans-serif; font-weight: 700; font-size: 17px; line-height: 1.1; }
+.c-pilot-rule { border-top: 1.5px solid #1a1a1a; }
+.c-pilot-text { font-size: 10px; line-height: 1.15; }
+.card.pilot.tight .c-pilot-body { padding: 6px 8px; gap: 3px; }
+.card.pilot.tight .c-pilot-name { font-size: 15px; }
+.card.pilot.tight .c-pilot-text { font-size: 9.5px; line-height: 1.12; }
+
 /* used box */
 .c-used { display: inline-flex; align-items: center; gap: 3px; margin-left: 4px; }
 .c-used-label { font-size: 8px; letter-spacing: .04em; color: #444; }
