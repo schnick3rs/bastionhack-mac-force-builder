@@ -125,7 +125,9 @@ export type SheetSlot =
     | { type: 'a8', cards: [Card, Card | undefined] }
     | { type: 'empty' }
 
-const SLOTS_PER_SHEET = 8
+/** Paper sizes of a card sheet: A4 landscape holds 4 x 2 A7 slots, US letter landscape 3 x 2. */
+export type Paper = 'a4' | 'letter'
+export const slotsPerSheet: Record<Paper, number> = { a4: 8, letter: 6 }
 
 const CARRIER_RULE = 'Keep up to 2 infantry AUs off the board, noted as being inside this carrier. ' +
     'On their move activation they may deploy from their carrier unit. ' +
@@ -329,7 +331,8 @@ export function buildCards(force: Force, suit: Suit) {
     return {macs, formations, moduleCards, assets, pilots: pilotPairs, faction}
 }
 
-export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
+export function buildSheets(force: Force, suit: Suit, paper: Paper = 'a4'): SheetSlot[][] {
+    const perSheet = slotsPerSheet[paper]
     const {macs, formations, moduleCards, assets, pilots} = buildCards(force, suit)
 
     const slots: SheetSlot[] = [
@@ -343,12 +346,12 @@ export function buildSheets(force: Force, suit: Suit): SheetSlot[][] {
     }
 
     const sheets: SheetSlot[][] = []
-    for (let i = 0; i < slots.length; i += SLOTS_PER_SHEET) {
-        sheets.push(slots.slice(i, i + SLOTS_PER_SHEET))
+    for (let i = 0; i < slots.length; i += perSheet) {
+        sheets.push(slots.slice(i, i + perSheet))
     }
     if (!sheets.length) sheets.push([])
     for (const sheet of sheets) {
-        while (sheet.length < SLOTS_PER_SHEET) sheet.push({type: 'empty'})
+        while (sheet.length < perSheet) sheet.push({type: 'empty'})
     }
     return sheets
 }

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import '~/assets/css/cards.css'
 import {useForcesStore} from "~/stores/forces";
-import type {Suit} from "#shared/utils/cards";
+import type {Paper, Suit} from "#shared/utils/cards";
 import {buildSheets} from "#shared/utils/cards";
 
 
@@ -13,23 +13,30 @@ if (!force) {
   throw new Error('Force not found')
 }
 
-useHead({
+// paper size of the sheets, remembered in the browser
+const stored = localStorage.getItem('cardsPaper')
+const paper = ref<Paper>(stored === 'letter' ? 'letter' : 'a4')
+watch(paper, (value) => localStorage.setItem('cardsPaper', value))
+
+const paperLabel = computed(() => paper.value === 'letter' ? 'US letter landscape' : 'A4 landscape')
+
+useHead(() => ({
   title: `${force.name} | Cards | MACtory`,
   // lives in the head so it is removed again when leaving this page
-  style: [{ key: 'print-page', innerHTML: '@page { size: A4 landscape; margin: 0; }' }],
+  style: [{ key: 'print-page', innerHTML: `@page { size: ${paper.value === 'letter' ? 'letter' : 'A4'} landscape; margin: 0; }` }],
   link: [
     { rel: 'preconnect', href: 'https://fonts.googleapis.com' },
     { rel: 'preconnect', href: 'https://fonts.gstatic.com', crossorigin: '' },
     { rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=Inter:wght@400;500;600&display=swap' },
   ],
-})
+}))
 
 function handlePrint() {
   window.print()
 }
 
 const suit = ref<Suit>('spades')
-const sheets = computed(() => buildSheets(force, suit.value))
+const sheets = computed(() => buildSheets(force, suit.value, paper.value))
 </script>
 
 <template>
@@ -49,7 +56,11 @@ const sheets = computed(() => buildSheets(force, suit.value))
       </UFieldGroup>
 
       <div class="flex items-center gap-3">
-        <span class="text-sm text-muted hidden md:inline">A4 landscape, no margins, background graphics on</span>
+        <UFieldGroup size="xl">
+          <UButton color="info" :variant="paper === 'a4' ? 'solid' : 'outline'" class="cursor-pointer" @click="paper = 'a4'">A4</UButton>
+          <UButton color="info" :variant="paper === 'letter' ? 'solid' : 'outline'" class="cursor-pointer" @click="paper = 'letter'">Letter</UButton>
+        </UFieldGroup>
+        <span class="text-sm text-muted hidden lg:inline">{{ paperLabel }}, no margins, background graphics on</span>
         <UButton size="xl" variant="outline" color="info" class="font-bold cursor-pointer" icon="i-material-symbols-light-print" @click="handlePrint">
           Print
         </UButton>
@@ -57,7 +68,7 @@ const sheets = computed(() => buildSheets(force, suit.value))
     </div>
 
     <div class="sheets flex flex-col gap-6 p-4 overflow-x-auto print:overflow-visible print:p-0 print:gap-0 items-start">
-      <div v-for="(sheet, n) in sheets" :key="n" class="sheet shadow-lg">
+      <div v-for="(sheet, n) in sheets" :key="n" class="sheet shadow-lg" :class="{ letter: paper === 'letter' }">
         <template v-for="(slot, i) in sheet" :key="i">
           <div v-if="slot.type === 'a7'" class="slot">
             <CardsCardMac v-if="slot.card.kind === 'mac'" :card="slot.card" />

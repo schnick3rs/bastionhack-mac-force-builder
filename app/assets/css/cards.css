@@ -16,6 +16,14 @@
   page-break-after: always;
   break-after: page;
 }
+.sheet.letter {
+  /* US letter landscape: 1056 x 816 px, three A7 slots per row, centred */
+  width: 1056px;
+  height: 816px;
+  grid-template-columns: repeat(3, 280px);
+  justify-content: center;
+  align-content: center;
+}
 .sheet:last-child { page-break-after: auto; break-after: auto; }
 
 .slot { width: 280px; height: 397px; display: flex; flex-direction: column; }
@@ -133,4 +141,5 @@
   .cards-root .sheets { gap: 0 !important; padding: 0 !important; }
   /* 794px is a hair taller than 210mm, which would spill onto an extra page */
   .cards-root .sheet { box-shadow: none !important; margin: 0 !important; width: 1122px; height: 793px; overflow: hidden; }
+  .cards-root .sheet.letter { width: 1056px; height: 815px; }
 }
