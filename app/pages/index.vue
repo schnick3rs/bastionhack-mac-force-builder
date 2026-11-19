@@ -101,6 +101,13 @@ const sortedForces = computed(() => forces.toSorted((a, b) => b.updatedAt - a.up
         to="/arsenal"
     />
 
+    <UPageCard
+        title="Hardware"
+        description='All common hardware and faction special modules.'
+        icon="i-game-icons-cog"
+        to="/hardware"
+    />
+
     <!-- local only: scrap mode roll demo -->
     <UPageCard
         v-if="isLocalhost"

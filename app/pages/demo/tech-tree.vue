@@ -49,7 +49,7 @@ const { data: current } = await useFetch<AvailableResponse>('/api/campaign-modes
 })
 
 // the hardware catalogue, to show every module and not only the unlocked ones
-const { data: catalogue } = await useFetch<{ name: string }[]>('/api/hardware')
+const { data: catalogue } = await useFetch<{ name: string }[]>('/api/hardware/common')
 
 const basic = computed(() => tree.value?.nodes.filter(n => n.tier === 'basic') ?? [])
 const advanced = computed(() => tree.value?.nodes.filter(n => n.tier === 'advanced') ?? [])

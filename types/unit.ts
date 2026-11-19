@@ -158,3 +158,5 @@ export interface Faction {
     onAttach: Function
     onDetach: Function
 }
+/** A hardware module with the faction it belongs to (null for common modules). */
+export type ModuleReference = HardwareModule & { faction: { key: string, name: string } | null }
