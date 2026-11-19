@@ -75,7 +75,7 @@ const columns: { key: SortKey, label: string, icon?: string }[] = [
 
     <div class="mb-6">
       <h1 class="text-3xl font-bold">Modules</h1>
-      <p class="text-sm text-muted">A reference of all common and faction modules.</p>
+      <p class="text-sm text-muted">A reference of all common hardware (pg. 16) and faction special modules (pg. 26).</p>
     </div>
 
     <div class="flex flex-wrap items-center gap-3 mb-3">
