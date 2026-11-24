@@ -181,6 +181,9 @@ const danger = [
       <UButton size="xl" variant="outline" color="info" class="font-bold" icon="i-game-icons-card-ace-spades" :to="`/builder/${force.id}/cards`">
         Cards
       </UButton>
+      <UButton size="xl" variant="outline" color="info" class="font-bold" icon="i-game-icons-card-draw" :to="`/builder/${force.id}/initiative`">
+        Initiative
+      </UButton>
       <UButton size="xl" variant="outline" color="info" class="font-bold cursor-pointer" icon="i-material-symbols-light-print" @click="handlePrint">
         Print
       </UButton>
